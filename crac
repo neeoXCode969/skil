@@ -67,7 +67,7 @@ if vu6 then
             WindUI:SetNotificationLower(true)
             WindUI:Notify({
                 Title = "NEOX HUB - Fish It",
-                Content = "cracked by alt_ & @apnff0x ",
+                Content = "cracked by zynexploit_ & berly ",
                 Duration = 5,
                 Image = "square-check-big"
             })
