@@ -1,0 +1,2941 @@
+-- hi cracked neox hub 😘
+loadstring(game:HttpGet("https://raw.githubusercontent.com/WhatsHisIdentifierr/NoKey/refs/heads/main/Discord",true))()
+local v1 = game:GetService("Players")
+local vu2 = game:GetService("HttpService")
+local v3 = game:GetService("RbxAnalyticsService")
+local vu4 = game:GetService("TweenService")
+game:GetService("RunService")
+local vu6 = v3:GetClientId()
+if vu6 then
+        local function vu528()
+            local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
+            local vu9 = game:GetService("Players")
+            local vu10 = game:GetService("ReplicatedStorage")
+            local v11 = game:GetService("Workspace")
+            local vu12 = vu9.LocalPlayer
+            game:GetService("HttpService")
+            local vu13 = game:GetService("RunService")
+            local vu14 = game:GetService("ProximityPromptService")
+            local vu15 = game:GetService("VirtualInputManager")
+            local vu16 = game:GetService("TweenService")
+            local vu17 = game:GetService("UserInputService")
+            local vu18 = game:GetService("CoreGui")
+            local v19 = vu10.Packages._Index["sleitnick_net@0.2.0"].net
+            local vu20 = v19["RF/ChargeFishingRod"]
+            local vu21 = v19["RE/FishingCompleted"]
+            local vu22 = v19["RF/RequestFishingMinigameStarted"]
+            local vu23 = v19["RF/SellAllItems"]
+            local vu24 = v19["RE/EquipToolFromHotbar"]
+            local vu25 = v19["RF/EquipOxygenTank"]
+            local vu26 = v19["RF/UnequipOxygenTank"]
+            local vu27 = v19["RF/UpdateFishingRadar"]
+            local vu28 = v19["RF/PurchaseFishingRod"]
+            local vu29 = v19["RF/PurchaseBait"]
+            local vu30 = v19["RF/PurchaseWeatherEvent"]
+            local vu31 = v19["RF/PurchaseBoat"]
+            local vu32 = v19["RF/SpawnBoat"]
+            local vu33 = v19["RF/DespawnBoat"]
+            local vu34 = v19["RF/InitiateTrade"]
+            local v35 = v19["RF/AwaitTradeResponse"]
+            local vu36 = v19["RE/FavoriteItem"]
+            WindUI:AddTheme({
+                Name = "NEOX Theme",
+                Accent = Color3.fromHex("#18181b"),
+                Dialog = Color3.fromHex("#161616"),
+                Outline = Color3.fromHex("#FFFFFF"),
+                Text = Color3.fromHex("#FFFFFF"),
+                Placeholder = Color3.fromHex("#7a7a7a"),
+                Background = Color3.fromHex("#101010"),
+                Button = Color3.fromHex("#52525b"),
+                Icon = Color3.fromHex("#a1a1aa")
+            })
+            local v37 = WindUI:CreateWindow({
+                Title = "NEOX HUB - Fish It",
+                Icon = "rbxthumb://type=Asset&id=80622869023191&w=150&h=150",
+                Author = "cracked by zynexploit_ and Berly",
+                Folder = "NEOX HUB",
+                Size = UDim2.fromOffset(600, 450),
+                Theme = "Indigo",
+                KeySystem = false
+            })
+            v37:Tag({
+                Title = "Version : 1.4.2",
+                Color = Color3.fromHex("#30ff6a"),
+                Radius = 13
+            })
+            v37:SetToggleKey(Enum.KeyCode.Q)
+            WindUI:SetNotificationLower(true)
+            WindUI:Notify({
+                Title = "NEOX HUB - Fish It",
+                Content = "cracked by alt_ & @apnff0x ",
+                Duration = 5,
+                Image = "square-check-big"
+            })
+            local v38 = v37:Tab({
+                Title = "Home",
+                Icon = "rbxassetid://7733960981"
+            })
+            local v39 = v37:Tab({
+                Title = "Main",
+                Icon = "list"
+            })
+            local v40 = v37:Tab({
+                Title = "instant Fishing",
+                Icon = "fish"
+            })
+            local v41 = v37:Tab({
+                Title = "Trade",
+                Icon = "repeat-1"
+            })
+            local v42 = v37:Tab({
+                Title = "Shop",
+                Icon = "shopping-cart"
+            })
+            local v43 = v37:Tab({
+                Title = "Teleport",
+                Icon = "map-pin"
+            })
+            local v44 = v37:Tab({
+                Title = "Boats",
+                Icon = "ship"
+            })
+            local v45 = v37:Tab({
+                Title = "Environment",
+                Icon = "cloud"
+            })
+            local v46 = v37:Tab({
+                Title = "Utility",
+                Icon = "settings"
+            })
+            v38:Select()
+            local vu47 = identifyexecutor and identifyexecutor() or "Unknown Executor"
+            if vu47 == "Xeno" or vu47 == "Solara" then
+                v38:Paragraph({
+                    Title = "NEOX HUB About (Xeno/Solara)",
+                    Desc = "For, Xeno/Solara Users ~ Trade / Auto Fav Is Not Available",
+                    Image = "rbxthumb://type=Asset&id=80622869023191&w=150&h=150",
+                    ImageSize = 60,
+                    Thumbnail = "",
+                    ThumbnailSize = 80,
+                    Locked = false,
+                    BackgroundColor = Color3.fromRGB(0, 0, 0),
+                    TextTransparency = 0
+                })
+            end
+            v38:Paragraph({
+                Title = "NEOX HUB Update Log 1.4.2 (Quality Update)",
+                Desc = "\239\191\189\239\191\189 Improved Overall Script (Better Performance) \n \226\128\162 Added Environment Tab (Only Day,Night,Remove Fog)\n\226\128\162 Added Xeno & Solara Support \n\226\128\162 Improved Auto Fishing V1,V2 \n\226\128\162 Improved Main Tab",
+                Image = "rbxthumb://type=Asset&id=80622869023191&w=150&h=150",
+                ImageSize = 60,
+                Thumbnail = "",
+                ThumbnailSize = 80,
+                Locked = false,
+                BackgroundColor = Color3.fromRGB(0, 0, 0),
+                TextTransparency = 0
+            })
+            v38:Divider()
+            v38:Section({
+                Title = "Join Our Discord Server",
+                Icon = "rbxthumb://type=Asset&id=8248378219&w=150&h=150"
+            })
+            v38:Button({
+                Title = "Copy Discord Invite",
+                Desc = "Click to copy the invite link!",
+                Locked = false,
+                Callback = function()
+                    setclipboard("https://discord.gg/kUHGK8tTsJ")
+                    WindUI:Notify({
+                        Title = "Copied!",
+                        Content = "Discord invite has been copied to your clipboard.",
+                        Duration = 3,
+                        Icon = "rbxthumb://type=Asset&id=8248378219&w=150&h=150"
+                    })
+                end
+            })
+            v38:Paragraph({
+                Title = "Want to reset your HWID?",
+                Desc = "Join our official Discord server to do so. Access the NEOX Panel there, where you can easily enter your key to reset your HWID.",
+                Locked = false,
+                BackgroundColor = Color3.fromRGB(0, 0, 0),
+                TextTransparency = 0
+            })
+            FishingSection = v39:Section({
+                Title = "Auto Fishing V1",
+                Icon = "fish",
+                Opened = false
+            })
+            _G.FishingStats = _G.FishingStats or {
+                totalCaught = 0,
+                sessionCaught = 0,
+                startTime = tick()
+            }
+            local vu48 = {
+                autoFishing = false,
+                clickCount = 75,
+                clickDelay = 0.01,
+                waitForFish = 4,
+                nextCastDelay = 2
+            }
+            _G.AutoFishingActive = _G.AutoFishingActive or false
+            local vu49 = nil
+            local vu50 = false
+            local function vu52(p51)
+                return vu10:WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_net@0.2.0"):WaitForChild("net"):WaitForChild(p51)
+            end
+            local function vu137()
+                if vu49 and vu49.Parent then
+                    vu49:Destroy()
+                end
+                local vu53 = Instance.new("ScreenGui")
+                vu53.Name = "AutoFishGUI"
+                vu53.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+                vu53.ResetOnSpawn = false
+                vu53.IgnoreGuiInset = true
+                pcall(function()
+                    vu53.Parent = vu18
+                end)
+                if not vu53.Parent then
+                    vu53.Parent = vu12:WaitForChild("PlayerGui")
+                end
+                local vu54 = Instance.new("Frame")
+                vu54.Name = "MainFrame"
+                vu54.Size = UDim2.new(0, 320, 0, 320)
+                vu54.Position = UDim2.new(0.5, - 160, 0.5, - 160)
+                vu54.BackgroundColor3 = Color3.fromRGB(18, 18, 24)
+                vu54.BorderSizePixel = 0
+                vu54.ClipsDescendants = true
+                vu54.Parent = vu53
+                local v55 = Instance.new("Frame")
+                v55.Name = "Shadow"
+                v55.Size = UDim2.new(1, 6, 1, 6)
+                v55.Position = UDim2.new(0, - 3, 0, - 3)
+                v55.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+                v55.BackgroundTransparency = 0.5
+                v55.BorderSizePixel = 0
+                v55.ZIndex = 0
+                v55.Parent = vu54
+                local v56 = Instance.new("UICorner")
+                v56.CornerRadius = UDim.new(0, 12)
+                v56.Parent = v55
+                local v57 = Instance.new("UICorner")
+                v57.CornerRadius = UDim.new(0, 12)
+                v57.Parent = vu54
+                local v58 = Instance.new("UIStroke")
+                v58.Color = Color3.fromRGB(45, 45, 55)
+                v58.Thickness = 2
+                v58.Parent = vu54
+                local v59 = Instance.new("Frame")
+                v59.Name = "Header"
+                v59.Size = UDim2.new(1, 0, 0, 40)
+                v59.BackgroundColor3 = Color3.fromRGB(24, 24, 32)
+                v59.BorderSizePixel = 0
+                v59.Parent = vu54
+                local v60 = Instance.new("UICorner")
+                v60.CornerRadius = UDim.new(0, 12)
+                v60.Parent = v59
+                local v61 = Instance.new("Frame")
+                v61.Size = UDim2.new(1, 0, 0, 8)
+                v61.Position = UDim2.new(0, 0, 1, - 8)
+                v61.BackgroundColor3 = Color3.fromRGB(24, 24, 32)
+                v61.BorderSizePixel = 0
+                v61.Parent = v59
+                local v62 = Instance.new("TextLabel")
+                v62.Size = UDim2.new(1, - 70, 1, 0)
+                v62.Position = UDim2.new(0, 12, 0, 0)
+                v62.BackgroundTransparency = 1
+                v62.Text = "NEOX HUB"
+                v62.TextColor3 = Color3.fromRGB(240, 240, 245)
+                v62.TextSize = 14
+                v62.Font = Enum.Font.GothamBold
+                v62.TextXAlignment = Enum.TextXAlignment.Left
+                v62.Parent = v59
+                local vu63 = Instance.new("TextButton")
+                vu63.Name = "CloseBtn"
+                vu63.Size = UDim2.new(0, 28, 0, 28)
+                vu63.Position = UDim2.new(1, - 38, 0, 6)
+                vu63.BackgroundColor3 = Color3.fromRGB(32, 32, 40)
+                vu63.BorderSizePixel = 0
+                vu63.Text = "X"
+                vu63.TextColor3 = Color3.fromRGB(200, 200, 210)
+                vu63.TextSize = 14
+                vu63.Font = Enum.Font.GothamBold
+                vu63.AutoButtonColor = false
+                vu63.Parent = v59
+                local v64 = Instance.new("UICorner")
+                v64.CornerRadius = UDim.new(0, 6)
+                v64.Parent = vu63
+                local vu65 = Instance.new("Frame")
+                vu65.Name = "Content"
+                vu65.Size = UDim2.new(1, - 20, 1, - 52)
+                vu65.Position = UDim2.new(0, 10, 0, 46)
+                vu65.BackgroundTransparency = 1
+                vu65.ClipsDescendants = true
+                vu65.Parent = vu54
+                local v66 = Instance.new("Frame")
+                v66.Size = UDim2.new(1, 0, 0, 35)
+                v66.Position = UDim2.new(0, 0, 0, 0)
+                v66.BackgroundColor3 = Color3.fromRGB(24, 24, 32)
+                v66.BorderSizePixel = 0
+                v66.Parent = vu65
+                local v67 = Instance.new("UICorner")
+                v67.CornerRadius = UDim.new(0, 8)
+                v67.Parent = v66
+                local v68 = Instance.new("UIStroke")
+                v68.Color = Color3.fromRGB(35, 35, 45)
+                v68.Thickness = 1
+                v68.Parent = v66
+                local vu69 = Instance.new("Frame")
+                vu69.Size = UDim2.new(0, 8, 0, 8)
+                vu69.Position = UDim2.new(0, 10, 0.5, - 4)
+                vu69.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
+                vu69.BorderSizePixel = 0
+                vu69.Parent = v66
+                local v70 = Instance.new("UICorner")
+                v70.CornerRadius = UDim.new(1, 0)
+                v70.Parent = vu69
+                local vu71 = Instance.new("TextLabel")
+                vu71.Size = UDim2.new(1, - 28, 1, 0)
+                vu71.Position = UDim2.new(0, 26, 0, 0)
+                vu71.BackgroundTransparency = 1
+                vu71.Text = "Ready"
+                vu71.TextColor3 = Color3.fromRGB(200, 200, 215)
+                vu71.TextSize = 12
+                vu71.Font = Enum.Font.GothamMedium
+                vu71.TextXAlignment = Enum.TextXAlignment.Left
+                vu71.Parent = v66
+                local vu72 = Instance.new("TextButton")
+                vu72.Size = UDim2.new(1, 0, 0, 40)
+                vu72.Position = UDim2.new(0, 0, 0, 45)
+                vu72.BackgroundColor3 = Color3.fromRGB(70, 130, 255)
+                vu72.BorderSizePixel = 0
+                vu72.Text = "START"
+                vu72.TextColor3 = Color3.fromRGB(255, 255, 255)
+                vu72.TextSize = 13
+                vu72.Font = Enum.Font.GothamBold
+                vu72.AutoButtonColor = false
+                vu72.Parent = vu65
+                local v73 = Instance.new("UICorner")
+                v73.CornerRadius = UDim.new(0, 8)
+                v73.Parent = vu72
+                local v74 = 95
+                local v75 = Instance.new("TextLabel")
+                v75.Size = UDim2.new(1, 0, 0, 20)
+                v75.Position = UDim2.new(0, 0, 0, v74)
+                v75.BackgroundTransparency = 1
+                v75.Text = "SETTINGS"
+                v75.TextColor3 = Color3.fromRGB(160, 160, 175)
+                v75.TextSize = 11
+                v75.Font = Enum.Font.GothamBold
+                v75.TextXAlignment = Enum.TextXAlignment.Left
+                v75.Parent = vu65
+                local function v107(p76, pu77, pu78, p79, pu80, pu81, p82, pu83)
+                    local v84 = Instance.new("Frame")
+                    v84.Size = UDim2.new(1, 0, 0, 45)
+                    v84.Position = UDim2.new(0, 0, 0, p82)
+                    v84.BackgroundTransparency = 1
+                    v84.Parent = vu65
+                    local v85 = Instance.new("TextLabel")
+                    v85.Size = UDim2.new(0.6, 0, 0, 18)
+                    v85.BackgroundTransparency = 1
+                    v85.Text = p76
+                    v85.TextColor3 = Color3.fromRGB(200, 200, 215)
+                    v85.TextSize = 11
+                    v85.Font = Enum.Font.GothamMedium
+                    v85.TextXAlignment = Enum.TextXAlignment.Left
+                    v85.Parent = v84
+                    local WindUI6 = Instance.new("TextLabel")
+                    WindUI6.Size = UDim2.new(0.4, 0, 0, 18)
+                    WindUI6.Position = UDim2.new(0.6, 0, 0, 0)
+                    WindUI6.BackgroundTransparency = 1
+                    WindUI6.Text = tostring(p79) .. pu81
+                    WindUI6.TextColor3 = Color3.fromRGB(70, 130, 255)
+                    WindUI6.TextSize = 11
+                    WindUI6.Font = Enum.Font.GothamBold
+                    WindUI6.TextXAlignment = Enum.TextXAlignment.Right
+                    WindUI6.Parent = v84
+                    local v87 = Instance.new("Frame")
+                    v87.Size = UDim2.new(1, 0, 0, 20)
+                    v87.Position = UDim2.new(0, 0, 0, 20)
+                    v87.BackgroundTransparency = 1
+                    v87.Parent = v84
+                    local WindUI8 = Instance.new("Frame")
+                    WindUI8.Size = UDim2.new(1, 0, 0, 4)
+                    WindUI8.Position = UDim2.new(0, 0, 0.5, - 2)
+                    WindUI8.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+                    WindUI8.BorderSizePixel = 0
+                    WindUI8.Parent = v87
+                    local v89 = Instance.new("UICorner")
+                    v89.CornerRadius = UDim.new(1, 0)
+                    v89.Parent = WindUI8
+                    local vu90 = Instance.new("Frame")
+                    vu90.Size = UDim2.new((p79 - pu77) / (pu78 - pu77), 0, 1, 0)
+                    vu90.BackgroundColor3 = Color3.fromRGB(70, 130, 255)
+                    vu90.BorderSizePixel = 0
+                    vu90.Parent = WindUI8
+                    local v91 = Instance.new("UICorner")
+                    v91.CornerRadius = UDim.new(1, 0)
+                    v91.Parent = vu90
+                    local vu92 = Instance.new("Frame")
+                    vu92.Size = UDim2.new(0, 14, 0, 14)
+                    vu92.Position = UDim2.new((p79 - pu77) / (pu78 - pu77), - 7, 0.5, - 7)
+                    vu92.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                    vu92.BorderSizePixel = 0
+                    vu92.ZIndex = 2
+                    vu92.Parent = v87
+                    local v93 = Instance.new("UICorner")
+                    v93.CornerRadius = UDim.new(1, 0)
+                    v93.Parent = vu92
+                    local v94 = Instance.new("UIStroke")
+                    v94.Color = Color3.fromRGB(70, 130, 255)
+                    v94.Thickness = 2
+                    v94.Parent = vu92
+                    local vu95 = false
+                    local function vu102(p96)
+                        local v97 = math.clamp(p96, 0, 1)
+                        local v98 = pu77 + (pu78 - pu77) * v97
+                        local v99 = math.floor(v98 / pu80 + 0.5) * pu80
+                        local v100 = math.clamp(v99, pu77, pu78)
+                        vu90.Size = UDim2.new(v97, 0, 1, 0)
+                        vu92.Position = UDim2.new(v97, - 7, 0.5, - 7)
+                        local v101
+                        if pu80 >= 1 then
+                            v101 = tostring(math.floor(v100))
+                        else
+                            v101 = string.format("%.2f", v100)
+                        end
+                        WindUI6.Text = v101 .. pu81
+                        pu83(v100)
+                    end
+                    local function v104(p103)
+                        if p103.UserInputType == Enum.UserInputType.MouseButton1 then
+                            vu95 = true
+                            vu102((p103.Position.X - WindUI8.AbsolutePosition.X) / WindUI8.AbsoluteSize.X)
+                        end
+                    end
+                    v87.InputBegan:Connect(v104)
+                    vu17.InputEnded:Connect(function(p105)
+                        if p105.UserInputType == Enum.UserInputType.MouseButton1 then
+                            vu95 = false
+                        end
+                    end)
+                    vu17.InputChanged:Connect(function(p106)
+                        if vu95 and p106.UserInputType == Enum.UserInputType.MouseMovement then
+                            vu102((p106.Position.X - WindUI8.AbsolutePosition.X) / WindUI8.AbsoluteSize.X)
+                        end
+                    end)
+                    return v84
+                end
+                v107("Wait Time", 1, 10, vu48.waitForFish, 0.5, "s", v74 + 24, function(p108)
+                    vu48.waitForFish = p108
+                end)
+                v107("Next Cast Delay", 0.5, 10, vu48.nextCastDelay, 0.5, "s", v74 + 73, function(p109)
+                    vu48.nextCastDelay = p109
+                end)
+                local v110 = Instance.new("Frame")
+                v110.Size = UDim2.new(1, 0, 0, 65)
+                v110.Position = UDim2.new(0, 0, 0, v74 + 122)
+                v110.BackgroundColor3 = Color3.fromRGB(24, 24, 32)
+                v110.BorderSizePixel = 0
+                v110.Parent = vu65
+                local v111 = Instance.new("UICorner")
+                v111.CornerRadius = UDim.new(0, 8)
+                v111.Parent = v110
+                local v112 = Instance.new("UIStroke")
+                v112.Color = Color3.fromRGB(35, 35, 45)
+                v112.Thickness = 1
+                v112.Parent = v110
+                local v113 = Instance.new("TextLabel")
+                v113.Size = UDim2.new(1, - 16, 0, 18)
+                v113.Position = UDim2.new(0, 8, 0, 6)
+                v113.BackgroundTransparency = 1
+                v113.Text = "Info"
+                v113.TextColor3 = Color3.fromRGB(70, 130, 255)
+                v113.TextSize = 12
+                v113.Font = Enum.Font.GothamBold
+                v113.TextXAlignment = Enum.TextXAlignment.Left
+                v113.TextYAlignment = Enum.TextYAlignment.Center
+                v113.Parent = v110
+                local v114 = Instance.new("TextLabel")
+                v114.Size = UDim2.new(1, - 16, 1, - 28)
+                v114.Position = UDim2.new(0, 8, 0, 24)
+                v114.BackgroundTransparency = 1
+                v114.Text = "Better rods = shorter wait time. Default is 3s for basic rods."
+                v114.TextColor3 = Color3.fromRGB(185, 185, 200)
+                v114.TextSize = 10
+                v114.Font = Enum.Font.Gotham
+                v114.TextXAlignment = Enum.TextXAlignment.Left
+                v114.TextYAlignment = Enum.TextYAlignment.Top
+                v114.TextWrapped = true
+                v114.LineHeight = 1.15
+                v114.Parent = v110
+                local vu115 = false
+                local vu116 = nil
+                local vu117 = nil
+                local function v119(p118)
+                    if p118.UserInputType == Enum.UserInputType.MouseButton1 then
+                        vu115 = true
+                        vu116 = p118.Position
+                        vu117 = vu54.Position
+                    end
+                end
+                v59.InputBegan:Connect(v119)
+                vu17.InputChanged:Connect(function(p120)
+                    if vu115 and p120.UserInputType == Enum.UserInputType.MouseMovement then
+                        local v121 = p120.Position - vu116
+                        vu54.Position = UDim2.new(vu117.X.Scale, vu117.X.Offset + v121.X, vu117.Y.Scale, vu117.Y.Offset + v121.Y)
+                    end
+                end)
+                vu17.InputEnded:Connect(function(p122)
+                    if p122.UserInputType == Enum.UserInputType.MouseButton1 then
+                        vu115 = false
+                    end
+                end)
+                vu63.MouseEnter:Connect(function()
+                    vu16:Create(vu63, TweenInfo.new(0.2), {
+                        BackgroundColor3 = Color3.fromRGB(220, 60, 70)
+                    }):Play()
+                end)
+                vu63.MouseLeave:Connect(function()
+                    vu16:Create(vu63, TweenInfo.new(0.2), {
+                        BackgroundColor3 = Color3.fromRGB(32, 32, 40)
+                    }):Play()
+                end)
+                vu72.MouseEnter:Connect(function()
+                    if not vu48.autoFishing then
+                        vu16:Create(vu72, TweenInfo.new(0.2), {
+                            BackgroundColor3 = Color3.fromRGB(85, 145, 255)
+                        }):Play()
+                    end
+                end)
+                vu72.MouseLeave:Connect(function()
+                    if not vu48.autoFishing then
+                        vu16:Create(vu72, TweenInfo.new(0.2), {
+                            BackgroundColor3 = Color3.fromRGB(70, 130, 255)
+                        }):Play()
+                    end
+                end)
+                local function vu125(p123, p124)
+                    vu71.Text = p123
+                    vu16:Create(vu69, TweenInfo.new(0.3), {
+                        BackgroundColor3 = p124
+                    }):Play()
+                end
+                local function vu129()
+                    local v126 = vu12.Character
+                    if not v126 then
+                        return 0, 0
+                    end
+                    local v127 = v126:FindFirstChild("HumanoidRootPart")
+                    if not v127 then
+                        return 0, 0
+                    end
+                    local v128 = v127.CFrame.LookVector
+                    return v128.X, v128.Z
+                end
+                local function vu136()
+                    while _G.AutoFishingActive and vu50 do
+                        local v135, _ = pcall(function()
+                            if not (vu12.Character and vu12.Character:FindFirstChild("HumanoidRootPart")) then
+                                vu125("Waiting for character...", Color3.fromRGB(255, 180, 100))
+                                task.wait(2)
+                                return
+                            end
+                            vu125("Casting rod...", Color3.fromRGB(100, 180, 255))
+                            vu52("RF/ChargeFishingRod"):InvokeServer()
+                            task.wait(1)
+                            vu125("Starting fishing...", Color3.fromRGB(180, 140, 255))
+                            local v130 = vu52("RF/RequestFishingMinigameStarted")
+                            local v131, v132 = vu129()
+                            v130:InvokeServer(v131, v132, tick() * 1000)
+                            vu125("Waiting for bite...", Color3.fromRGB(100, 200, 255))
+                            local v133 = tick()
+                            while tick() - v133 < vu48.waitForFish and (_G.AutoFishingActive and vu50) do
+                                task.wait(0.1)
+                            end
+                            if not (_G.AutoFishingActive and vu50) then
+                                return
+                            end
+                            vu125("Reeling in fish...", Color3.fromRGB(255, 200, 100))
+                            local v134 = vu52("RE/FishingCompleted")
+                            for _ = 1, vu48.clickCount do
+                                if not (_G.AutoFishingActive and vu50) then
+                                    break
+                                end
+                                v134:FireServer()
+                                task.wait(vu48.clickDelay)
+                            end
+                            if _G.AutoFishingActive and vu50 then
+                                _G.FishingStats.totalCaught = _G.FishingStats.totalCaught + 1
+                                _G.FishingStats.sessionCaught = _G.FishingStats.sessionCaught + 1
+                                vu125("Fish caught! \226\156\147", Color3.fromRGB(100, 220, 100))
+                                vu125("Preparing next cast...", Color3.fromRGB(180, 220, 100))
+                                task.wait(vu48.nextCastDelay)
+                            end
+                        end)
+                        if not v135 then
+                            vu125("Error - Retrying...", Color3.fromRGB(255, 100, 100))
+                            task.wait(3)
+                        end
+                        if not (_G.AutoFishingActive and vu50) then
+                            break
+                        end
+                    end
+                    if _G.AutoFishingActive and vu50 then
+                        vu125("Unexpected stop", Color3.fromRGB(255, 100, 100))
+                    else
+                        vu125("Stopped", Color3.fromRGB(200, 100, 100))
+                    end
+                end
+                vu72.MouseButton1Click:Connect(function()
+                    _G.AutoFishingActive = not _G.AutoFishingActive
+                    vu48.autoFishing = _G.AutoFishingActive
+                    if _G.AutoFishingActive then
+                        vu72.Text = "STOP FISHING"
+                        vu16:Create(vu72, TweenInfo.new(0.2), {
+                            BackgroundColor3 = Color3.fromRGB(220, 60, 70)
+                        }):Play()
+                        _G.FishingStats.startTime = tick()
+                        _G.FishingStats.sessionCaught = 0
+                        vu125("Starting fishing...", Color3.fromRGB(100, 200, 255))
+                        task.spawn(vu136)
+                    else
+                        vu72.Text = "START FISHING"
+                        vu16:Create(vu72, TweenInfo.new(0.2), {
+                            BackgroundColor3 = Color3.fromRGB(70, 130, 255)
+                        }):Play()
+                        vu125("Ready to fish", Color3.fromRGB(100, 200, 100))
+                    end
+                end)
+                vu63.MouseButton1Click:Connect(function()
+                    _G.AutoFishingActive = false
+                    vu53:Destroy()
+                    vu49 = nil
+                end)
+                vu12.CharacterAdded:Connect(function()
+                    task.wait(1)
+                    if _G.AutoFishingActive and vu50 then
+                        vu125("Character respawned - Resuming...", Color3.fromRGB(255, 200, 100))
+                        task.spawn(vu136)
+                    end
+                end)
+                vu125("Ready to fish", Color3.fromRGB(100, 200, 100))
+                return vu53
+            end
+            FishingSection:Toggle({
+                Title = "Auto Fish V1 (GUI)",
+                Content = "",
+                Value = false,
+                Callback = function(p138)
+                    vu50 = p138
+                    if p138 then
+                        vu49 = vu137()
+                    else
+                        _G.AutoFishingActive = false
+                        if vu49 then
+                            vu49:Destroy()
+                            vu49 = nil
+                        end
+                    end
+                end
+            })
+            FishingSectionv2 = v39:Section({
+                Title = "Auto Fishing V2",
+                Icon = "fish",
+                Opened = false
+            })
+            local v139 = workspace.CurrentCamera
+            local vu140 = false
+            local vu141 = nil
+            local vu142 = 0
+            local vu143 = 0
+            local vu144 = 5
+            local vu145 = v139.ViewportSize.Y - 5
+            local vu146 = 0.05
+            local vu147 = 0.5
+            local function vu149()
+                if not vu141 then
+                    vu142 = 0
+                    vu143 = 0
+                    vu141 = vu13.Heartbeat:Connect(function(p148)
+                        if vu140 then
+                            vu142 = vu142 + p148
+                            vu143 = vu143 + p148
+                            if vu147 <= vu143 then
+                                vu143 = 0
+                                pcall(function()
+                                    vu24:FireServer(1)
+                                end)
+                            end
+                            if vu146 <= vu142 then
+                                vu142 = 0
+                                pcall(function()
+                                    vu15:SendMouseButtonEvent(vu144, vu145, 0, true, game, 0)
+                                    vu15:SendMouseButtonEvent(vu144, vu145, 0, false, game, 0)
+                                end)
+                            end
+                        elseif vu141 then
+                            vu141:Disconnect()
+                            vu141 = nil
+                        end
+                    end)
+                end
+            end
+            local function vu150()
+                vu140 = false
+                vu142 = 0
+                vu143 = 0
+                if vu141 then
+                    vu141:Disconnect()
+                    vu141 = nil
+                end
+            end
+            FishingSectionv2:Toggle({
+                Title = "Auto Fishing V2",
+                Desc = "",
+                Value = false,
+                Callback = function(p151)
+                    vu140 = p151
+                    if p151 then
+                        vu149()
+                        WindUI:Notify({
+                            Title = "Auto Fishing V2",
+                            Content = "Enabled",
+                            Duration = 3
+                        })
+                    else
+                        vu150()
+                        WindUI:Notify({
+                            Title = "Auto Fishing V2",
+                            Content = "Disabled",
+                            Duration = 3
+                        })
+                    end
+                end
+            })
+            FishingSectionv2:Keybind({
+                Title = "Set Auto Fish V2 Keybind",
+                Desc = "",
+                Value = "F",
+                Callback = function()
+                    vu140 = not vu140
+                    if vu140 then
+                        vu149()
+                        WindUI:Notify({
+                            Title = "Auto Fishing V2",
+                            Content = "Enabled via Keybind",
+                            Duration = 3
+                        })
+                    else
+                        vu150()
+                        WindUI:Notify({
+                            Title = "Auto Fishing V2",
+                            Content = "Disabled via Keybind",
+                            Duration = 3
+                        })
+                    end
+                end
+            })
+            RodStuffSection = v39:Section({
+                Title = "Rod Stuff",
+                Icon = "anchor",
+                Opened = false
+            })
+            local vu152 = false
+            RodStuffSection:Toggle({
+                Title = "Auto Equip Rod",
+                Content = "",
+                Value = false,
+                Callback = function(p153)
+                    vu152 = p153
+                    if vu152 then
+                        spawn(function()
+                            while vu152 do
+                                vu24:FireServer(1)
+                                wait(0.5)
+                            end
+                        end)
+                    end
+                end
+            })
+            RodStuffSection:Button({
+                Title = "Fix Rod",
+                Desc = "",
+                Locked = false,
+                Callback = function()
+                    game.Players.LocalPlayer.Character:BreakJoints()
+                end
+            })
+            SellSection = v39:Section({
+                Title = "Sell",
+                Icon = "dollar-sign",
+                Opened = false
+            })
+            SellSection:Button({
+                Title = "Sell All Fish",
+                Content = "",
+                Locked = false,
+                Callback = function()
+                    pcall(function()
+                        vu23:InvokeServer()
+                    end)
+                end
+            })
+            local vu154 = false
+            local vu155 = 10
+            SellSection:Slider({
+                Title = "Sell Interval (Seconds)",
+                Desc = "",
+                Step = 1,
+                Value = {
+                    Min = 1,
+                    Max = 600,
+                    Default = 10
+                },
+                Callback = function(p156)
+                    vu155 = p156
+                end
+            })
+            SellSection:Toggle({
+                Title = "Auto Sell (Timer)",
+                Content = "",
+                Value = false,
+                Callback = function(p157)
+                    vu154 = p157
+                    if p157 then
+                        spawn(function()
+                            while vu154 do
+                                pcall(function()
+                                    vu23:InvokeServer()
+                                end)
+                                wait(vu155)
+                            end
+                        end)
+                    end
+                end
+            })
+            local vu158, vu159, vu160, vu161, vu162
+            if vu47 == "Xeno" or vu47 == "Solara" then
+                vu158 = vu154
+                vu159 = vu141
+                vu160 = vu140
+                vu161 = vu152
+                vu162 = vu49
+            else
+AutofavSection = v39:Section({
+    Title = "Auto Favorite",
+    Icon = "dollar-sign",
+    Opened = false
+})
+
+local v163 = vu10:WaitForChild("Packages"):WaitForChild("_Index")
+local v164, v165, v166 = ipairs(v163:GetChildren())
+
+local v167 = nil
+while true do
+    local v168
+    v166, v168 = v164(v165, v166)
+    if v166 == nil then
+        break
+    end
+    if v168.Name:find("ytrev_replion") then
+        v167 = v168
+        break
+    end
+end
+
+if not v167 then
+    return
+end
+
+
+                local v169 = v167:WaitForChild("replion")
+                local vu170 = require(v169)
+                local v171 = vu10:WaitForChild("Items")
+                require(v171)
+                local vu172 = require(vu10:WaitForChild("Shared"):WaitForChild("ItemUtility"))
+                local vu173 = {
+                    "Common",
+                    "Uncommon",
+                    "Rare",
+                    "Epic",
+                    "Legendary",
+                    "Mythic",
+                    "Secret"
+                }
+                local vu174 = {
+                    AutoFavourite = false,
+                    SelectedTiers = {
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7
+                    },
+                    UnfavTiers = {
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7
+                    }
+                }
+                local function v180()
+                    local v175, v176, v177 = pairs(vu173)
+                    local v178 = {}
+                    while true do
+                        local v179
+                        v177, v179 = v175(v176, v177)
+                        if v177 == nil then
+                            break
+                        end
+                        table.insert(v178, v179)
+                    end
+                    return v178
+                end
+                local function vu197()
+                    if vu174.AutoFavourite then
+                        if vu172 then
+                            pcall(function()
+                                if not vu170 then
+                                    return
+                                end
+                                local v181 = vu170.Client:WaitReplion("Data")
+                                if not v181 then
+                                    return
+                                end
+                                local v182 = v181:Get({
+                                    "Inventory",
+                                    "Items"
+                                })
+                                if type(v182) ~= "table" then
+                                    return
+                                end
+                                local v183, v184, v185 = ipairs(v182)
+                                while true do
+                                    local vu186
+                                    v185, vu186 = v183(v184, v185)
+                                    if v185 == nil or not vu174.AutoFavourite then
+                                        return
+                                    end
+                                    local v187, v188 = pcall(function()
+                                        return vu172:GetItemData(vu186.Id)
+                                    end)
+                                    if v187 and (v188 and v188.Data) then
+                                        local v189 = v188.Data.Tier
+                                        local v190 = vu173[v189] or "Unknown Tier " .. v189
+                                        local v191, v192, v193 = ipairs(vu174.SelectedTiers)
+                                        local v194 = false
+                                        while true do
+                                            local v195
+                                            v193, v195 = v191(v192, v193)
+                                            if v193 == nil then
+                                                break
+                                            end
+                                            if vu173[v195] == v190 then
+                                                v194 = true
+                                                break
+                                            end
+                                        end
+                                        if v194 then
+                                            local vu196 = vu186.Uuid or vu186.uuid or (vu186.UUID or vu186.Id)
+                                            if not vu186.Favorited then
+                                                pcall(function()
+                                                    vu36:FireServer(vu196)
+                                                end)
+                                                task.wait(0.1)
+                                            end
+                                        end
+                                    end
+                                end
+                            end)
+                        end
+                    else
+                        return
+                    end
+                end
+                local function vu214()
+                    pcall(function()
+                        if not vu170 then
+                            return
+                        end
+                        local v198 = vu170.Client:WaitReplion("Data")
+                        if not v198 then
+                            return
+                        end
+                        local v199 = v198:Get({
+                            "Inventory",
+                            "Items"
+                        })
+                        if type(v199) ~= "table" then
+                            return
+                        end
+                        local v200, v201, v202 = ipairs(v199)
+                        while true do
+                            local vu203
+                            v202, vu203 = v200(v201, v202)
+                            if v202 == nil then
+                                return
+                            end
+                            if vu203.Favorited then
+                                local v204, v205 = pcall(function()
+                                    return vu172:GetItemData(vu203.Id)
+                                end)
+                                if v204 and (v205 and v205.Data) then
+                                    local v206 = v205.Data.Tier
+                                    local v207 = vu173[v206] or "Unknown Tier " .. v206
+                                    local v208, v209, v210 = ipairs(vu174.UnfavTiers)
+                                    local v211 = false
+                                    while true do
+                                        local v212
+                                        v210, v212 = v208(v209, v210)
+                                        if v210 == nil then
+                                            break
+                                        end
+                                        if vu173[v212] == v207 then
+                                            v211 = true
+                                            break
+                                        end
+                                    end
+                                    if v211 then
+                                        local vu213 = vu203.Uuid or vu203.uuid or (vu203.UUID or vu203.Id)
+                                        pcall(function()
+                                            vu36:FireServer(vu213)
+                                        end)
+                                        task.wait(0.1)
+                                    end
+                                end
+                            end
+                        end
+                    end)
+                end
+                local function vu216()
+                    task.spawn(function()
+                        while vu174.AutoFavourite do
+                            vu197()
+                            local v215 = 0
+                            while v215 < 2 and vu174.AutoFavourite do
+                                task.wait(0.1)
+                                v215 = v215 + 0.1
+                            end
+                        end
+                    end)
+                end
+                AutofavSection:Dropdown({
+                    Title = "Auto-Favorite Tiers",
+                    Desc = "",
+                    Values = v180(),
+                    Value = v180(),
+                    Multi = true,
+                    AllowNone = false,
+                    Callback = function(p217)
+                        local v218, v219, v220 = pairs(vu173)
+                        local v221 = {}
+                        while true do
+                            local v222
+                            v220, v222 = v218(v219, v220)
+                            if v220 == nil then
+                                vu174.SelectedTiers = v221
+                                return
+                            end
+                            local v223, v224, v225 = ipairs(p217)
+                            local v226 = v220
+                            while true do
+                                local v227
+                                v225, v227 = v223(v224, v225)
+                                if v225 == nil then
+                                    break
+                                end
+                                if v227 == v222 then
+                                    table.insert(v221, v226)
+                                    break
+                                end
+                            end
+                        end
+                    end
+                })
+                AutofavSection:Toggle({
+                    Title = "Enable Auto-Favorite",
+                    Desc = "",
+                    Value = false,
+                    Callback = function(p228)
+                        vu174.AutoFavourite = p228
+                        if p228 then
+                            vu216()
+                        end
+                    end
+                })
+                AutofavSection:Dropdown({
+                    Title = "Select Tiers to Unfavorite",
+                    Desc = "",
+                    Values = v180(),
+                    Value = v180(),
+                    Multi = true,
+                    AllowNone = false,
+                    Callback = function(p229)
+                        local v230, v231, v232 = pairs(vu173)
+                        local v233 = {}
+                        while true do
+                            local v234
+                            v232, v234 = v230(v231, v232)
+                            if v232 == nil then
+                                vu174.UnfavTiers = v233
+                                return
+                            end
+                            local v235, v236, v237 = ipairs(p229)
+                            local v238 = v232
+                            while true do
+                                local v239
+                                v237, v239 = v235(v236, v237)
+                                if v237 == nil then
+                                    break
+                                end
+                                if v239 == v234 then
+                                    table.insert(v233, v238)
+                                    break
+                                end
+                            end
+                        end
+                    end
+                })
+                AutofavSection:Button({
+                    Title = "Unfavorite Selected Tiers",
+                    Desc = "",
+                    Locked = false,
+                    Callback = function()
+                        vu214()
+                    end
+                })
+                AutofavSection:Button({
+                    Title = "Unfavorite All",
+                    Desc = "",
+                    Locked = false,
+                    Callback = function()
+                        local v240 = vu174.UnfavTiers
+                        vu174.UnfavTiers = {
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6,
+                            7
+                        }
+                        vu214()
+                        vu174.UnfavTiers = v240
+                    end
+                })
+            end
+            SafezoneSection = v39:Section({
+                Title = "Create Safe Zone",
+                Icon = "map",
+                Opened = false
+            })
+            local vu241 = 70
+            SafezoneSection:Slider({
+                Title = "Safe Zone Height",
+                Desc = "",
+                Step = 1,
+                Value = {
+                    Min = 1,
+                    Max = 400,
+                    Default = 70
+                },
+                Callback = function(p242)
+                    vu241 = p242
+                end
+            })
+            SafezoneSection:Button({
+                Title = "Create Safe Zone",
+                Desc = "",
+                Locked = false,
+                Callback = function()
+                    local v243 = game.Players.LocalPlayer
+                    local v244 = (v243.Character or v243.CharacterAdded:Wait()):FindFirstChild("HumanoidRootPart")
+                    if v244 then
+                        local v245 = Instance.new("Part")
+                        v245.Size = Vector3.new(30, 1, 30)
+                        local v246 = v244.CFrame.LookVector * 10
+                        v245.Position = v244.Position + v246 + Vector3.new(0, vu241, 0)
+                        v245.Anchored = true
+                        v245.BrickColor = BrickColor.new("White")
+                        v245.TopSurface = Enum.SurfaceType.Studs
+                        v245.Material = Enum.Material.Plastic
+                        v245.Transparency = 0.2
+                        v245.Parent = workspace
+                        local v247 = Instance.new("SurfaceGui")
+                        v247.Face = Enum.NormalId.Top
+                        v247.Adornee = v245
+                        v247.Parent = v245
+                        local v248 = Instance.new("TextLabel")
+                        v248.Size = UDim2.new(1, 0, 0.5, 0)
+                        v248.Position = UDim2.new(0, 0, 0, 0)
+                        v248.BackgroundTransparency = 1
+                        v248.Text = "NEOX HUB"
+                        v248.TextColor3 = Color3.new(1, 0, 0)
+                        v248.TextScaled = true
+                        v248.Font = Enum.Font.SourceSansBold
+                        v248.Parent = v247
+                        local v249 = Instance.new("TextLabel")
+                        v249.Size = UDim2.new(1, 0, 0.5, 0)
+                        v249.Position = UDim2.new(0, 0, 0.5, 0)
+                        v249.BackgroundTransparency = 1
+                        v249.Text = "Join our Discord"
+                        v249.TextColor3 = Color3.new(0, 0, 1)
+                        v249.TextScaled = true
+                        v249.Font = Enum.Font.SourceSansBold
+                        v249.Parent = v247
+                        v244.CFrame = v245.CFrame + Vector3.new(0, 5, 0)
+                    end
+                end
+            })
+            FishAreaandpositionSection = v39:Section({
+                Title = "Fishing Area & Position",
+                Icon = "map",
+                Opened = false
+            })
+            local vu250 = {
+                ["1"] = {
+                    name = "Ancient Jungle",
+                    position = Vector3.new(1275.0999755859375, 3.9123077392578125, - 334.75)
+                },
+                ["2"] = {
+                    name = "Arrow Lever",
+                    position = Vector3.new(898.3800048828125, 8.449446678161621, - 362.2799987792969)
+                },
+                ["3"] = {
+                    name = "Coral Reefs",
+                    position = Vector3.new(- 3181.389892578125, 2.5218276977539062, 2104.35009765625)
+                },
+                [v11] = {
+                    name = "Crater Island",
+                    position = Vector3.new(998.030029296875, 2.861737012863159, 5151.169921875)
+                },
+                ["5"] = {
+                    name = "Crescent Lever",
+                    position = Vector3.new(1419.75, 31.199445724487305, 78.56999969482422)
+                },
+                ["6"] = {
+                    name = "Diamond Lever",
+                    position = Vector3.new(1818.9300537109375, 8.449446678161621, - 284.1099853515625)
+                },
+                ["7"] = {
+                    name = "Enchant Room",
+                    position = Vector3.new(3255.669921875, - 1301.530029296875, 1371.7900390625)
+                },
+                ["8"] = {
+                    name = "Esoteric Island",
+                    position = Vector3.new(2164.469970703125, 3.2237672805786133, 1242.3900146484375)
+                },
+                ["9"] = {
+                    name = "Fisherman Island",
+                    position = Vector3.new(74.02999877929688, 9.531570434570312, 2705.22998046875)
+                },
+                ["10"] = {
+                    name = "Hourglass Diamond Lever",
+                    position = Vector3.new(1484.6099853515625, 8.449446678161621, - 861.010009765625)
+                },
+                ["11"] = {
+                    name = "Kohana",
+                    position = Vector3.new(- 661.6799926757812, 3.045807123184204, 714.1400146484375)
+                },
+                ["12"] = {
+                    name = "Lost lsle",
+                    position = Vector3.new(- 3734.669921875, 5.341830253601074, - 1082.6300048828125)
+                },
+                ["13"] = {
+                    name = "Scared Temple",
+                    position = Vector3.new(1451.4100341796875, - 22.125001907348633, - 635.6500244140625)
+                },
+                ["14"] = {
+                    name = "Second Enchant Altar",
+                    position = Vector3.new(1480.0799560546875, 127.6249771118164, - 589.8200073242188)
+                },
+                ["15"] = {
+                    name = "Sisyphus Statue",
+                    position = Vector3.new(- 3729.25, - 135.07391357421875, - 885.6400146484375)
+                },
+                ["16"] = {
+                    name = "Treasure Room",
+                    position = Vector3.new(- 3581.60009765625, - 279.07373046875, - 1589.6500244140625)
+                },
+                ["17"] = {
+                    name = "Tropical Island",
+                    position = Vector3.new(- 2152.610107421875, 2.3230247497558594, 3671.719970703125)
+                },
+                ["18"] = {
+                    name = "Underground Cellar",
+                    position = Vector3.new(2135.449951171875, - 91.19859313964844, - 699.3300170898438)
+                },
+                ["19"] = {
+                    name = "Volcano",
+                    position = Vector3.new(- 541.52001953125, 17.320816040039062, 121.66999816894531)
+                },
+                ["20"] = {
+                    name = "Crystal Falls",
+                    position = Vector3.new(- 1955.8056640625, - 440.0254821777344, 7387.6884765625)
+                },
+                ["21"] = {
+                    name = "Ancient Jungle Temple",
+                    position = Vector3.new(1476.2218017578125, - 21.850013732910156, - 631.9569091796875)
+                }
+            }
+            local v251, v252, v253 = pairs(vu250)
+            local v254 = {}
+            while true do
+                local v255
+                v253, v255 = v251(v252, v253)
+                if v253 == nil then
+                    break
+                end
+                table.insert(v254, v255.name)
+            end
+            local function vu256()
+                return (vu12.Character or vu12.CharacterAdded:Wait()):WaitForChild("HumanoidRootPart", 3)
+            end
+            FishAreaandpositionSection:Dropdown({
+                Title = "Fishing Spots",
+                Content = "",
+                Values = v254,
+                Callback = function(p257)
+                    local v258, v259, v260 = pairs(vu250)
+                    while true do
+                        local v261
+                        v260, v261 = v258(v259, v260)
+                        if v260 == nil then
+                            break
+                        end
+                        if v261.name == p257 then
+                            local v262 = vu256()
+                            if v262 then
+                                v262.CFrame = CFrame.new(v261.position + Vector3.new(0, 5, 0))
+                            end
+                            break
+                        end
+                    end
+                end
+            })
+            local vu263 = nil
+            local vu264 = false
+            local vu265 = FishAreaandpositionSection:Paragraph({})
+            local v266 = vu265
+            vu265.SetTitle(v266, "Position :")
+            FishAreaandpositionSection:Button({
+                Title = "Select Position",
+                Desc = "",
+                Locked = false,
+                Callback = function()
+                    local v267 = game.Players.LocalPlayer
+                    if v267 then
+                        local v268 = (v267.Character or v267.CharacterAdded:Wait()):FindFirstChild("HumanoidRootPart")
+                        if v268 then
+                            local v269 = v268.Position
+                            vu263 = CFrame.new(v269) * v268.CFrame.Rotation
+                            vu265:SetTitle("Position : " .. tostring(math.floor(v269.X)) .. " X " .. tostring(math.floor(v269.Y)) .. " Y " .. tostring(math.floor(v269.Z)) .. " Z")
+                        else
+                            vu265:SetTitle("Error: Unable to find player position.")
+                        end
+                    end
+                end
+            })
+            FishAreaandpositionSection:Toggle({
+                Title = "Teleport to selected location",
+                Content = "",
+                Value = false,
+                Callback = function(p270)
+                    vu264 = p270
+                    if p270 then
+                        task.spawn(function()
+                            while vu264 do
+                                local v271 = game.Players.LocalPlayer
+                                if v271 and vu263 then
+                                    local v272 = v271.Character
+                                    if v272 and v272:FindFirstChild("HumanoidRootPart") then
+                                        v272.HumanoidRootPart.CFrame = vu263
+                                    end
+                                end
+                                task.wait()
+                            end
+                        end)
+                    end
+                end
+            })
+            FishAreaandpositionSection:Toggle({
+                Title = "Freeze Character",
+                Content = "",
+                Value = false,
+                Callback = function(p273)
+                    local v274 = game:GetService("Players").LocalPlayer
+                    if v274 and v274.Character and v274.Character:FindFirstChild("HumanoidRootPart") then
+                        v274.Character.HumanoidRootPart.Anchored = p273
+                    end
+                end
+            })
+            OtherstuffSection = v39:Section({
+                Title = "Other Stuff",
+                Icon = "menu",
+                Opened = false
+            })
+            OtherstuffSection:Button({
+                Title = "Infinite Oxygen",
+                Desc = "",
+                Locked = false,
+                Callback = function()
+                    local v275 = game:GetService("Lighting")
+                    local vu276 = vu10:WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_net@0.2.0"):WaitForChild("net"):FindFirstChild("URE/UpdateOxygen")
+                    if vu276 then
+                        local v277 = getrawmetatable(game)
+                        local vu278 = v277.__namecall
+                        setreadonly(v277, false)
+                        v277.__namecall = newcclosure(function(p279, ...)
+                            if p279 ~= vu276 or getnamecallmethod() ~= "FireServer" then
+                                return vu278(p279, ...)
+                            else
+                                return nil
+                            end
+                        end)
+                        setreadonly(v277, true)
+                    end
+                    local v280 = vu12:FindFirstChild("PlayerGui")
+                    local v281 = v280 and v280:FindFirstChild("Oxygen")
+                    if v281 then
+                        v281:Destroy()
+                    end
+                    local vu282 = v275:FindFirstChild("Blur") or (v275:FindFirstChild("blureffect") or v275:FindFirstChild("BlurEffect"))
+                    if vu282 and vu282:IsA("BlurEffect") then
+                        vu282.Size = 1
+                        vu282:GetPropertyChangedSignal("Size"):Connect(function()
+                            if vu282.Size ~= 1 then
+                                vu282.Size = 1
+                            end
+                        end)
+                    end
+                end
+            })
+            local vu283 = false
+            OtherstuffSection:Toggle({
+                Title = "Get Oxygen Tank",
+                Content = "",
+                Value = false,
+                Callback = function(p284)
+                    vu283 = p284
+                    if p284 then
+                        pcall(function()
+                            vu25:InvokeServer(105)
+                        end)
+                        WindUI:Notify({
+                            Title = "Oxygen Tank",
+                            Content = "Oxygen Tank enabled",
+                            Duration = 3,
+                            Icon = "fish"
+                        })
+                    else
+                        pcall(function()
+                            vu26:InvokeServer()
+                        end)
+                        WindUI:Notify({
+                            Title = "Oxygen Tank",
+                            Content = "Oxygen Tank disabled",
+                            Duration = 3,
+                            Icon = "x"
+                        })
+                    end
+                end
+            })
+            local vu285 = false
+            OtherstuffSection:Toggle({
+                Title = "Fishing Radar Bypass",
+                Content = "",
+                Value = false,
+                Callback = function(p286)
+                    vu285 = p286
+                    if p286 then
+                        pcall(function()
+                            vu27:InvokeServer(true)
+                        end)
+                        WindUI:Notify({
+                            Title = "Fishing Radar",
+                            Content = "Fishing Radar Bypass enabled.",
+                            Duration = 3,
+                            Icon = "radar"
+                        })
+                    else
+                        pcall(function()
+                            vu27:InvokeServer(false)
+                        end)
+                        WindUI:Notify({
+                            Title = "Fishing Radar",
+                            Content = "Fishing Radar Bypass disabled.",
+                            Duration = 3,
+                            Icon = "x"
+                        })
+                    end
+                end
+            })
+            v43:Section({
+                Title = "Teleport To Islands",
+                Icon = "map"
+            })
+            local vu287 = {
+                ["1"] = {
+                    name = "Ancient Jungle",
+                    position = Vector3.new(1492.4036865234375, 7.624999523162842, - 407.15411376953125)
+                },
+                ["2"] = {
+                    name = "Coral Reefs",
+                    position = Vector3.new(- 3095, 1, 2177)
+                },
+                ["3"] = {
+                    name = "Crystal Island",
+                    position = Vector3.new(907.228759765625, 30.212196350097656, 4990.74853515625)
+                },
+                [v11] = {
+                    name = "Crater Island",
+                    position = Vector3.new(968, 1, 4854)
+                },
+                ["5"] = {
+                    name = "Esoteric Depths",
+                    position = Vector3.new(3157, - 1303, 1439)
+                },
+                ["6"] = {
+                    name = "Fisherman Island",
+                    position = Vector3.new(71.55266571044922, 17.03352165222168, 2846.7607421875)
+                },
+                ["7"] = {
+                    name = "Isoteric Island",
+                    position = Vector3.new(1987, 4, 1400)
+                },
+                ["8"] = {
+                    name = "Kohana",
+                    position = Vector3.new(- 658, 3, 719)
+                },
+                ["9"] = {
+                    name = "Kohana Volcano",
+                    position = Vector3.new(- 519, 24, 189)
+                },
+                ["10"] = {
+                    name = "Lost Shore",
+                    position = Vector3.new(- 3663, 38, - 989)
+                },
+                ["11"] = {
+                    name = "Lost lsle",
+                    position = Vector3.new(- 3599.309814453125, - 156.58204650878906, - 1362.093505859375)
+                },
+                ["12"] = {
+                    name = "Sishypus Statue",
+                    position = Vector3.new(- 3792, - 135, - 986)
+                },
+                ["13"] = {
+                    name = "Stingray Shores",
+                    position = Vector3.new(- 32, 4, 2773)
+                },
+                ["14"] = {
+                    name = "Treasure Hall",
+                    position = Vector3.new(- 3600, - 267, - 1558)
+                },
+                ["15"] = {
+                    name = "Tropical Grove",
+                    position = Vector3.new(- 2038, 3, 3650)
+                },
+                ["16"] = {
+                    name = "Weather Machine",
+                    position = Vector3.new(- 1496.244140625, 6.499999523162842, 1890.2467041015625)
+                },
+                ["17"] = {
+                    name = "Winter Fest",
+                    position = Vector3.new(1611, 4, 3280)
+                },
+                ["18"] = {
+                    name = "Winter",
+                    position = Vector3.new(2036.1500244140625, 6.549987316131592, 3381.8798828125)
+                },
+                ["19"] = {
+                    name = "Weather Machine",
+                    position = Vector3.new(- 1498.897705078125, 6.499999523162842, 1893.33984375)
+                }
+            }
+            local v288, v289, v290 = pairs(vu287)
+            local vu291 = vu264
+            local v292 = {}
+            while true do
+                local v293
+                v290, v293 = v288(v289, v290)
+                if v290 == nil then
+                    break
+                end
+                table.insert(v292, v293.name)
+            end
+            v43:Dropdown({
+                Title = "Island Teleport",
+                Content = "",
+                Values = v292,
+                Callback = function(p294)
+                    local v295, v296, v297 = pairs(vu287)
+                    while true do
+                        local v298
+                        v297, v298 = v295(v296, v297)
+                        if v297 == nil then
+                            break
+                        end
+                        if v298.name == p294 then
+                            local v299 = vu256()
+                            if v299 then
+                                v299.CFrame = CFrame.new(v298.position + Vector3.new(0, 5, 0))
+                            end
+                            break
+                        end
+                    end
+                end
+            })
+            v43:Section({
+                Title = "Teleport To NPC",
+                Icon = "user"
+            })
+            local vu300 = vu10:FindFirstChild("NPC")
+            local v301 = {}
+            if vu300 then
+                local v302, v303, v304 = pairs(vu300:GetChildren())
+                while true do
+                    local v305, v306 = v302(v303, v304)
+                    if v305 == nil then
+                        break
+                    end
+                    v304 = v305
+                    if v306:IsA("Model") and (v306:FindFirstChild("HumanoidRootPart") or v306.PrimaryPart) then
+                        table.insert(v301, v306.Name)
+                    end
+                end
+            end
+            v43:Dropdown({
+                Title = "NPC Teleport",
+                Content = "Teleport to specific NPCs",
+                Values = v301,
+                Callback = function(p307)
+                    local v308 = vu300
+                    if v308 then
+                        v308 = vu300:FindFirstChild(p307)
+                    end
+                    if v308 and v308:IsA("Model") then
+                        local v309 = v308:FindFirstChild("HumanoidRootPart") or v308.PrimaryPart
+                        local v310 = v309 and vu256()
+                        if v310 then
+                            v310.CFrame = v309.CFrame + Vector3.new(0, 3, 0)
+                        end
+                    end
+                end
+            })
+            v43:Section({
+                Title = "Teleport To Players",
+                Icon = "user-plus"
+            })
+            local vu318 = v43:Dropdown({
+                Title = "Select Player",
+                Values = (function()
+                    local v311 = vu9
+                    local v312, v313, v314 = ipairs(v311:GetPlayers())
+                    local v315 = {}
+                    while true do
+                        local v316
+                        v314, v316 = v312(v313, v314)
+                        if v314 == nil then
+                            break
+                        end
+                        table.insert(v315, v316.Name)
+                    end
+                    return v315
+                end)(),
+                Value = "None",
+                Multi = false,
+                AllowNone = false,
+                Callback = function(p317)
+                    PlayerDropdown.Value = p317
+                end
+            })
+            v43:Button({
+                Title = "Teleport",
+                Desc = "",
+                Locked = false,
+                Callback = function()
+                    local v319 = vu318.Value
+                    if v319 and v319 ~= "None" then
+                        local v320 = vu9:FindFirstChild(v319)
+                        if v320 and v320.Character and v320.Character:FindFirstChild("HumanoidRootPart") then
+                            local v321 = vu9.LocalPlayer
+                            local v322 = v321.Character
+                            if v322 and v322:FindFirstChild("HumanoidRootPart") then
+                                v321.Character:SetPrimaryPartCFrame(v320.Character.HumanoidRootPart.CFrame)
+                            end
+                        end
+                    end
+                end
+            })
+            v43:Section({
+                Title = "Teleport To Event Islands",
+                Icon = "map"
+            })
+            local vu323 = {
+                ["1"] = {
+                    name = "Shark Hunt #1",
+                    position = Vector3.new(1.7284963130950928, 7.2822465896606445, 2096.131103515625)
+                },
+                ["2"] = {
+                    name = "Shark Hunt #2",
+                    position = Vector3.new(1369.995361328125, 8.94327163696289, 930.5052490234375)
+                },
+                ["3"] = {
+                    name = "Shark Hunt #3",
+                    position = Vector3.new(- 1585.477783203125, 7.944267749786377, 1243.02001953125)
+                },
+                [v11] = {
+                    name = "Shark Hunt #4",
+                    position = Vector3.new(- 1896.72998046875, 5.476602554321289, 2634.589599609375)
+                },
+                ["5"] = {
+                    name = "Ghost Shark Hunt #1",
+                    position = Vector3.new(489.6415100097656, 4.7919745445251465, 25.850065231323242)
+                },
+                ["6"] = {
+                    name = "Ghost Shark Hunt #2",
+                    position = Vector3.new(- 1358.2060546875, 2.6521599292755127, 4100.572265625)
+                },
+                ["7"] = {
+                    name = "Ghost Shark Hunt #3",
+                    position = Vector3.new(627.8928833007812, 1.4361348152160645, 3798.355712890625)
+                },
+                ["8"] = {
+                    name = "Sparkling Cove #1",
+                    position = Vector3.new(246.8621368408203, 3.262054204940796, 2982.777587890625)
+                },
+                ["9"] = {
+                    name = "Worm Hunt #1",
+                    position = Vector3.new(2190.910888671875, 4.550073146820068, 97.91934204101562)
+                },
+                ["10"] = {
+                    name = "Worm Hunt #2",
+                    position = Vector3.new(- 2450.657958984375, 4.56441593170166, 139.90257263183594)
+                },
+                ["11"] = {
+                    name = "Worm Hunt #3",
+                    position = Vector3.new(- 267.4656677246094, 7.339650630950928, 5188.5859375)
+                },
+                ["12"] = {
+                    name = "Admin - Shocked #1",
+                    position = Vector3.new(383.009521484375, 3.6760647296905518, 2452.04931640625)
+                },
+                ["13"] = {
+                    name = "Admin - Bloodmoon #1",
+                    position = Vector3.new(2016.115966796875, 435.2853698730469, 3063.176025390625)
+                },
+                ["14"] = {
+                    name = "Admin - Meteor Rain #1",
+                    position = Vector3.new(- 326.97509765625, 5.53354024887085, 2422.15283203125)
+                },
+                ["15"] = {
+                    name = "Admin - Blackhole #1",
+                    position = Vector3.new(882.9946899414062, 2.4188222885131836, 2541.996826171875)
+                },
+                ["16"] = {
+                    name = "Megladon Hunt #1",
+                    position = Vector3.new(- 1076.2950439453125, 4.3409104347229, 1676.2772216796875)
+                },
+                ["17"] = {
+                    name = "Megladon Hunt #2",
+                    position = Vector3.new(- 1191.7515869140625, 4.076831817626953, 3596.36865234375)
+                },
+                ["18"] = {
+                    name = "Megladon Hunt #3",
+                    position = Vector3.new(412.6996765136719, 0.26063796877861023, 4134.45361328125)
+                }
+            }
+            local v324, v325, v326 = pairs(vu323)
+            local v327 = {}
+            while true do
+                local v328
+                v326, v328 = v324(v325, v326)
+                if v326 == nil then
+                    break
+                end
+                table.insert(v327, v328.name)
+            end
+            v43:Dropdown({
+                Title = "Select Event",
+                Values = v327,
+                Default = v327[1],
+                Callback = function(p329)
+                    local v330, v331, v332 = pairs(vu323)
+                    while true do
+                        local v333
+                        v332, v333 = v330(v331, v332)
+                        if v332 == nil then
+                            break
+                        end
+                        if v333.name == p329 then
+                            local v334 = vu256()
+                            if v334 then
+                                v334.CFrame = CFrame.new(v333.position + Vector3.new(0, 5, 0))
+                            end
+                            break
+                        end
+                    end
+                end
+            })
+            v43:Section({
+                Title = "Crystal Falls Timer",
+                Icon = "star"
+            })
+            local vu335 = v43:Paragraph({
+                Title = "Event Timer: Loading...",
+                Desc = "",
+                Locked = false
+            })
+            task.spawn(function()
+                while true do
+                    local v336, v337 = pcall(function()
+                        return workspace:WaitForChild("!!! MENU RINGS"):WaitForChild("Event Tracker"):WaitForChild("Main"):WaitForChild("Gui"):WaitForChild("Content"):WaitForChild("Items"):WaitForChild("Countdown"):WaitForChild("Label").Text
+                    end)
+                    if v336 and v337 then
+                        vu335:SetTitle("Event Timer: " .. v337)
+                    else
+                        vu335:SetTitle("Event Timer: Unavailable")
+                    end
+                    task.wait(0.25)
+                end
+            end)
+            v42:Section({
+                Title = "Buy Rods",
+                Icon = "anchor"
+            })
+            local vu338 = {
+                {
+                    name = "Luck Rod ($350)",
+                    id = 79
+                },
+                {
+                    name = "Carbon Rod ($900)",
+                    id = 76
+                },
+                {
+                    name = "Grass Rod ($1.5k)",
+                    id = 85
+                },
+                {
+                    name = "Demascus Rod ($3k)",
+                    id = 77
+                },
+                {
+                    name = "Ice Rod ($5k)",
+                    id = 78
+                },
+                {
+                    name = "Luck Rod ($15k)",
+                    id = 4
+                },
+                {
+                    name = "Midnight Rod ($50k)",
+                    id = 80
+                },
+                {
+                    name = "Steampunk Rod ($215k)",
+                    id = 6
+                },
+                {
+                    name = "Chrome Rod ($437k)",
+                    id = 7
+                },
+                {
+                    name = "Fluorescent Rod ($715k)",
+                    id = 255
+                },
+                {
+                    name = "Astral Rod ($1M)",
+                    id = 5
+                },
+                {
+                    name = "Ares Rod ($3M)",
+                    id = 126
+                },
+                {
+                    name = "Angler Rod ($8M)",
+                    id = 168
+                }
+            }
+            local v339, v340, v341 = ipairs(vu338)
+            local v342 = {}
+            while true do
+                local v343
+                v341, v343 = v339(v340, v341)
+                if v341 == nil then
+                    break
+                end
+                table.insert(v342, v343.name)
+            end
+            local vu344 = nil
+            v42:Dropdown({
+                Title = "Select Fishing Rod",
+                Content = "",
+                Values = v342,
+                Callback = function(p345)
+                    local v346, v347, v348 = ipairs(vu338)
+                    while true do
+                        local v349
+                        v348, v349 = v346(v347, v348)
+                        if v348 == nil then
+                            break
+                        end
+                        if v349.name == p345 then
+                            vu344 = v349.id
+                            break
+                        end
+                    end
+                end
+            })
+            v42:Button({
+                Title = "Buy Selected Rod",
+                Desc = "",
+                Locked = false,
+                Callback = function()
+                    if vu344 then
+                        pcall(function()
+                            vu28:InvokeServer(vu344)
+                        end)
+                    end
+                end
+            })
+            v42:Section({
+                Title = "Buy Baits",
+                Icon = "bug"
+            })
+            local vu350 = {
+                {
+                    name = "Topwater Bait ($100)",
+                    id = 10
+                },
+                {
+                    name = "Luck Bait ($1k)",
+                    id = 2
+                },
+                {
+                    name = "Midnight Bait ($3k)",
+                    id = 3
+                },
+                {
+                    name = "Nature Bait ($83.5k)",
+                    id = 17
+                },
+                {
+                    name = "Chroma Bait ($290k)",
+                    id = 6
+                },
+                {
+                    name = "Dark Matter Bait ($630k)",
+                    id = 8
+                },
+                {
+                    name = "Corrupt Bait ($1.15M)",
+                    id = 15
+                },
+                {
+                    name = "Aether Bait ($3.70M)",
+                    id = 16
+                },
+                {
+                    name = "Floral Bait ($3.70M)",
+                    id = 20
+                }
+            }
+            local v351, v352, v353 = ipairs(vu350)
+            local v354 = {}
+            while true do
+                local v355
+                v353, v355 = v351(v352, v353)
+                if v353 == nil then
+                    break
+                end
+                table.insert(v354, v355.name)
+            end
+            local vu356 = nil
+            v42:Dropdown({
+                Title = "Select Bait",
+                Content = "",
+                Values = v354,
+                Callback = function(p357)
+                    local v358, v359, v360 = ipairs(vu350)
+                    while true do
+                        local v361
+                        v360, v361 = v358(v359, v360)
+                        if v360 == nil then
+                            break
+                        end
+                        if v361.name == p357 then
+                            vu356 = v361.id
+                            break
+                        end
+                    end
+                end
+            })
+            v42:Button({
+                Title = "Buy Selected Bait",
+                Desc = "",
+                Locked = false,
+                Callback = function()
+                    if vu356 then
+                        pcall(function()
+                            vu29:InvokeServer(vu356)
+                        end)
+                    end
+                end
+            })
+            v42:Section({
+                Title = "Buy Weather",
+                Icon = "cloud"
+            })
+            local vu362 = {
+                ["Wind (10k Coins)"] = "Wind",
+                ["Snow (15k Coins)"] = "Snow",
+                ["Cloudy (20k Coins)"] = "Cloudy",
+                ["Storm (35k Coins)"] = "Storm",
+                ["Radiant (50k Coins)"] = "Radiant",
+                ["Shark Hunt (300k Coins)"] = "Shark Hunt"
+            }
+            local vu363 = {}
+            v42:Dropdown({
+                Title = "Select Weather(s)",
+                Values = {
+                    "Wind (10k Coins)",
+                    "Snow (15k Coins)",
+                    "Cloudy (20k Coins)",
+                    "Storm (35k Coins)",
+                    "Radiant (50k Coins)",
+                    "Shark Hunt (300k Coins)"
+                },
+                Multi = true,
+                Value = {},
+                Callback = function(p364)
+                    vu363 = p364
+                end
+            })
+            local vu365 = false
+            local vu366 = 0.5
+            local function vu372()
+                task.spawn(function()
+                    while vu365 do
+                        local v367, v368, v369 = ipairs(vu363)
+                        while true do
+                            local v370
+                            v369, v370 = v367(v368, v369)
+                            if v369 == nil then
+                                break
+                            end
+                            local vu371 = vu362[v370]
+                            if vu371 then
+                                pcall(function()
+                                    vu30:InvokeServer(vu371)
+                                end)
+                                task.wait(vu366)
+                            end
+                        end
+                        task.wait(0.1)
+                    end
+                end)
+            end
+            v42:Toggle({
+                Title = "Auto Buy Weather",
+                Desc = "",
+                Value = false,
+                Callback = function(p373)
+                    vu365 = p373
+                    if p373 then
+                        vu372()
+                    end
+                end
+            })
+            v42:Button({
+                Title = "Buy Selected Weather",
+                Desc = "",
+                Locked = false,
+                Callback = function()
+                    local v374, v375, v376 = ipairs(vu363)
+                    while true do
+                        local v377
+                        v376, v377 = v374(v375, v376)
+                        if v376 == nil then
+                            break
+                        end
+                        local vu378 = vu362[v377]
+                        if vu378 then
+                            pcall(function()
+                                vu30:InvokeServer(vu378)
+                            end)
+                        end
+                    end
+                end
+            })
+            v42:Section({
+                Title = "Buy Boats",
+                Icon = "ship"
+            })
+            local vu379 = {
+                {
+                    name = "Small Boat ($300)",
+                    id = 1
+                },
+                {
+                    name = "Kayak ($1.1k)",
+                    id = 2
+                },
+                {
+                    name = "Jetski ($7.5k)",
+                    id = 3
+                },
+                {
+                    name = "Highfield Boat ($25k)",
+                    id = 4
+                },
+                {
+                    name = "Speed Boat ($70k)",
+                    id = 5
+                },
+                {
+                    name = "Fishing Boat ($180k)",
+                    id = 6
+                },
+                {
+                    name = "Mini Yacht ($1.2M)",
+                    id = 14
+                }
+            }
+            local v380, v381, v382 = ipairs(vu379)
+            local vu383 = vu365
+            local v384 = {}
+            while true do
+                local v385
+                v382, v385 = v380(v381, v382)
+                if v382 == nil then
+                    break
+                end
+                table.insert(v384, v385.name)
+            end
+            local vu386 = nil
+            v42:Dropdown({
+                Title = "Select Boat",
+                Content = "",
+                Values = v384,
+                Callback = function(p387)
+                    local v388, v389, v390 = ipairs(vu379)
+                    while true do
+                        local v391
+                        v390, v391 = v388(v389, v390)
+                        if v390 == nil then
+                            break
+                        end
+                        if v391.name == p387 then
+                            vu386 = v391.id
+                            break
+                        end
+                    end
+                end
+            })
+            v42:Button({
+                Title = "Buy Selected Boat",
+                Desc = "",
+                Locked = false,
+                Callback = function()
+                    if vu386 then
+                        pcall(function()
+                            vu31:InvokeServer(vu386)
+                        end)
+                    end
+                end
+            })
+            v44:Section({
+                Title = "Speed Boats",
+                Icon = "ship"
+            })
+            local vu392 = 100
+            local vu393 = 100
+            local function vu397(pu394, pu395, pu396)
+                spawn(function()
+                    while pu395.Occupant and pu395.Occupant.Parent == game.Players.LocalPlayer.Character do
+                        if pu395.Throttle ~= 0 then
+                            pu394:SetPrimaryPartCFrame(pu394.PrimaryPart.CFrame + pu394.PrimaryPart.CFrame.LookVector * pu396 * 0.03)
+                        end
+                        pu395.TurnSpeed = math.clamp(pu396 / 5, 10, 200)
+                        wait(0.03)
+                    end
+                end)
+            end
+            v44:Slider({
+                Title = "Boat Speed",
+                Step = 1,
+                Value = {
+                    Min = 100,
+                    Max = 1000,
+                    Default = vu393
+                },
+                Callback = function(p398)
+                    vu392 = p398
+                end
+            })
+            v44:Button({
+                Title = "Set Boat Speed",
+                Desc = "",
+                Locked = false,
+                Callback = function()
+                    local v399 = vu12.Character or vu12.CharacterAdded:Wait()
+                    local v400, v401, v402 = pairs(workspace.Vehicles:GetChildren())
+                    local v403 = false
+                    while true do
+                        local v404
+                        v402, v404 = v400(v401, v402)
+                        if v402 == nil then
+                            break
+                        end
+                        local v405 = v404:FindFirstChildWhichIsA("VehicleSeat")
+                        if v405 and (v405.Occupant and v405.Occupant.Parent == v399) then
+                            vu397(v404, v405, vu392)
+                            WindUI:Notify({
+                                Title = "Boat Speed Applied",
+                                Content = "Your boat speed is now set to " .. vu392,
+                                Duration = 3,
+                                Icon = "rbxassetid://7733710700"
+                            })
+                            v403 = true
+                            break
+                        end
+                    end
+                    if not v403 then
+                        WindUI:Notify({
+                            Title = "Boat Not Found",
+                            Content = "You are not sitting in a boat!",
+                            Duration = 3,
+                            Icon = "rbxassetid://7733658271"
+                        })
+                    end
+                end
+            })
+            v44:Button({
+                Title = "Reset Boat Speed",
+                Desc = "",
+                Locked = false,
+                Callback = function()
+                    local v406 = vu12.Character or vu12.CharacterAdded:Wait()
+                    local v407, v408, v409 = pairs(workspace.Vehicles:GetChildren())
+                    local v410 = false
+                    while true do
+                        local v411
+                        v409, v411 = v407(v408, v409)
+                        if v409 == nil then
+                            break
+                        end
+                        local v412 = v411:FindFirstChildWhichIsA("VehicleSeat")
+                        if v412 and (v412.Occupant and v412.Occupant.Parent == v406) then
+                            v410 = true
+                            vu392 = vu393
+                            v412.TurnSpeed = 50
+                            WindUI:Notify({
+                                Title = "Boat Speed Reset",
+                                Content = "Your boat speed has been reset to " .. vu393,
+                                Duration = 3,
+                                Icon = "rbxassetid://7733710700"
+                            })
+                            break
+                        end
+                    end
+                    if not v410 then
+                        WindUI:Notify({
+                            Title = "Boat Not Found",
+                            Content = "You are not sitting in a boat!",
+                            Duration = 3,
+                            Icon = "rbxassetid://7733658271"
+                        })
+                    end
+                end
+            })
+            v44:Section({
+                Title = "Spawn Boats",
+                Icon = "play"
+            })
+            local vu413 = {
+                {
+                    name = "Small Boat",
+                    id = 1
+                },
+                {
+                    name = "Kayak",
+                    id = 2
+                },
+                {
+                    name = "Jetski",
+                    id = 3
+                },
+                {
+                    name = "Highfield Boat",
+                    id = 4
+                },
+                {
+                    name = "Speed Boat",
+                    id = 5
+                },
+                {
+                    name = "Fishing Boat",
+                    id = 6
+                },
+                {
+                    name = "Mini Yacht",
+                    id = 14
+                }
+            }
+            local v414, v415, v416 = ipairs(vu413)
+            local v417 = {}
+            while true do
+                local v418
+                v416, v418 = v414(v415, v416)
+                if v416 == nil then
+                    break
+                end
+                table.insert(v417, v418.name)
+            end
+            local vu419 = nil
+            v44:Dropdown({
+                Title = "Select Boat to Spawn",
+                Content = "",
+                Values = v417,
+                Callback = function(p420)
+                    local v421, v422, v423 = ipairs(vu413)
+                    while true do
+                        local v424
+                        v423, v424 = v421(v422, v423)
+                        if v423 == nil then
+                            break
+                        end
+                        if v424.name == p420 then
+                            vu419 = v424.id
+                            break
+                        end
+                    end
+                end
+            })
+            v44:Button({
+                Title = "Spawn Selected Boat",
+                Desc = "",
+                Locked = false,
+                Callback = function()
+                    if vu419 then
+                        pcall(function()
+                            vu32:InvokeServer(vu419)
+                        end)
+                    end
+                end
+            })
+            v44:Button({
+                Title = "Despawn Boat",
+                Desc = "",
+                Locked = false,
+                Callback = function()
+                    pcall(function()
+                        vu33:InvokeServer()
+                    end)
+                end
+            })
+            local vu425 = game:GetService("RunService")
+            local vu426 = game:GetService("Lighting")
+            local vu427 = nil
+            local vu428 = nil
+            v45:Toggle({
+                Title = "Only Day",
+                Desc = "",
+                Callback = function(p429)
+                    if p429 then
+                        if vu428 then
+                            vu428:Disconnect()
+                            vu428 = nil
+                        end
+                        vu427 = vu425.Heartbeat:Connect(function()
+                            vu426.TimeOfDay = "12:00:00"
+                        end)
+                    elseif vu427 then
+                        vu427:Disconnect()
+                        vu427 = nil
+                    end
+                end
+            })
+            v45:Toggle({
+                Title = "Only Night",
+                Desc = "",
+                Callback = function(p430)
+                    if p430 then
+                        if vu427 then
+                            vu427:Disconnect()
+                            vu427 = nil
+                        end
+                        vu428 = vu425.Heartbeat:Connect(function()
+                            vu426.TimeOfDay = "22:00:00"
+                        end)
+                    elseif vu428 then
+                        vu428:Disconnect()
+                        vu428 = nil
+                    end
+                end
+            })
+            v45:Toggle({
+                Title = "Remove Fog",
+                Desc = "",
+                Callback = function(p431)
+                    if p431 then
+                        vu426.FogEnd = 1000000
+                        vu426.FogStart = 1000000
+                        local v432 = vu426:FindFirstChildOfClass("Atmosphere")
+                        if v432 then
+                            v432:Destroy()
+                        end
+                    else
+                        vu426.FogEnd = 1000
+                        vu426.FogStart = 0
+                    end
+                end
+            })
+            local vu433 = false
+            local vu434 = nil
+            local vu435 = nil
+            local vu436 = nil
+            local vu437 = nil
+            v46:Toggle({
+                Title = "Quick Interact",
+                Content = "",
+                Value = false,
+                Callback = function(p438)
+                    vu433 = p438
+                    if p438 then
+                        vu434 = vu14.PromptButtonHoldBegan:Connect(function(p439)
+                            if vu433 then
+                                p439.HoldDuration = 0
+                            end
+                        end)
+                    elseif vu434 then
+                        vu434:Disconnect()
+                        vu434 = nil
+                    end
+                end
+            })
+            v46:Toggle({
+                Title = "Freeze",
+                Content = "",
+                Value = false,
+                Callback = function(p440)
+                    vu435 = vu12.Character or vu12.CharacterAdded:Wait()
+                    vu437 = vu435:WaitForChild("HumanoidRootPart")
+                    if vu437 then
+                        vu437.Anchored = p440
+                    end
+                end
+            })
+            v46:Button({
+                Title = "Anti AFK",
+                Content = "",
+                Callback = function()
+                    pcall(function()
+                        loadstring(game:HttpGet("https://raw.githubusercontent.com/hassanxzayn-lua/Anti-afk/main/antiafkbyhassanxzyn"))()
+                    end)
+                end
+            })
+            if not _G.infinJumpStarted then
+                local v441 = _G
+                _G.infinjump = false
+                v441.infinJumpStarted = true
+                vu12:GetMouse().KeyDown:Connect(function(p442)
+                    if _G.infinjump and p442:byte() == 32 then
+                        vu435 = vu12.Character or vu12.CharacterAdded:Wait()
+                        vu436 = vu435:WaitForChild("Humanoid")
+                        if vu436 then
+                            vu436:ChangeState(Enum.HumanoidStateType.Jumping)
+                            task.wait()
+                            vu436:ChangeState(Enum.HumanoidStateType.Seated)
+                        end
+                    end
+                end)
+            end
+            v46:Toggle({
+                Title = "Infinite Jumps",
+                Content = "",
+                Value = false,
+                Callback = function(p443)
+                    _G.infinjump = p443
+                end
+            })
+            v46:Slider({
+                Title = "WalkSpeed",
+                Step = 1,
+                Value = {
+                    Min = 16,
+                    Max = 500,
+                    Default = 16
+                },
+                Callback = function(p444)
+                    vu435 = vu12.Character or vu12.CharacterAdded:Wait()
+                    vu436 = vu435:WaitForChild("Humanoid")
+                    if vu436 then
+                        vu436.WalkSpeed = p444
+                    end
+                end
+            })
+            v46:Slider({
+                Title = "Jump Power",
+                Step = 1,
+                Value = {
+                    Min = 50,
+                    Max = 500,
+                    Default = 50
+                },
+                Callback = function(p445)
+                    vu435 = vu12.Character or vu12.CharacterAdded:Wait()
+                    vu436 = vu435:WaitForChild("Humanoid")
+                    if vu436 then
+                        vu436.JumpPower = p445
+                    end
+                end
+            })
+            v46:Slider({
+                Title = "HipHeight",
+                Step = 1,
+                Value = {
+                    Min = 0,
+                    Max = 500,
+                    Default = 0
+                },
+                Callback = function(p446)
+                    vu435 = vu12.Character or vu12.CharacterAdded:Wait()
+                    vu436 = vu435:WaitForChild("Humanoid")
+                    if vu436 then
+                        vu436.HipHeight = p446
+                    end
+                end
+            })
+            v40:Paragraph({
+                Title = "Instant Fish Setting",
+                Desc = "Required Rods: Ghostfin Rod,Elemental Rod\n----------\nSetting For Ghostfin Rod:\nCatch Delay: 1-2s\nNext Cast Delay: 0.05s\nReset Delay: 1-2s\n----------\nSetting For Elemental Rod:\nCatch Delay: 1-1.5s\nNext Cast Delay: 0.05s\nReset Delay: 3-5s",
+                Locked = false,
+                BackgroundColor = Color3.fromRGB(0, 0, 0),
+                TextTransparency = 0
+            })
+            local vu447 = false
+            local vu448 = nil
+            local vu449 = 70
+            local vu450 = 2
+            local vu451 = 0
+            local vu452 = 0
+            v40:Slider({
+                Title = "Fishing Speed",
+                Desc = "",
+                Step = 1,
+                Value = {
+                    Min = 20,
+                    Max = 120,
+                    Default = 70
+                },
+                Callback = function(p453)
+                    vu449 = p453
+                end
+            })
+            v40:Slider({
+                Title = "Next Cast Delay",
+                Desc = "",
+                Step = 0.1,
+                Value = {
+                    Min = 0,
+                    Max = 10,
+                    Default = 2
+                },
+                Callback = function(p454)
+                    vu450 = p454
+                end
+            })
+            v40:Slider({
+                Title = "Catch Delay",
+                Desc = "",
+                Step = 0.1,
+                Value = {
+                    Min = 0,
+                    Max = 5,
+                    Default = 0
+                },
+                Callback = function(p455)
+                    vu451 = p455
+                end
+            })
+            v40:Slider({
+                Title = "Reset Delay",
+                Desc = "",
+                Step = 0.1,
+                Value = {
+                    Min = 0,
+                    Max = 5,
+                    Default = 0
+                },
+                Callback = function(p456)
+                    vu452 = p456
+                end
+            })
+            v40:Toggle({
+                Title = "Enable Instant Fish",
+                Content = "",
+                Value = false,
+                Callback = function(p457)
+                    vu447 = p457
+                    if p457 then
+                        if vu448 then
+                            task.cancel(vu448)
+                            vu448 = nil
+                        end
+                        vu448 = task.spawn(function()
+                            while vu447 do
+                                pcall(function()
+                                    local v458 = {
+                                        [4] = workspace:GetServerTimeNow()
+                                    }
+                                    vu20:InvokeServer(unpack(v458, 1, table.maxn(v458)))
+                                    task.wait(vu449 / 200)
+                                    vu22:InvokeServer(- 1.233184814453125 + math.random(- 500, 500) / 10000000, math.random(10, 99) / 100, (workspace:GetServerTimeNow()))
+                                    task.wait(vu449 / 20)
+                                    task.wait(vu451)
+                                    local v459 = tick()
+                                    while vu447 and tick() - v459 < 2.5 do
+                                        vu21:FireServer()
+                                        task.wait(0.08)
+                                    end
+                                    task.wait(vu452)
+                                    task.wait(vu450)
+                                end)
+                            end
+                        end)
+                        WindUI:Notify({
+                            Title = "Instant Fish",
+                            Content = "Instant Fish enabled.",
+                            Duration = 3,
+                            Icon = "fish"
+                        })
+                    else
+                        vu447 = false
+                        if vu448 then
+                            task.cancel(vu448)
+                            vu448 = nil
+                        end
+                        WindUI:Notify({
+                            Title = "Instant Fish",
+                            Content = "Instant Fish disabled.",
+                            Duration = 3,
+                            Icon = "x"
+                        })
+                    end
+                end
+            })
+local v460 = vu10:WaitForChild("Packages"):WaitForChild("_Index")
+local v461, v462, v463 = ipairs(v460:GetChildren())
+local vu464 = vu448
+local vu465 = vu447
+local v466 = nil
+while true do
+    local v467
+    v463, v467 = v461(v462, v463)
+    if v463 == nil then
+        break
+    end
+    if v467.Name:find("ytrev_replion") then
+        v466 = v467
+        break
+    end
+end
+
+if not v466 then
+    return 
+end
+
+local v468 = v466:WaitForChild("replion")
+            local vu469 = require(v468)
+            local v470 = vu10:WaitForChild("Items")
+            local v471 = require(v470)
+            local v472, v473, v474 = pairs(v471)
+            local vu475 = {}
+            while true do
+                local v476, v477 = v472(v473, v474)
+                if v476 == nil then
+                    break
+                end
+                v474 = v476
+                if type(v477) == "table" and (v477.Data and v477.Data.Id) then
+                    vu475[v477.Data.Id] = v476
+                end
+            end
+            local vu478 = nil
+            local vu479 = {}
+            local vu480 = {}
+            local function vu490()
+                local vu481 = {}
+                local vu482 = {}
+                vu480 = {}
+                pcall(function()
+                    local v483 = vu469.Client:WaitReplion("Data"):Get({
+                        "Inventory",
+                        "Items"
+                    })
+                    if type(v483) == "table" then
+                        local v484, v485, v486 = ipairs(v483)
+                        while true do
+                            local v487
+                            v486, v487 = v484(v485, v486)
+                            if v486 == nil then
+                                break
+                            end
+                            local v488 = vu475[v487.Id]
+                            if v488 then
+                                vu481[v488] = (vu481[v488] or 0) + 1
+                                local v489 = v488 .. " #" .. vu481[v488]
+                                table.insert(vu482, v489)
+                                vu480[v489] = {
+                                    UUID = v487.UUID or v487.Id,
+                                    Id = v487.Id,
+                                    Name = v488,
+                                    FullData = v487
+                                }
+                            end
+                        end
+                    end
+                end)
+                table.sort(vu482)
+                return (# vu482 <= 0 or not vu482) and {
+                    "No items in inventory"
+                } or vu482
+            end
+            local function vu497()
+                local v491 = vu9
+                local v492, v493, v494 = ipairs(v491:GetPlayers())
+                local v495 = {}
+                while true do
+                    local v496
+                    v494, v496 = v492(v493, v494)
+                    if v494 == nil then
+                        break
+                    end
+                    if v496 ~= vu12 then
+                        table.insert(v495, v496.Name)
+                    end
+                end
+                table.sort(v495)
+                return (# v495 <= 0 or not v495) and {
+                    "No other players online"
+                } or v495
+            end
+            local function vu504(p498)
+                local v499 = vu9
+                local v500, v501, v502 = ipairs(v499:GetPlayers())
+                while true do
+                    local v503
+                    v502, v503 = v500(v501, v502)
+                    if v502 == nil then
+                        break
+                    end
+                    if v503.Name == p498 then
+                        return v503
+                    end
+                end
+                return nil
+            end
+            local function vu512(p505, p506)
+                local v507 = vu12.Character
+                if v507 then
+                    local v508 = v507:FindFirstChild("HumanoidRootPart")
+                    if v508 then
+                        local v509 = p505.Character
+                        if v509 then
+                            local v510 = v509:FindFirstChild("HumanoidRootPart")
+                            if v510 then
+                                local v511 = v508.CFrame
+                                v508.CFrame = v510.CFrame * CFrame.new(0, 0, 3)
+                                task.wait(0.5)
+                                if p506 then
+                                    p506()
+                                end
+                                task.wait(0.5)
+                                if v508 and v508.Parent then
+                                    v508.CFrame = v511
+                                end
+                            end
+                        else
+                            return
+                        end
+                    else
+                        return
+                    end
+                else
+                    return
+                end
+            end
+            local vu514 = v41:Dropdown({
+                Title = "Select Player",
+                Desc = "",
+                Values = vu497(),
+                Value = nil,
+                Multi = false,
+                AllowNone = true,
+                Callback = function(p513)
+                    vu478 = p513
+                end
+            })
+            local vu516 = v41:Dropdown({
+                Title = "Select Fish",
+                Desc = "",
+                Values = vu490(),
+                Value = {},
+                Multi = true,
+                AllowNone = true,
+                Callback = function(p515)
+                    vu479 = p515
+                end
+            })
+            v41:Button({
+                Title = "Refresh Players",
+                Desc = "",
+                Locked = false,
+                Callback = function()
+                    local v517 = vu497()
+                    if vu514 and vu514.SetValues then
+                        vu514:SetValues(v517)
+                    elseif vu514 and vu514.Refresh then
+                        vu514:Refresh(v517)
+                    end
+                end
+            })
+            v41:Button({
+                Title = "Refresh Inventory",
+                Desc = "",
+                Locked = false,
+                Callback = function()
+                    local v518 = vu490()
+                    if vu516 and vu516.SetValues then
+                        vu516:SetValues(v518)
+                    elseif vu516 and vu516.Refresh then
+                        vu516:Refresh(v518)
+                    end
+                end
+            })
+            v41:Button({
+                Title = "Send Trade",
+                Desc = "",
+                Locked = false,
+                Callback = function()
+                    if vu478 and vu478 ~= "" then
+                        if vu479 and # vu479 ~= 0 then
+                            local vu519 = vu504(vu478)
+                            if vu519 then
+                                vu512(vu519, function()
+                                    local v520, v521, v522 = ipairs(vu479)
+                                    while true do
+                                        local v523
+                                        v522, v523 = v520(v521, v522)
+                                        if v522 == nil then
+                                            break
+                                        end
+                                        local vu524 = vu480[v523]
+                                        if vu524 then
+                                            pcall(function()
+                                                return vu34:InvokeServer(vu519.UserId, vu524.UUID)
+                                            end)
+                                            task.wait(0.05)
+                                        end
+                                    end
+                                end)
+                            end
+                        else
+                            return
+                        end
+                    else
+                        return
+                    end
+                end
+            })
+            vu9.PlayerAdded:Connect(function()
+                task.wait(0.5)
+                if vu514 and vu514.SetValues then
+                    vu514:SetValues(vu497())
+                end
+            end)
+            vu9.PlayerRemoving:Connect(function()
+                if vu514 and vu514.SetValues then
+                    vu514:SetValues(vu497())
+                end
+            end)
+            local vu525 = false
+            v41:Toggle({
+                Title = "Auto Accept Trade",
+                Callback = function(p526)
+                    vu525 = p526
+                    WindUI:Notify({
+                        Title = "Auto Accept",
+                        Content = p526 and "ON" or "OFF",
+                        Duration = 3
+                    })
+                end
+            })
+            v35.OnClientInvoke = newcclosure(function(_, _, _)
+                return vu525 and true or false
+            end)
+            task.spawn(function()
+                wait(1)
+                print("NEOX HUB - Fish It v1.4.1 Loaded Successfully!")
+                print("Executor: " .. vu47)
+                print("Join our Discord: https://discord.com/invite/99UuEwM9sX")
+            end)
+            if not _G.FishingStats then
+                _G.FishingStats = {
+                    totalCaught = 0,
+                    sessionCaught = 0,
+                    startTime = tick()
+                }
+            end
+            if not _G.AutoFishingActive then
+                _G.AutoFishingActive = false
+            end
+            if not _G.infinJumpStarted then
+                _G.infinJumpStarted = true
+                _G.infinjump = false
+            end
+            game:GetService("UserInputService").WindowFocused:Connect(function()
+            end)
+            game:GetService("UserInputService").WindowFocusReleased:Connect(function()
+            end)
+            vu9.PlayerRemoving:Connect(function(p527)
+                if p527 == vu12 then
+                    _G.AutoFishingActive = false
+                    vu465 = false
+                    vu160 = false
+                    vu161 = false
+                    vu158 = false
+                    vu291 = false
+                    vu383 = false
+                    if vu162 then
+                        vu162:Destroy()
+                        vu162 = nil
+                    end
+                    if vu159 then
+                        vu159:Disconnect()
+                        vu159 = nil
+                    end
+                    if vu464 then
+                        task.cancel(vu464)
+                        vu464 = nil
+                    end
+                end
+            end)
+           task.delay(2, function()
+                WindUI:Notify({
+                    Title = "NEOX HUB Fully Loaded",
+                    Content = "All features are now available!",
+                    Duration = 5,
+                    Image = "square-check-big"
+                })
+            end)
+        end
+        vu528()
+    end
