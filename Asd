@@ -1,0 +1,576 @@
+local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
+local Window = WindUI:CreateWindow({
+    Title = "XSANOHUB - Fish It",
+    Icon = "rbxassetid://116236936447443",
+    Author = "Premium Version",
+    Folder = "XsanoHub",
+    Size = UDim2.fromOffset(600, 360),
+    MinSize = Vector2.new(560, 250),
+    MaxSize = Vector2.new(950, 760),
+    Transparent = true,
+    Theme = "Rose",
+    Resizable = true,
+    SideBarWidth = 190,
+    BackgroundImageTransparency = 0.42,
+    HideSearchBar = true,
+    ScrollBarEnabled = true,
+})
+
+-- [[ 1. CONFIGURATION SYSTEM SETUP ]] --
+local RockHubConfig = Window.ConfigManager:CreateConfig("Es4store")
+
+-- [BARU] Tabel untuk menyimpan semua elemen UI agar bisa dicek valuenya
+local ElementRegistry = {} 
+
+-- Fungsi Helper Reg yang sudah di-upgrade
+local function Reg(id, element)
+    RockHubConfig:Register(id, element)
+    -- Simpan elemen ke tabel lokal kita
+    ElementRegistry[id] = element 
+    return element
+end
+
+local HttpService = game:GetService("HttpService")
+local BaseFolder = "WindUI/" .. (Window.Folder or "XsanoHub") .. "/config/"
+
+local function SmartLoadConfig(configName)
+    local path = BaseFolder .. configName .. ".json"
+    
+    -- 1. Cek File
+    if not isfile(path) then 
+        WindUI:Notify({ Title = "Gagal Load", Content = "File tidak ditemukan: " .. configName, Duration = 3, Icon = "x" })
+        return 
+    end
+
+    -- 2. Cek Isi File & Decode
+    local content = readfile(path)
+    local success, decodedData = pcall(function() return HttpService:JSONDecode(content) end)
+
+    if not success or not decodedData then 
+        WindUI:Notify({ Title = "Gagal Load", Content = "File JSON rusak/kosong.", Duration = 3, Icon = "alert-triangle" })
+        return 
+    end
+
+    -- [FIX PENTING] Ambil data dari '__elements' jika ada
+    local realData = decodedData
+    if decodedData["__elements"] then
+        realData = decodedData["__elements"]
+    end
+
+    local changeCount = 0
+    local foundCount = 0
+
+    -- Debug: Hitung total registry script saat ini
+    for _ in pairs(ElementRegistry) do foundCount = foundCount + 1 end
+    print("------------------------------------------------")
+    print("[SmartLoad] Target Config: " .. configName)
+    print("[SmartLoad] Elemen terdaftar di Script: " .. foundCount)
+
+    -- 3. Loop Data
+    for id, itemData in pairs(realData) do
+        local element = ElementRegistry[id] -- Cari elemen di script kita
+        
+        if element then
+            -- [FIX PENTING] Ambil 'value' dari dalam object JSON WindUI
+            -- Struktur JSON kamu: "tognorm": {"value": true, "__type": "Toggle"}
+            local finalValue = itemData
+            
+            if type(itemData) == "table" and itemData.value ~= nil then
+                finalValue = itemData.value
+            end
+
+            -- Cek Tipe Data (Safety)
+            local currentVal = element.Value
+            
+            -- Cek Perbedaan (Support Table/Array untuk Dropdown)
+            local isDifferent = false
+            
+            if type(finalValue) == "table" then
+                -- Jika dropdown/multi-select, kita asumsikan selalu update biar aman
+                -- atau bandingkan panjang table (simple check)
+                isDifferent = true 
+            elseif currentVal ~= finalValue then
+                isDifferent = true
+            end
+
+            -- Eksekusi Perubahan
+            if isDifferent then
+                pcall(function() 
+                    element:Set(finalValue) 
+                end)
+                changeCount = changeCount + 1
+                
+                -- Anti-Freeze: Jeda mikro setiap 12 perubahan
+                if changeCount % 10 == 0 then task.wait() end
+            end
+        end
+    end
+
+    print("[SmartLoad] Selesai. Total Update: " .. changeCount)
+    print("------------------------------------------------")
+
+    WindUI:Notify({ 
+        Title = "Config Loaded", 
+        Content = string.format("Updated: %d settings", changeCount), 
+        Duration = 3, 
+        Icon = "check" 
+    })
+end
+
+local UserInputService = game:GetService("UserInputService")
+local InfinityJumpConnection = nil
+local LocalPlayer = game.Players.LocalPlayer
+local RepStorage = game:GetService("ReplicatedStorage") 
+local ItemUtility = require(RepStorage:WaitForChild("Shared"):WaitForChild("ItemUtility", 10))
+local TierUtility = require(RepStorage:WaitForChild("Shared"):WaitForChild("TierUtility", 10))
+
+local DEFAULT_SPEED = 18
+local DEFAULT_JUMP = 50
+
+local function GetHumanoid()
+    local Character = LocalPlayer.Character
+    if not Character then
+        Character = LocalPlayer.CharacterAdded:Wait()
+    end
+    return Character:FindFirstChildOfClass("Humanoid")
+end
+
+local InitialHumanoid = GetHumanoid()
+local currentSpeed = DEFAULT_SPEED
+local currentJump = DEFAULT_JUMP
+
+if InitialHumanoid then
+    currentSpeed = InitialHumanoid.WalkSpeed
+    currentJump = InitialHumanoid.JumpPower
+end
+
+local RPath = {"Packages", "_Index", "sleitnick_net@0.2.0", "net"}
+local PlayerDataReplion = nil
+
+local function GetRemote(remotePath, name, timeout)
+    local currentInstance = RepStorage
+    for _, childName in ipairs(remotePath) do
+        currentInstance = currentInstance:WaitForChild(childName, timeout or 0.5)
+        if not currentInstance then return nil end
+    end
+    return currentInstance:FindFirstChild(name)
+end
+
+local function GetHRP()
+    local Character = game.Players.LocalPlayer.Character
+    if not Character then
+        Character = game.Players.LocalPlayer.CharacterAdded:Wait()
+    end
+    return Character:WaitForChild("HumanoidRootPart", 5)
+end
+
+pcall(function()
+    local player = game:GetService("Players").LocalPlayer
+    
+    -- Cek semua koneksi yang terhubung ke event Idled pemain lokal
+    for i, v in pairs(getconnections(player.Idled)) do
+        if v.Disable then
+            v:Disable() -- Menonaktifkan koneksi event
+            print("[RockHub Anti-AFK] ON")
+        end
+    end
+end)
+
+local function TeleportToLookAt(position, lookVector)
+    local hrp = GetHRP()
+    
+    if hrp and typeof(position) == "Vector3" and typeof(lookVector) == "Vector3" then
+        local targetCFrame = CFrame.new(position, position + lookVector)
+        hrp.CFrame = targetCFrame * CFrame.new(0, 0.5, 0)
+        
+        WindUI:Notify({ Title = "Teleport Sukses!", Duration = 3, Icon = "map-pin", })
+    else
+        WindUI:Notify({ Title = "Teleport Gagal", Content = "Data posisi tidak valid.", Duration = 3, Icon = "x", })
+    end
+end
+
+local function GetPlayerDataReplion()
+    if PlayerDataReplion then return PlayerDataReplion end
+    local ReplionModule = RepStorage:WaitForChild("Packages"):WaitForChild("Replion", 10)
+    if not ReplionModule then return nil end
+    local ReplionClient = require(ReplionModule).Client
+    PlayerDataReplion = ReplionClient:WaitReplion("Data", 5)
+    return PlayerDataReplion
+end
+
+local RF_SellAllItems = GetRemote(RPath, "RF/SellAllItems", 5)
+
+local function GetFishNameAndRarity(item)
+    local name = item.Identifier or "Unknown"
+    local rarity = item.Metadata and item.Metadata.Rarity or "COMMON"
+    local itemID = item.Id
+
+    local itemData = nil
+
+    if ItemUtility and itemID then
+        pcall(function()
+            itemData = ItemUtility:GetItemData(itemID)
+            if not itemData then
+                local numericID = tonumber(item.Id) or tonumber(item.Identifier)
+                if numericID then
+                    itemData = ItemUtility:GetItemData(numericID)
+                end
+            end
+        end)
+    end
+
+    if itemData and itemData.Data and itemData.Data.Name then
+        name = itemData.Data.Name
+    end
+
+    if item.Metadata and item.Metadata.Rarity then
+        rarity = item.Metadata.Rarity
+    elseif itemData and itemData.Probability and itemData.Probability.Chance and TierUtility then
+        local tierObj = nil
+        pcall(function()
+            tierObj = TierUtility:GetTierFromRarity(itemData.Probability.Chance)
+        end)
+
+        if tierObj and tierObj.Name then
+            rarity = tierObj.Name
+        end
+    end
+
+    return name, rarity
+end
+
+local function GetItemMutationString(item)
+    if item.Metadata and item.Metadata.Shiny == true then return "Shiny" end
+    return item.Metadata and item.Metadata.VariantId or ""
+end
+
+local ShopItems = {
+    ["Rods"] = {
+        {Name = "Luck Rod", ID = 79, Price = 325}, {Name = "Carbon Rod", ID = 76, Price = 750},
+        {Name = "Grass Rod", ID = 85, Price = 1500}, {Name = "Demascus Rod", ID = 77, Price = 3000},
+        {Name = "Ice Rod", ID = 78, Price = 5000}, {Name = "Lucky Rod", ID = 4, Price = 15000},
+        {Name = "Midnight Rod", ID = 80, Price = 50000}, {Name = "Steampunk Rod", ID = 6, Price = 215000},
+        {Name = "Chrome Rod", ID = 7, Price = 437000}, {Name = "Flourescent Rod", ID = 255, Price = 715000},
+        {Name = "Astral Rod", ID = 5, Price = 1000000}, {Name = "Ares Rod", ID = 126, Price = 3000000},
+        {Name = "Angler Rod", ID = 168, Price = 8000000},{Name = "Bamboo Rod", ID = 258, Price = 12000000}
+    },
+    ["Bobbers"] = {
+        {Name = "Floral Bait", ID = 20, Price = 4000000}, {Name = "Aether Bait", ID = 16, Price = 3700000},
+        {Name = "Corrupt Bait", ID = 15, Price = 1148484}, {Name = "Dark Matter Bait", ID = 8, Price = 630000},
+        {Name = "Chroma Bait", ID = 6, Price = 290000}, {Name = "Nature Bait", ID = 17, Price = 83500},
+        {Name = "Midnight Bait", ID = 3, Price = 3000}, {Name = "Luck Bait", ID = 2, Price = 1000},
+        {Name = "Topwater Bait", ID = 10, Price = 100},
+    },
+    ["Boats"] = {
+        {Name = "Mini Yach", ID = 14, Price = 1200000}, {Name = "Fish Boat", ID = 6, Price = 180000},
+        {Name = "Speed Boat", ID = 5, Price = 70000}, {Name = "Highfield Boat", ID = 4, Price = 25000},
+        {Name = "Jetski", ID = 3, Price = 7500}, {Name = "Kayak", ID = 2, Price = 1100},
+        {Name = "Small Boat", ID = 1, Price = 100},
+    },
+}
+
+do
+    local PromptController = nil
+    local Promise = nil
+    
+    pcall(function()
+        PromptController = require(RepStorage:WaitForChild("Controllers").PromptController)
+        Promise = require(RepStorage:WaitForChild("Packages").Promise)
+    end)
+    
+    _G.XsanoHub_AutoAcceptTradeEnabled = false 
+
+    if PromptController and PromptController.FirePrompt and Promise then
+        local oldFirePrompt = PromptController.FirePrompt
+        PromptController.FirePrompt = function(self, promptText, ...)
+            
+            if _G.RockHub_AutoAcceptTradeEnabled and type(promptText) == "string" and promptText:find("Accept") and promptText:find("from:") then
+                
+                local initiatorName = string.match(promptText, "from: ([^\n]+)") or "Seseorang"
+                
+                
+                return Promise.new(function(resolve)
+                    task.wait(2)
+                    resolve(true)
+                end)
+            end
+            
+            return oldFirePrompt(self, promptText, ...)
+        end
+    else
+        warn("[XsanoHub] Gagal memuat PromptController/Promise untuk Auto Accept Trade.")
+    end
+end
+
+local ENCHANT_MAPPING = {
+    ["Cursed I"] = 12,
+    ["Big Hunter I"] = 3,
+    ["Empowered I"] = 9,
+    ["Glistening I"] = 1,
+    ["Gold Digger I"] = 4,
+    ["Leprechaun I"] = 5,
+    ["Leprechaun II"] = 6,
+    ["Mutation Hunter I"] = 7,
+    ["Mutation Hunter II"] = 14,
+    ["Perfection"] = 15,
+    ["Prismatic I"] = 13,
+    ["Reeler I"] = 2,
+    ["Stargazer I"] = 8,
+    ["Stormhunter I"] = 11,
+    ["Experienced I"] = 10,
+}
+local ENCHANT_NAMES = {} 
+for name, id in pairs(ENCHANT_MAPPING) do table.insert(ENCHANT_NAMES, name) end
+
+local autoEnchantState = false
+local autoEnchantThread = nil
+local selectedRodUUID = nil
+local selectedEnchantNames = {}
+
+local ENCHANT_STONE_ID = 10
+_G.RockHub_EnchantStoneUUIDs = {}
+
+local function GetEnchantNameFromId(id)
+    id = tonumber(id)
+    if not id then return nil end
+    for name, eid in pairs(ENCHANT_MAPPING) do
+        if eid == id then
+            return name
+        end
+    end
+    return nil
+end
+
+local function GetRodOptions()
+    local rodOptions = {}
+    local replion = GetPlayerDataReplion()
+    if not replion then return {"(Gagal memuat Inventory)"} end
+
+    local success, inventoryData = pcall(function() return replion:GetExpect("Inventory") end)
+    if not success or not inventoryData or not inventoryData["Fishing Rods"] then
+        return {"(Tidak ada Rod ditemukan)"}
+    end
+
+    local Rods = inventoryData["Fishing Rods"]
+    for _, rod in ipairs(Rods) do
+        local rodUUID = rod.UUID
+        
+        if typeof(rodUUID) ~= "string" or string.len(rodUUID) < 10 then
+            continue
+        end
+        
+        local rodName, _ = GetFishNameAndRarity(rod)
+        
+        if not string.find(rodName, "Rod", 1, true) then
+            continue
+        end
+
+        local enchantStatus = ""
+        local metadata = rod.Metadata or {}
+        local enchants = {}
+
+        if metadata.EnchantId then table.insert(enchants, metadata.EnchantId) end
+        --if metadata.EnchantId2 then table.insert(enchants, metadata.EnchantId2) end
+
+        local resolvedEnchantNames = {}
+        for _, eid in ipairs(enchants) do
+            local name = GetEnchantNameFromId(eid) or "ID:" .. eid
+            table.insert(resolvedEnchantNames, name)
+        end
+        
+        if #resolvedEnchantNames > 0 then
+            enchantStatus = " [" .. table.concat(resolvedEnchantNames, ", ") .. "]"
+        end
+
+        local shortUUID = string.sub(rodUUID, 1, 8) .. "..."
+        table.insert(rodOptions, rodName .. " (" .. shortUUID .. ")" .. enchantStatus)
+    end
+    
+    return rodOptions
+end
+
+
+local function GetUUIDFromFormattedName(formattedName)
+    local uuidMatch = formattedName:match("%(([^%)]+)%.%.%.%)")
+    if not uuidMatch then return nil end
+
+    local replion = GetPlayerDataReplion()
+    local Rods = replion:GetExpect("Inventory")["Fishing Rods"] or {}
+
+    for _, rod in ipairs(Rods) do
+        if string.sub(rod.UUID, 1, 8) == uuidMatch then
+            return rod.UUID
+        end
+    end
+    return nil
+end
+
+local function CheckIfEnchantReached(rodUUID)
+    local replion = GetPlayerDataReplion()
+    local Rods = replion:GetExpect("Inventory")["Fishing Rods"] or {}
+    
+    local targetRod = nil
+    for _, rod in ipairs(Rods) do
+        if rod.UUID == rodUUID then
+            targetRod = rod
+            break
+        end
+    end
+
+    if not targetRod then return true end
+    
+    local metadata = targetRod.Metadata or {}
+    local currentEnchants = {}
+    if metadata.EnchantId then table.insert(currentEnchants, metadata.EnchantId) end
+    --if metadata.EnchantId2 then table.insert(currentEnchants, metadata.EnchantId2) end
+
+    for _, targetName in ipairs(selectedEnchantNames) do
+        local targetID = ENCHANT_MAPPING[targetName]
+        if targetID and table.find(currentEnchants, targetID) then
+            return true
+        end
+    end
+
+    return false
+end
+
+local function GetFirstStoneUUID()
+    local replion = GetPlayerDataReplion()
+    if not replion then return nil end
+
+    local success, inventoryData = pcall(function() return replion:GetExpect("Inventory") end)
+    if not success or not inventoryData or not inventoryData.Items then
+        return nil
+    end
+
+    local GeneralItems = inventoryData.Items or {}
+    for _, item in ipairs(GeneralItems) do
+        if tonumber(item.Id) == ENCHANT_STONE_ID and item.UUID and item.Type ~= "Fishing Rods" and item.Type ~= "Bait" then
+            return item.UUID
+        end
+    end
+    return nil
+end
+
+local function UnequipAllEquippedItems()
+    local RE_UnequipItem = GetRemote(RPath, "RE/UnequipItem")
+    if not RE_UnequipItem then 
+        warn("[Auto Enchant] Gagal menemukan RE/UnequipItem remote.")
+        return 
+    end
+
+    local replion = GetPlayerDataReplion()
+    local EquippedItems = replion:GetExpect("EquippedItems") or {}
+    local EquippedSkinUUID = replion:Get("EquippedSkinUUID")
+
+    if EquippedSkinUUID and EquippedSkinUUID ~= "" then
+         -- Unequip Rod Skin
+         pcall(function() RE_UnequipItem:FireServer(EquippedSkinUUID) end)
+         task.wait(0.1)
+    end
+
+    for _, uuid in ipairs(EquippedItems) do
+        pcall(function() RE_UnequipItem:FireServer(uuid) end)
+        task.wait(0.05)
+    end
+end
+
+local ARTIFACT_IDS = {
+    ["Arrow Artifact"] = 265,
+    ["Crescent Artifact"] = 266,
+    ["Diamond Artifact"] = 267,
+    ["Hourglass Diamond Artifact"] = 271
+}
+
+-- Helper: Cek Item di Backpack pakai Hardcoded ID
+local function HasArtifactItem(artifactName)
+    local replion = GetPlayerDataReplion()
+    if not replion then return false end
+    
+    local success, inventoryData = pcall(function() return replion:GetExpect("Inventory") end)
+    if not success or not inventoryData or not inventoryData.Items then return false end
+
+    -- Ambil Target ID dari tabel Hardcode
+    local targetId = ARTIFACT_IDS[artifactName]
+    
+    if not targetId then 
+        warn("[Kaitun] ID untuk " .. artifactName .. " tidak ditemukan di tabel Hardcode!")
+        return false 
+    end
+
+    -- Loop inventory, cari angka ID yang cocok
+    for _, item in ipairs(inventoryData.Items) do
+        -- Pastikan item.Id dibaca sebagai angka
+        if tonumber(item.Id) == targetId then 
+            return true 
+        end
+    end
+    
+    return false
+end
+
+
+local function RunAutoEnchantLoop(rodUUID)
+    if autoEnchantThread then task.cancel(autoEnchantThread) end
+    
+    local ENCHANT_ALTAR_POS = Vector3.new(3236.441, -1302.855, 1397.910)
+    local ENCHANT_ALTAR_LOOK = Vector3.new(-0.954, -0.000, 0.299)
+    
+    local RE_UnequipItem = GetRemote(RPath, "RE/UnequipItem")
+    local RE_EquipItem = GetRemote(RPath, "RE/EquipItem")
+    local RE_EquipToolFromHotbar = GetRemote(RPath, "RE/EquipToolFromHotbar")
+    local RE_ActivateEnchantingAltar = GetRemote(RPath, "RE/ActivateEnchantingAltar")
+
+    if not (RE_UnequipItem and RE_EquipItem and RE_EquipToolFromHotbar and RE_ActivateEnchantingAltar) then
+        WindUI:Notify({ Title = "Error Remote", Content = "Remote Enchanting tidak ditemukan.", Duration = 4, Icon = "x" })
+        autoEnchantState = false
+        return
+    end
+
+    autoEnchantThread = task.spawn(function()
+        
+        UnequipAllEquippedItems()
+
+        task.wait(2.5) 
+
+        TeleportToLookAt(ENCHANT_ALTAR_POS, ENCHANT_ALTAR_LOOK)
+        task.wait(1.5)
+
+        WindUI:Notify({ Title = "Auto Enchant Started", Content = "Memulai Roll Enchant...", Duration = 2, Icon = "zap" })
+
+        while autoEnchantState do
+            
+            if CheckIfEnchantReached(rodUUID) then
+                WindUI:Notify({ Title = "Enchant Selesai!", Content = "Rod mencapai salah satu target enchant.", Duration = 5, Icon = "check" })
+                break
+            end
+            
+            local enchantStoneUUID = GetFirstStoneUUID() 
+            if not enchantStoneUUID then
+                WindUI:Notify({ Title = "Stone Habis!", Content = "Tidak ada Enchant Stone yang tersisa di inventaris.", Duration = 5, Icon = "stop-circle" })
+                break
+            end
+
+            pcall(function() RE_EquipItem:FireServer(rodUUID, "Fishing Rods") end)
+            task.wait(0.2)
+
+            pcall(function() RE_EquipItem:FireServer(enchantStoneUUID, "Enchant Stones") end)
+            task.wait(0.2)
+            
+            pcall(function() RE_EquipToolFromHotbar:FireServer(2) end)
+            task.wait(0.3)
+
+            pcall(function() RE_ActivateEnchantingAltar:FireServer() end)
+            
+            task.wait(tradeDelay) 
+
+            pcall(function() RE_EquipToolFromHotbar:FireServer(0) end) 
+            
+            task.wait(0.5)
+        end
+
+        autoEnchantState = false
+        local toggle = Window:GetElementByTitle("Enable Auto Enchant") 
+        if toggle and toggle.Set then toggle:Set(false) end
+        
+        WindUI:Notify({ Title = "Auto Enchant Berhenti", Duration = 3, Ico
