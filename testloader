@@ -1,0 +1,118 @@
+local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
+local Window = WindUI:CreateWindow({
+    Title = "ES4STORE - Fish It",
+    Icon = "rbxassetid://116236936447443",
+    Author = "Premium Version",
+    Folder = "ES4STORE",
+    Size = UDim2.fromOffset(600, 360),
+    MinSize = Vector2.new(560, 250),
+    MaxSize = Vector2.new(950, 760),
+    Transparent = true,
+    Theme = "Rose",
+    Resizable = true,
+    SideBarWidth = 190,
+    BackgroundImageTransparency = 0.42,
+    HideSearchBar = true,
+    ScrollBarEnabled = true,
+})
+
+-- [[ 1. CONFIGURATION SYSTEM SETUP ]] --
+local RockHubConfig = Window.ConfigManager:CreateConfig("Es4store")
+
+-- [BARU] Tabel untuk menyimpan semua elemen UI agar bisa dicek valuenya
+local ElementRegistry = {} 
+
+-- Fungsi Helper Reg yang sudah di-upgrade
+local function Reg(id, element)
+    RockHubConfig:Register(id, element)
+    -- Simpan elemen ke tabel lokal kita
+    ElementRegistry[id] = element 
+    return element
+end
+
+local HttpService = game:GetService("HttpService")
+local BaseFolder = "WindUI/" .. (Window.Folder or "Es4store") .. "/config/"
+
+local function SmartLoadConfig(configName)
+    local path = BaseFolder .. configName .. ".json"
+    
+    -- 1. Cek File
+    if not isfile(path) then 
+        WindUI:Notify({ Title = "Gagal Load", Content = "File tidak ditemukan: " .. configName, Duration = 3, Icon = "x" })
+        return 
+    end
+
+    -- 2. Cek Isi File & Decode
+    local content = readfile(path)
+    local success, decodedData = pcall(function() return HttpService:JSONDecode(content) end)
+
+    if not success or not decodedData then 
+        WindUI:Notify({ Title = "Gagal Load", Content = "File JSON rusak/kosong.", Duration = 3, Icon = "alert-triangle" })
+        return 
+    end
+
+    -- [FIX PENTING] Ambil data dari '__elements' jika ada
+    local realData = decodedData
+    if decodedData["__elements"] then
+        realData = decodedData["__elements"]
+    end
+
+    local changeCount = 0
+    local foundCount = 0
+
+    -- Debug: Hitung total registry script saat ini
+    for _ in pairs(ElementRegistry) do foundCount = foundCount + 1 end
+    print("------------------------------------------------")
+    print("[SmartLoad] Target Config: " .. configName)
+    print("[SmartLoad] Elemen terdaftar di Script: " .. foundCount)
+
+    -- 3. Loop Data
+    for id, itemData in pairs(realData) do
+        local element = ElementRegistry[id] -- Cari elemen di script kita
+        
+        if element then
+            -- [FIX PENTING] Ambil 'value' dari dalam object JSON WindUI
+            -- Struktur JSON kamu: "tognorm": {"value": true, "__type": "Toggle"}
+            local finalValue = itemData
+            
+            if type(itemData) == "table" and itemData.value ~= nil then
+                finalValue = itemData.value
+            end
+
+            -- Cek Tipe Data (Safety)
+            local currentVal = element.Value
+            
+            -- Cek Perbedaan (Support Table/Array untuk Dropdown)
+            local isDifferent = false
+            
+            if type(finalValue) == "table" then
+                -- Jika dropdown/multi-select, kita asumsikan selalu update biar aman
+                -- atau bandingkan panjang table (simple check)
+                isDifferent = true 
+            elseif currentVal ~= finalValue then
+                isDifferent = true
+            end
+
+            -- Eksekusi Perubahan
+            if isDifferent then
+                pcall(function() 
+                    element:Set(finalValue) 
+                end)
+                changeCount = changeCount + 1
+                
+                -- Anti-Freeze: Jeda mikro setiap 12 perubahan
+                if changeCount % 10 == 0 then task.wait() end
+            end
+        end
+    end
+
+    print("[SmartLoad] Selesai. Total Update: " .. changeCount)
+    print("------------------------------------------------")
+
+    WindUI:Notify({ 
+        Title = "Config Loaded", 
+        Content = string.format("Updated: %d settings", changeCount), 
+        Duration = 3, 
+        Icon = "check" 
+    })
+end
