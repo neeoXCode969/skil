@@ -1,0 +1,67 @@
+local Players = game:GetService("Players")
+local StarterGui = game:GetService("StarterGui")
+
+local placeId = game.PlaceId
+local iconlexs = "rbxassetid://84431288930470"
+
+local gameScripts = {
+    [76558904092080] = {
+        name = "The Forge",
+        premium = "https:/"
+    },
+    [121864768012064] = {
+        name = "Fish It",
+        premium = "loadstring(game:HttpGet("https://raw.githubusercontent.com/neeoXCode969/skil/refs/heads/main/lumoa"))()"
+    }
+}
+
+local gameData = gameScripts[placeId]
+local gameName = gameData and gameData.name or "Unknown Game"
+
+StarterGui:SetCore("SendNotification", {
+    Title = "Lexs Hub",
+    Text = "Detected game: " .. gameName,
+    Icon = iconlexs,
+    Duration = 3
+})
+
+StarterGui:SetCore("SendNotification", {
+    Title = "zyyn Hub",
+    Text = "Premium Access Granted",
+    Icon = iconlexs,
+    Duration = 3
+})
+
+if gameData then
+    StarterGui:SetCore("SendNotification", {
+        Title = "zyyn Hub",
+        Text = "Loading Premium Script...",
+        Icon = iconlexs,
+        Duration = 3
+    })
+
+    local success, result = pcall(function()
+        return game:HttpGet(gameData.premium)
+    end)
+
+    if success and result and result ~= "" then
+        local func, err = loadstring(result)
+        if func then
+            func()
+        end
+    else
+        StarterGui:SetCore("SendNotification", {
+            Title = "zyyn Hub",
+            Text = "Failed to load script!",
+            Icon = iconlexs,
+            Duration = 4
+        })
+    end
+else
+    StarterGui:SetCore("SendNotification", {
+        Title = "zyyn Hub",
+        Text = "Game not supported!",
+        Icon = iconlexs,
+        Duration = 4
+    })
+end
