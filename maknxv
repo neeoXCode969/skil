@@ -19,7 +19,7 @@ local gameData = gameScripts[placeId]
 local gameName = gameData and gameData.name or "Unknown Game"
 
 StarterGui:SetCore("SendNotification", {
-    Title = "Lexs Hub",
+    Title = "zyyn Hub",
     Text = "Detected game: " .. gameName,
     Icon = iconlexs,
     Duration = 3
