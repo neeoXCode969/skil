@@ -1,0 +1,874 @@
+local HttpService = game:GetService("HttpService")
+local TweenService = game:GetService("TweenService")
+local CoreGui = game:GetService("CoreGui")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+
+local player = game.Players.LocalPlayer
+
+local tracksURLs = {
+    ["1"] = "https://raw.githubusercontent.com/SyhrlmyZID/data-map/refs/heads/main/mount_pagi.json",
+}
+
+local savedTracks = {}
+local orderedTrackNames = {"1"}
+
+for _, name in ipairs(orderedTrackNames) do
+    local url = tracksURLs[name]
+    local success, data = pcall(function()
+        return HttpService:JSONDecode(game:HttpGet(url))
+    end)
+
+    if success and data and data.points then
+        savedTracks[name] = {}
+        for _, p in ipairs(data.points) do
+            table.insert(savedTracks[name], Vector3.new(p[1], p[2], p[3]))
+        end
+    else
+        savedTracks[name] = {}
+    end
+end
+
+local running = false
+local speed = 33
+local rotationBlend = 0.15
+
+local verticalOffset = 0
+local originalHipHeight = nil
+local originalBodyHeightScale = nil
+
+local resumeData = {
+    trackName = nil,
+    trackIndex = 1,
+    pointIndex = 1,
+    lastFlatDir = Vector3.new(0, 0, 1)
+}
+
+local function getHRP()
+    local char = player.Character or player.CharacterAdded:Wait()
+    return char:WaitForChild("HumanoidRootPart")
+end
+
+local function applyTrackOffset(track)
+    if not track or verticalOffset == 0 then 
+        return track 
+    end
+    
+    local adjustedTrack = {}
+    
+    for _, point in ipairs(track) do
+        local adjustedPoint = Vector3.new(
+            point.X,
+            point.Y + verticalOffset,
+            point.Z
+        )
+        table.insert(adjustedTrack, adjustedPoint)
+    end
+    
+    return adjustedTrack
+end
+
+local function getAvatarHeight()
+    local char = player.Character
+    if not char then return 5 end
+    
+    local humanoid = char:FindFirstChildOfClass("Humanoid")
+    if humanoid then
+        return humanoid.HipHeight + 2
+    end
+    return 5
+end
+
+local function applyAvatarHeightOffset()
+    local char = player.Character
+    if not char then return end
+    
+    local humanoid = char:FindFirstChildOfClass("Humanoid")
+    if not humanoid then return end
+    
+    if originalHipHeight == nil then
+        originalHipHeight = humanoid.HipHeight
+    end
+    if originalBodyHeightScale == nil and typeof(humanoid.BodyHeightScale) == "number" then
+        originalBodyHeightScale = humanoid.BodyHeightScale
+    end
+    
+    if verticalOffset ~= 0 then
+        humanoid.HipHeight = originalHipHeight + verticalOffset
+        
+        if typeof(humanoid.BodyHeightScale) == "number" and originalBodyHeightScale then
+            humanoid.BodyHeightScale = originalBodyHeightScale + (verticalOffset / 3)
+        end
+    end
+end
+
+local function resetAvatarHeight()
+    local char = player.Character
+    if not char then return end
+    
+    local humanoid = char:FindFirstChildOfClass("Humanoid")
+    if not humanoid then return end
+    
+    if originalHipHeight then
+        humanoid.HipHeight = originalHipHeight
+    end
+    
+    if originalBodyHeightScale and typeof(humanoid.BodyHeightScale) == "number" then
+        humanoid.BodyHeightScale = originalBodyHeightScale
+    end
+end
+
+local lastLanding = 0
+local landingCooldown = 0.2
+
+local function triggerJump(humanoid, isClimb)
+    if humanoid then
+        local state = humanoid:GetState()
+
+        if not isClimb and state == Enum.HumanoidStateType.Landed then
+            lastLanding = tick()
+            return
+        end
+
+        if (isClimb or state == Enum.HumanoidStateType.Running or state == Enum.HumanoidStateType.Freefall)
+            and (isClimb or tick() - lastLanding > landingCooldown) then
+
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+        end
+    end
+end
+
+local function findNearestTrackAndPoint()
+    local hrp = getHRP()
+    local currentPos = hrp.Position
+    
+    local nearestTrack = 1
+    local nearestPoint = 1
+    local nearestDistance = math.huge
+    
+    for trackIdx, name in ipairs(orderedTrackNames) do
+        local track = savedTracks[name]
+        if track then
+            local adjustedTrack = applyTrackOffset(track)
+            
+            for pointIdx, point in ipairs(adjustedTrack) do
+                local distance = (currentPos - point).Magnitude
+                
+                if distance < nearestDistance then
+                    nearestDistance = distance
+                    nearestTrack = trackIdx
+                    nearestPoint = pointIdx
+                end
+            end
+        end
+    end
+    
+    return nearestTrack, nearestPoint
+end
+
+local function respawnPlayer()
+    local checkpoint = workspace:WaitForChild("GlobalTeleport"):WaitForChild("PARTS")
+    
+    if player.Character then
+        local humanoidRootPart = player.Character:WaitForChild("HumanoidRootPart")
+        humanoidRootPart.CFrame = checkpoint.CFrame
+    end
+end
+
+function playTrack(track, trackName)
+    if not track or #track < 2 then 
+        return false
+    end
+    local adjustedTrack = applyTrackOffset(track)
+    if #adjustedTrack < 2 then return false end
+    
+    local hrp = getHRP()
+    local char = player.Character or player.CharacterAdded:Wait()
+    local humanoid = char:FindFirstChildOfClass("Humanoid")
+    if humanoid then humanoid.AutoRotate = false end
+
+    for i = 2, #adjustedTrack do
+        if not running then 
+            resumeData.pointIndex = i - 1
+            resumeData.lastFlatDir = resumeData.lastFlatDir or Vector3.new(0, 0, 1)
+            
+            if humanoid then humanoid.AutoRotate = true end
+            return false
+        end
+
+        local startPos = adjustedTrack[i-1]
+        local targetPos = adjustedTrack[i]
+
+        local distance = (targetPos - startPos).Magnitude
+        local deltaY = targetPos.Y - startPos.Y
+        
+        if deltaY > 3 then
+            triggerJump(humanoid, true)
+        end
+
+        local duration = math.max(distance / speed, 0.05)
+
+        if deltaY > 2 then
+            duration = duration * 1.2
+        elseif deltaY < -2 then
+            duration = duration * 0.4
+        elseif deltaY < -5 then
+            duration = duration * 0.3
+        end
+
+        local elapsed = 0
+        while elapsed < duration and running do
+            elapsed += RunService.Heartbeat:Wait()
+
+            local t = math.clamp(elapsed / duration, 0, 1)
+            
+            local easedT
+            if deltaY > 2 then
+                easedT = t ^ 1.2
+            elseif deltaY < -2 then
+                easedT = 1 - (1 - t) ^ 2.0
+            else
+                easedT = t
+            end
+            
+            local currentPos = startPos:Lerp(targetPos, easedT)
+
+            local direction = Vector3.new(targetPos.X - startPos.X, 0, targetPos.Z - startPos.Z)
+            
+            if direction.Magnitude > 1.3 then
+                resumeData.lastFlatDir = direction.Unit
+            end
+
+            local lookDir = resumeData.lastFlatDir
+            if lookDir.Magnitude < 0.1 then
+                lookDir = Vector3.new(0, 0, 1)
+            end
+
+            local targetCFrame = CFrame.new(currentPos, currentPos + lookDir)
+            local lerped = hrp.CFrame:Lerp(targetCFrame, rotationBlend)
+            hrp.CFrame = CFrame.new(currentPos) * (lerped - lerped.Position)
+        end
+    end
+
+    if humanoid then humanoid.AutoRotate = true end
+    resumeData.pointIndex = 1
+    resumeData.lastFlatDir = Vector3.new(0, 0, 1)
+
+    return true
+end
+
+function playTrackFromPoint(track, trackName, startPointIndex, lastDirection)
+    if not track or #track < 2 or startPointIndex >= #track then 
+        return false
+    end
+    local adjustedTrack = applyTrackOffset(track)
+    if #adjustedTrack < 2 then return false end
+    
+    local hrp = getHRP()
+    local char = player.Character or player.CharacterAdded:Wait()
+    local humanoid = char:FindFirstChildOfClass("Humanoid")
+    if humanoid then humanoid.AutoRotate = false end
+
+    resumeData.lastFlatDir = lastDirection or Vector3.new(0, 0, 1)
+
+    for i = startPointIndex + 1, #adjustedTrack do
+        if not running then 
+            resumeData.pointIndex = i - 1
+            if humanoid then humanoid.AutoRotate = true end
+            return false
+        end
+
+        local startPos = adjustedTrack[i-1]
+        local targetPos = adjustedTrack[i]
+
+        local distance = (targetPos - startPos).Magnitude
+        local deltaY = targetPos.Y - startPos.Y
+        
+        if deltaY > 3 then
+            triggerJump(humanoid, true)
+        end
+
+        local duration = math.max(distance / speed, 0.05)
+
+        if deltaY > 2 then
+            duration = duration * 1.2
+        elseif deltaY < -2 then
+            duration = duration * 0.4
+        elseif deltaY < -5 then
+            duration = duration * 0.3
+        end
+
+        local elapsed = 0
+        while elapsed < duration and running do
+            elapsed += RunService.Heartbeat:Wait()
+
+            local t = math.clamp(elapsed / duration, 0, 1)
+            
+            local easedT
+            if deltaY > 2 then
+                easedT = t ^ 1.2
+            elseif deltaY < -2 then
+                easedT = 1 - (1 - t) ^ 2.0
+            else
+                easedT = t
+            end
+            
+            local currentPos = startPos:Lerp(targetPos, easedT)
+
+            local direction = Vector3.new(targetPos.X - startPos.X, 0, targetPos.Z - startPos.Z)
+            
+            if direction.Magnitude > 1.3 then
+                resumeData.lastFlatDir = direction.Unit
+            end
+
+            local lookDir = resumeData.lastFlatDir
+            if lookDir.Magnitude < 0.1 then
+                lookDir = Vector3.new(0, 0, 1)
+            end
+
+            local targetCFrame = CFrame.new(currentPos, currentPos + lookDir)
+            local lerped = hrp.CFrame:Lerp(targetCFrame, rotationBlend)
+            hrp.CFrame = CFrame.new(currentPos) * (lerped - lerped.Position)
+        end
+    end
+
+    if humanoid then humanoid.AutoRotate = true end
+    return true
+end
+
+local function resumeTrackLoop()
+    if not resumeData.trackName or not resumeData.trackIndex then
+        return
+    end
+    
+    local startIndex = resumeData.trackIndex
+    for i = startIndex, #orderedTrackNames do
+        if not running then break end
+        
+        local name = orderedTrackNames[i]
+        resumeData.trackName = name
+        resumeData.trackIndex = i
+        
+        local track = savedTracks[name]
+        if track and #track > 1 then
+            local success, finished
+            if i == startIndex then
+                success, finished = pcall(function()
+                    return playTrackFromPoint(track, name, resumeData.pointIndex, resumeData.lastFlatDir)
+                end)
+            else
+                resumeData.pointIndex = 1
+                resumeData.lastFlatDir = Vector3.new(0, 0, 1)
+                success, finished = pcall(function()
+                    return playTrack(track, name)
+                end)
+            end
+            
+            if not success then
+                finished = false
+            end
+            
+            if not running then break end
+            if not finished then
+                break
+            end
+        end
+    end
+    
+    if running then
+        respawnPlayer()
+        
+        resumeData = {
+            trackName = orderedTrackNames[1],
+            trackIndex = 1,
+            pointIndex = 1,
+            lastFlatDir = Vector3.new(0, 0, 1)
+        }
+        
+       
+        if running then
+            resumeTrackLoop()
+        end
+    end
+end
+
+local function runAutoSummitLoop()
+    local startTrackIndex, startPointIndex = findNearestTrackAndPoint()
+    
+    while running do
+        for trackIdx = startTrackIndex, #orderedTrackNames do
+            if not running then break end
+
+            local name = orderedTrackNames[trackIdx]
+            local track = savedTracks[name]
+            
+            if track and #track > 1 then
+                resumeData.trackName = name
+                resumeData.trackIndex = trackIdx
+                
+                local success, finished
+                
+                if trackIdx == startTrackIndex then
+                    success, finished = pcall(function()
+                        return playTrackFromPoint(track, name, startPointIndex, resumeData.lastFlatDir)
+                    end)
+                else
+                    resumeData.pointIndex = 1
+                    resumeData.lastFlatDir = Vector3.new(0, 0, 1)
+                    success, finished = pcall(function()
+                        return playTrack(track, name)
+                    end)
+                end
+                
+                if not success then
+                    finished = false
+                end
+
+                if not running then break end
+                if not finished then
+                    break
+                end
+                
+                startPointIndex = 1
+            end
+        end
+
+        if running then
+            respawnPlayer()
+            task.wait(1)
+
+            startTrackIndex, startPointIndex = findNearestTrackAndPoint()
+            resumeData.trackIndex = startTrackIndex
+        end
+    end
+end
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "MT_PAGI"
+ScreenGui.Parent = CoreGui
+
+local Frame = Instance.new("Frame", ScreenGui)
+Frame.Size = UDim2.new(0, 300, 0, 320)
+Frame.Position = UDim2.new(0.5, -150, 0.2, 0)
+Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BackgroundTransparency = 0.3
+Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 8)
+
+local Title = Instance.new("TextLabel", Frame)
+Title.Size = UDim2.new(1, 0, 0, 30)
+Title.Text = "MT PAGI"
+Title.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+Title.TextColor3 = Color3.fromRGB(180, 180, 180)
+Title.TextScaled = true
+Instance.new("UICorner", Title).CornerRadius = UDim.new(0, 8)
+
+local speedBox = Instance.new("TextBox", Frame)
+speedBox.Size = UDim2.new(0.9, 0, 0, 40)
+speedBox.Position = UDim2.new(0.05, 0, 0, 40)
+speedBox.PlaceholderText = "Speed"
+speedBox.Text = tostring(speed)
+speedBox.TextColor3 = Color3.fromRGB(180, 180, 180)
+speedBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+speedBox.TextScaled = true
+speedBox.ClearTextOnFocus = false
+Instance.new("UICorner", speedBox).CornerRadius = UDim.new(0, 6)
+
+speedBox.FocusLost:Connect(function(enterPressed)
+    if enterPressed then
+        local val = tonumber(speedBox.Text)
+        if val and val > 0 then
+            speed = val
+        else
+            speedBox.Text = tostring(speed)
+        end
+    end
+end)
+
+local offsetButton = Instance.new("TextButton", Frame)
+offsetButton.Size = UDim2.new(0.9, 0, 0, 40)
+offsetButton.Position = UDim2.new(0.05, 0, 0, 90)
+offsetButton.Text = "AVATAR DEFAULT STANDART"
+offsetButton.TextColor3 = Color3.fromRGB(180, 180, 180)
+offsetButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+offsetButton.TextScaled = true
+Instance.new("UICorner", offsetButton).CornerRadius = UDim.new(0, 6)
+
+local isOffsetExpanded = false
+
+local optionDefault = Instance.new("TextButton", Frame)
+optionDefault.Size = UDim2.new(0.9, 0, 0, 35)
+optionDefault.Position = UDim2.new(0.05, 0, 0, 135)
+optionDefault.Text = "DEFAULT STANDART"
+optionDefault.TextColor3 = Color3.fromRGB(180, 180, 180)
+optionDefault.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+optionDefault.TextScaled = true
+optionDefault.Visible = false
+Instance.new("UICorner", optionDefault).CornerRadius = UDim.new(0, 4)
+
+local optionMini = Instance.new("TextButton", Frame)
+optionMini.Size = UDim2.new(0.9, 0, 0, 35)
+optionMini.Position = UDim2.new(0.05, 0, 0, 175)
+optionMini.Text = "MINI"
+optionMini.TextColor3 = Color3.fromRGB(180, 180, 180)
+optionMini.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+optionMini.TextScaled = true
+optionMini.Visible = false
+Instance.new("UICorner", optionMini).CornerRadius = UDim.new(0, 4)
+
+local optionTinggi = Instance.new("TextButton", Frame)
+optionTinggi.Size = UDim2.new(0.9, 0, 0, 35)
+optionTinggi.Position = UDim2.new(0.05, 0, 0, 215)
+optionTinggi.Text = "TINGGI"
+optionTinggi.TextColor3 = Color3.fromRGB(180, 180, 180)
+optionTinggi.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+optionTinggi.TextScaled = true
+optionTinggi.Visible = false
+Instance.new("UICorner", optionTinggi).CornerRadius = UDim.new(0, 4)
+
+local autoBtn = Instance.new("TextButton", Frame)
+autoBtn.Size = UDim2.new(0.9, 0, 0, 40)
+autoBtn.Position = UDim2.new(0.05, 0, 0, 140)
+autoBtn.Text = "AUTO JALAN (Loop)"
+autoBtn.BackgroundColor3 = Color3.fromRGB(0, 60, 100)
+autoBtn.TextColor3 = Color3.fromRGB(200, 200, 200)
+autoBtn.TextScaled = true
+Instance.new("UICorner", autoBtn).CornerRadius = UDim.new(0, 6)
+
+local animBtn = Instance.new("TextButton", Frame)
+animBtn.Size = UDim2.new(0.44, 0, 0, 40)
+animBtn.Position = UDim2.new(0.05, 0, 0, 190)
+animBtn.Text = "ANIMASI: OFF"
+animBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+animBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+animBtn.TextScaled = true
+Instance.new("UICorner", animBtn).CornerRadius = UDim.new(0, 8)
+
+local resetAvatarBtn = Instance.new("TextButton", Frame)
+resetAvatarBtn.Size = UDim2.new(0.44, 0, 0, 40)
+resetAvatarBtn.Position = UDim2.new(0.51, 0, 0, 190)
+resetAvatarBtn.Text = "RESET AVATAR"
+resetAvatarBtn.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
+resetAvatarBtn.TextColor3 = Color3.fromRGB(180, 180, 180)
+resetAvatarBtn.TextScaled = true
+Instance.new("UICorner", resetAvatarBtn).CornerRadius = UDim.new(0, 8)
+
+local stopResumeBtn = Instance.new("TextButton", Frame)
+stopResumeBtn.Size = UDim2.new(0.44, 0, 0, 40)
+stopResumeBtn.Position = UDim2.new(0.05, 0, 0, 240)
+stopResumeBtn.Text = "PAUSE"
+stopResumeBtn.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
+stopResumeBtn.TextColor3 = Color3.fromRGB(180, 180, 180)
+stopResumeBtn.TextScaled = true
+Instance.new("UICorner", stopResumeBtn).CornerRadius = UDim.new(0, 8)
+
+local stopAllBtn = Instance.new("TextButton", Frame)
+stopAllBtn.Size = UDim2.new(0.44, 0, 0, 40)
+stopAllBtn.Position = UDim2.new(0.51, 0, 0, 240)
+stopAllBtn.Text = "STOP ALL"
+stopAllBtn.BackgroundColor3 = Color3.fromRGB(120, 0, 0)
+stopAllBtn.TextColor3 = Color3.fromRGB(180, 180, 180)
+stopAllBtn.TextScaled = true
+Instance.new("UICorner", stopAllBtn).CornerRadius = UDim.new(0, 8)
+
+local function getCurrentOffsetName()
+    if verticalOffset == -3 then
+        return "DEFAULT STANDART"
+    elseif verticalOffset == -4 then
+        return "MINI"
+    elseif verticalOffset == 0 then
+        return "TINGGI"  
+    else
+        return "CUSTOM"
+    end
+end
+
+local function toggleOffsetOptions()
+    isOffsetExpanded = not isOffsetExpanded
+    
+    if isOffsetExpanded then
+        Frame.Size = UDim2.new(0, 300, 0, 460)
+        optionDefault.Visible = true
+        optionMini.Visible = true
+        optionTinggi.Visible = true
+        offsetButton.Text = "AVATAR : PILIH ↓"
+        
+        autoBtn.Position = UDim2.new(0.05, 0, 0, 260)
+        animBtn.Position = UDim2.new(0.05, 0, 0, 310)
+        resetAvatarBtn.Position = UDim2.new(0.51, 0, 0, 310)
+        stopResumeBtn.Position = UDim2.new(0.05, 0, 0, 360)
+        stopAllBtn.Position = UDim2.new(0.51, 0, 0, 360)
+    else
+        Frame.Size = UDim2.new(0, 300, 0, 320)
+        optionDefault.Visible = false
+        optionMini.Visible = false
+        optionTinggi.Visible = false
+        offsetButton.Text = "AVATAR: " .. getCurrentOffsetName()
+        
+        autoBtn.Position = UDim2.new(0.05, 0, 0, 140)
+        animBtn.Position = UDim2.new(0.05, 0, 0, 190)
+        resetAvatarBtn.Position = UDim2.new(0.51, 0, 0, 190)
+        stopResumeBtn.Position = UDim2.new(0.05, 0, 0, 240)
+        stopAllBtn.Position = UDim2.new(0.51, 0, 0, 240)
+    end
+end
+
+local function setOffset(offsetValue, optionName)
+    verticalOffset = offsetValue
+    offsetButton.Text = "AVATAR: " .. optionName
+    
+    if isOffsetExpanded then
+        toggleOffsetOptions()
+    end
+end
+
+offsetButton.MouseButton1Click:Connect(toggleOffsetOptions)
+
+optionDefault.MouseButton1Click:Connect(function()
+    setOffset(-3, "DEFAULT STANDART")
+end)
+
+optionMini.MouseButton1Click:Connect(function()
+    setOffset(-4, "MINI")
+end)
+
+optionTinggi.MouseButton1Click:Connect(function()
+    setOffset(0, "TINGGI")
+end)
+
+resetAvatarBtn.MouseButton1Click:Connect(function()
+    verticalOffset = 0
+    offsetButton.Text = "AVATAR: DEFAULT STANDART"
+    resetAvatarHeight()
+end)
+
+local isPaused = false
+local bypassIsActive = false
+local bypassConn
+
+local function restoreCharacterControl()
+    local char = player.Character
+    if char then
+        local humanoid = char:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            humanoid.AutoRotate = true
+        end
+    end
+end
+
+local function setupBypass(char)
+    local humanoid = char:WaitForChild("Humanoid")
+    local hrp = char:WaitForChild("HumanoidRootPart")
+    local lastPos = hrp.Position
+
+    if bypassConn then bypassConn:Disconnect() end
+    bypassConn = RunService.RenderStepped:Connect(function()
+        if not hrp or not hrp.Parent then return end
+
+        if bypassIsActive and running then
+            local direction = (hrp.Position - lastPos)
+            local dist = direction.Magnitude
+            if dist > 0.01 then
+                local moveVector = direction.Unit * math.clamp(dist * 5, 0, 1)
+                humanoid:Move(moveVector, false)
+            else
+                humanoid:Move(Vector3.zero, false)
+            end
+        end
+
+        lastPos = hrp.Position
+    end)
+end
+
+player.CharacterAdded:Connect(function(char)
+    setupBypass(char)
+    task.wait(1)
+    restoreCharacterControl()
+    
+    if verticalOffset ~= 0 then
+        task.wait(2)
+        applyAvatarHeightOffset()
+    end
+end)
+
+if player.Character then 
+    setupBypass(player.Character)
+    restoreCharacterControl()
+    
+    if verticalOffset ~= 0 then
+        task.wait(2)
+        applyAvatarHeightOffset()
+    end
+end
+
+local function stopAllTracks()
+    running = false
+    isPaused = false
+    stopResumeBtn.Text = "PAUSE"
+    stopResumeBtn.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
+
+    bypassIsActive = false
+    animBtn.Text = "ANIMASI: OFF"
+    animBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+
+    restoreCharacterControl()
+
+    resumeData = {
+        trackName = nil,
+        trackIndex = 1,
+        pointIndex = 1,
+        lastFlatDir = Vector3.new(0, 0, 1)
+    }
+end
+
+stopAllBtn.MouseButton1Click:Connect(function()
+    stopAllTracks()
+end)
+
+stopResumeBtn.MouseButton1Click:Connect(function()
+    if running then
+        running = false
+        isPaused = true
+        stopResumeBtn.Text = "RESUME"
+        stopResumeBtn.BackgroundColor3 = Color3.fromRGB(0, 80, 0)
+
+        bypassIsActive = false
+        animBtn.Text = "ANIMASI: OFF"
+        animBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+
+        restoreCharacterControl()
+    else
+        if isPaused and resumeData.trackName then
+            running = true
+            isPaused = false
+            stopResumeBtn.Text = "PAUSE"
+            stopResumeBtn.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
+
+            bypassIsActive = true
+            animBtn.Text = "ANIMASI: ON"
+            animBtn.BackgroundColor3 = Color3.fromRGB(50, 150, 50)
+
+            coroutine.wrap(function()
+                resumeTrackLoop()
+            end)()
+        end
+    end
+end)
+
+animBtn.MouseButton1Click:Connect(function()
+    if running then
+        bypassIsActive = not bypassIsActive
+        if bypassIsActive then
+            animBtn.Text = "ANIMASI: ON"
+            animBtn.BackgroundColor3 = Color3.fromRGB(50, 150, 50)
+        else
+            animBtn.Text = "ANIMASI: OFF"
+            animBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+        end
+    else
+        bypassIsActive = false
+        animBtn.Text = "ANIMASI: OFF"
+        animBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+    end
+end)
+
+autoBtn.MouseButton1Click:Connect(function()
+    if running then return end
+    running = true
+    isPaused = false
+    stopResumeBtn.Text = "PAUSE"
+    stopResumeBtn.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
+    
+    bypassIsActive = true
+    animBtn.Text = "ANIMASI: ON"
+    animBtn.BackgroundColor3 = Color3.fromRGB(50, 150, 50)
+    
+    coroutine.wrap(runAutoSummitLoop)()
+end)
+
+local closeBtn = Instance.new("TextButton", Frame)
+closeBtn.Size = UDim2.new(0, 30, 0, 30)
+closeBtn.Position = UDim2.new(1, -35, 0, 0)
+closeBtn.Text = "X"
+closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+closeBtn.TextScaled = true
+Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(1, 0)
+
+closeBtn.MouseButton1Click:Connect(function()
+    Frame.Visible = false
+    local logoBtn = Instance.new("ImageButton", ScreenGui)
+    logoBtn.Size = UDim2.new(0, 40, 0, 40)
+    logoBtn.Position = UDim2.new(0, 50, 0, 50)
+    logoBtn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    logoBtn.Image = "rbxassetid://132366210341090"
+    logoBtn.ScaleType = Enum.ScaleType.Fit
+    Instance.new("UICorner", logoBtn).CornerRadius = UDim.new(1, 0)
+
+    local function setupLogoDrag(target)
+        local dragging, dragStart, startPos
+        target.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                dragging = true
+                dragStart = input.Position
+                startPos = target.Position
+                input.Changed:Connect(function()
+                    if input.UserInputState == Enum.UserInputState.End then
+                        dragging = false
+                    end
+                end)
+            end
+        end)
+        target.InputChanged:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+                if dragging then
+                    local delta = input.Position - dragStart
+                    target.Position = UDim2.new(
+                        startPos.X.Scale, startPos.X.Offset + delta.X,
+                        startPos.Y.Scale, startPos.Y.Offset + delta.Y
+                    )
+                end
+            end
+        end)
+    end
+    setupLogoDrag(logoBtn)
+
+    logoBtn.MouseButton1Click:Connect(function()
+        Frame.Visible = true
+        logoBtn:Destroy()
+    end)
+end)
+
+local function setupDrag(target)
+    local dragging, dragStart, startPos
+    target.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            dragStart = input.Position
+            startPos = target.Position
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+    target.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            if dragging then
+                local delta = input.Position - dragStart
+                target.Position = UDim2.new(
+                    startPos.X.Scale, startPos.X.Offset + delta.X,
+                    startPos.Y.Scale, startPos.Y.Offset + delta.Y
+                )
+            end
+        end
+    end)
+end
+setupDrag(Frame)
+
+game:GetService("StarterGui"):SetCore("SendNotification", {
+    Title = "PERHATIAN",
+    Text = "PILIH AVA TERLEBIH DAHULU SIR",
+    Duration = 6,
+    Icon = "rbxassetid://90559464826004" 
+})
