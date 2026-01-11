@@ -7,7 +7,7 @@ local RunService = game:GetService("RunService")
 local player = game.Players.LocalPlayer
 
 local tracksURLs = {
-    ["1"] = "https://raw.githubusercontent.com/SyhrlmyZID/data-map/refs/heads/main/mount_pagi.json",
+    ["1"] = "https://raw.githubusercontent.com/SyhrlmyZID/data-map/refs/heads/main/mount_ngebut.json",
 }
 
 local savedTracks = {}
