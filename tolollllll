@@ -1,0 +1,988 @@
+-- AlippHUB | Auto Walk Script - Fixed Version
+-- Auto show tabs after verification + On-demand map loading
+-- Discord: dsc.gg/alipphub
+
+local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/main/dist/main.lua"))()
+
+local CONFIG = {
+    HubName = "Zyn X HUB",
+    Subtitle = "Auto Walk",
+    Discord = "dsc.gg/alipphub",
+    ValidKeys = {"TESTKEY123", "DEMO2024", "Zyn1233"},
+    SaveKey = true
+}
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+
+local _G = {
+    Verified = false,
+    AutoWalk = false,
+    AutoWalkLoop = false,
+    AutoRespawn = false,
+    EnableGodMode = false,
+    WalkSpeed = 16,
+    WalkSpeedEnabled = false,
+    NoClip = false,
+    Fly = false,
+    FlySpeed = 50,
+    HideNametag = false,
+    FPSBooster = false
+}
+
+local function notify(title, message, duration)
+    WindUI:Notify({
+        Title = title,
+        Content = message,
+        Duration = duration or 3
+    })
+end
+
+local function saveKey(key)
+    if writefile then
+        writefile("Zyyn X HUB_Key.txt", key)
+    end
+end
+
+local function loadKey()
+    if isfile and readfile and isfile("AlippHUB_Key.txt") then
+        return readfile("AlippHUB_Key.txt")
+    end
+    return nil
+end
+
+local function verifyKey(key)
+    for _, validKey in pairs(CONFIG.ValidKeys) do
+        if key == validKey then
+            return true
+        end
+    end
+    return false
+end
+
+player.CharacterAdded:Connect(function(char)
+    character = char
+    humanoid = char:WaitForChild("Humanoid")
+    
+    if _G.WalkSpeedEnabled and _G.Verified then
+        humanoid.WalkSpeed = _G.WalkSpeed
+    end
+    if _G.EnableGodMode and _G.Verified then
+        humanoid.MaxHealth = math.huge
+        humanoid.Health = math.huge
+    end
+end)
+
+-- Auto Walk Functions
+local autoWalkEnabled = false
+local function toggleAutoWalk(enabled)
+    if not _G.Verified then
+        notify("Error", "❌ Anda tidak terverifikasi!", 2)
+        return false
+    end
+    
+    autoWalkEnabled = enabled
+    
+    if enabled then
+        notify("Auto Walk", "🚶 Auto Walk Enabled (Press F to toggle)", 2)
+        _G.AutoWalkLoop = RunService.Heartbeat:Connect(function()
+            if autoWalkEnabled and character and humanoid and humanoid.Health > 0 then
+                humanoid:Move(Vector3.new(0, 0, -1), true)
+            end
+        end)
+    else
+        notify("Auto Walk", "🛑 Auto Walk Disabled", 2)
+        if _G.AutoWalkLoop then
+            _G.AutoWalkLoop:Disconnect()
+        end
+    end
+    return true
+end
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    if input.KeyCode == Enum.KeyCode.F and _G.Verified then
+        autoWalkEnabled = not autoWalkEnabled
+        toggleAutoWalk(autoWalkEnabled)
+    end
+end)
+
+-- Walk Speed Functions
+local walkSpeedConnection
+local function toggleWalkSpeed(enabled)
+    if not _G.Verified then return false end
+    _G.WalkSpeedEnabled = enabled
+    
+    if enabled then
+        notify("Walk Speed", "⚡ Walk Speed Enabled", 2)
+        walkSpeedConnection = RunService.Heartbeat:Connect(function()
+            if _G.WalkSpeedEnabled and character and humanoid then
+                humanoid.WalkSpeed = _G.WalkSpeed
+            end
+        end)
+    else
+        notify("Walk Speed", "🛑 Walk Speed Disabled", 2)
+        if walkSpeedConnection then
+            walkSpeedConnection:Disconnect()
+        end
+        if humanoid then
+            humanoid.WalkSpeed = 16
+        end
+    end
+    return true
+end
+
+local function setWalkSpeed(speed)
+    _G.WalkSpeed = speed
+    if _G.WalkSpeedEnabled and humanoid then
+        humanoid.WalkSpeed = speed
+    end
+end
+
+-- Auto Respawn
+local function toggleAutoRespawn(enabled)
+    if not _G.Verified then return false end
+    _G.AutoRespawn = enabled
+    
+    if enabled then
+        notify("Auto Respawn", "🔄 Auto Respawn Enabled", 2)
+        humanoid.Died:Connect(function()
+            if _G.AutoRespawn then
+                wait(0.5)
+                player:LoadCharacter()
+            end
+        end)
+    else
+        notify("Auto Respawn", "🛑 Auto Respawn Disabled", 2)
+    end
+    return true
+end
+
+-- God Mode
+local function toggleGodMode(enabled)
+    if not _G.Verified then return false end
+    _G.EnableGodMode = enabled
+    
+    if enabled then
+        notify("God Mode", "⚡ God Mode Enabled", 2)
+        if humanoid then
+            humanoid.MaxHealth = math.huge
+            humanoid.Health = math.huge
+        end
+    else
+        notify("God Mode", "🛑 God Mode Disabled", 2)
+        if humanoid then
+            humanoid.MaxHealth = 100
+            humanoid.Health = 100
+        end
+    end
+    return true
+end
+
+-- No Clip
+local noClipConnection
+local function toggleNoClip(enabled)
+    if not _G.Verified then return false end
+    _G.NoClip = enabled
+    
+    if enabled then
+        notify("No Clip", "👻 No Clip Enabled (Press R to toggle)", 2)
+        noClipConnection = RunService.Stepped:Connect(function()
+            if _G.NoClip and character then
+                for _, part in pairs(character:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        part.CanCollide = false
+                    end
+                end
+            end
+        end)
+    else
+        notify("No Clip", "🧱 No Clip Disabled", 2)
+        if noClipConnection then
+            noClipConnection:Disconnect()
+        end
+    end
+    return true
+end
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    if input.KeyCode == Enum.KeyCode.R and _G.Verified then
+        _G.NoClip = not _G.NoClip
+        toggleNoClip(_G.NoClip)
+    end
+end)
+
+-- Fly
+local flyConnection, bodyGyro, bodyVelocity
+local function toggleFly(enabled)
+    if not _G.Verified then return false end
+    _G.Fly = enabled
+    
+    if enabled then
+        notify("Fly", "🚀 Fly Enabled - WASD + Space/Shift", 3)
+        if character and character:FindFirstChild("HumanoidRootPart") then
+            local hrp = character.HumanoidRootPart
+            bodyGyro = Instance.new("BodyGyro")
+            bodyGyro.P = 9e4
+            bodyGyro.maxTorque = Vector3.new(9e9, 9e9, 9e9)
+            bodyGyro.cframe = hrp.CFrame
+            bodyGyro.Parent = hrp
+            
+            bodyVelocity = Instance.new("BodyVelocity")
+            bodyVelocity.velocity = Vector3.new(0, 0, 0)
+            bodyVelocity.maxForce = Vector3.new(9e9, 9e9, 9e9)
+            bodyVelocity.Parent = hrp
+            
+            flyConnection = RunService.Heartbeat:Connect(function()
+                if not _G.Fly or not hrp or not hrp.Parent then
+                    if bodyGyro then bodyGyro:Destroy() end
+                    if bodyVelocity then bodyVelocity:Destroy() end
+                    if flyConnection then flyConnection:Disconnect() end
+                    return
+                end
+                
+                local camera = workspace.CurrentCamera
+                local moveDirection = Vector3.new(0, 0, 0)
+                
+                if UserInputService:IsKeyDown(Enum.KeyCode.W) then
+                    moveDirection = moveDirection + (camera.CFrame.LookVector * _G.FlySpeed)
+                end
+                if UserInputService:IsKeyDown(Enum.KeyCode.S) then
+                    moveDirection = moveDirection - (camera.CFrame.LookVector * _G.FlySpeed)
+                end
+                if UserInputService:IsKeyDown(Enum.KeyCode.A) then
+                    moveDirection = moveDirection - (camera.CFrame.RightVector * _G.FlySpeed)
+                end
+                if UserInputService:IsKeyDown(Enum.KeyCode.D) then
+                    moveDirection = moveDirection + (camera.CFrame.RightVector * _G.FlySpeed)
+                end
+                if UserInputService:IsKeyDown(Enum.KeyCode.Space) then
+                    moveDirection = moveDirection + Vector3.new(0, _G.FlySpeed, 0)
+                end
+                if UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) then
+                    moveDirection = moveDirection - Vector3.new(0, _G.FlySpeed, 0)
+                end
+                
+                bodyVelocity.velocity = moveDirection
+                bodyGyro.cframe = camera.CFrame
+            end)
+        end
+    else
+        notify("Fly", "🛬 Fly Disabled", 2)
+        if bodyGyro then bodyGyro:Destroy() end
+        if bodyVelocity then bodyVelocity:Destroy() end
+        if flyConnection then flyConnection:Disconnect() end
+    end
+    return true
+end
+
+-- Hide Nametag
+local function toggleHideNametag(enabled)
+    if not _G.Verified then return false end
+    _G.HideNametag = enabled
+    
+    for _, otherPlayer in pairs(Players:GetPlayers()) do
+        if otherPlayer ~= player and otherPlayer.Character then
+            local head = otherPlayer.Character:FindFirstChild("Head")
+            if head then
+                for _, child in pairs(head:GetChildren()) do
+                    if child:IsA("BillboardGui") or child.Name == "NameTag" then
+                        child.Enabled = not enabled
+                    end
+                end
+            end
+        end
+    end
+    
+    if enabled then
+        notify("Nametag", "👻 Nametags Hidden", 2)
+    else
+        notify("Nametag", "👁️ Nametags Visible", 2)
+    end
+    return true
+end
+
+-- FPS Booster
+local function toggleFPSBooster(enabled)
+    if not _G.Verified then return false end
+    _G.FPSBooster = enabled
+    
+    if enabled then
+        notify("FPS Booster", "⚡ FPS Booster Activated", 2)
+        settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+        for _, v in pairs(workspace:GetDescendants()) do
+            if v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") then
+                v.Enabled = false
+            end
+        end
+    else
+        notify("FPS Booster", "🎨 Graphics Restored", 2)
+        settings().Rendering.QualityLevel = Enum.QualityLevel.Automatic
+    end
+    return true
+end
+
+-- Check saved key
+local savedKey = loadKey()
+if savedKey and CONFIG.SaveKey then
+    if verifyKey(savedKey) then
+        _G.Verified = true
+    end
+end
+
+-- Create Window
+local Window = WindUI:CreateWindow({
+    Title = CONFIG.HubName,
+    Subtitle = CONFIG.Subtitle,
+    Icon = "activity",
+    Author = "Premium",
+    Folder = "test scrip",
+    Size = UDim2.fromOffset(600, 500),
+    KeySystem = false,
+    Transparent = false,
+    Theme = "Dark",
+    DisableGuis = {
+        Info = false,
+        Settings = false
+    }
+})
+
+-- Store references untuk tabs yang akan di-hide
+local hiddenTabs = {}
+local statusParagraph = nil
+
+-- Fungsi untuk create semua tabs
+local function createAllTabs()
+    -- Tab Account
+    local TabAccount = Window:Tab({
+        Title = "Account",
+        Icon = "user"
+    })
+    table.insert(hiddenTabs, TabAccount)
+    
+    TabAccount:Section({Title = "Account Information"})
+    TabAccount:Paragraph({
+        Title = "Information Account",
+        Content = string.format([[
+[●] Display Name: %s
+[●] Username: %s
+[●] Role: Premium Member
+[●] Token: ********
+[●] VIP Member: 01 Desember 2025
+[●] Expire: 300p Days
+[●] Status: Active
+]], player.DisplayName, player.Name)
+    })
+    
+    TabAccount:Button({
+        Title = "Refresh Account Info",
+        Description = "Update account information",
+        Callback = function()
+            notify("Refreshed", "✅ Account info updated!", 2)
+        end
+    })
+    
+    -- Tab Auto Walk
+    local TabAutoWalk = Window:Tab({
+        Title = "Auto Walk",
+        Icon = "move"
+    })
+    table.insert(hiddenTabs, TabAutoWalk)
+    
+    TabAutoWalk:Section({Title = "Auto Walk Settings"})
+    
+    local loopEnabled = false
+    TabAutoWalk:Toggle({
+        Title = "Enable Loop",
+        Description = "Berfungsi menjalankan autowalk secara berulang ulang.",
+        Default = false,
+        Callback = function(value)
+            loopEnabled = value
+            notify("Loop", value and "🔄 Loop Enabled" or "⏸️ Loop Disabled", 2)
+        end
+    })
+    
+    local autoRespawnToggle = TabAutoWalk:Toggle({
+        Title = "Auto Respawn",
+        Description = "Respawn otomatis ketika mencapai checkpoint terakhir.",
+        Default = false,
+        Callback = function(value)
+            if toggleAutoRespawn(value) then
+                autoRespawnToggle:Set(value)
+            else
+                autoRespawnToggle:Set(false)
+            end
+        end
+    })
+    
+    local godModeToggle = TabAutoWalk:Toggle({
+        Title = "Enable God Mode",
+        Description = "Berfungsi agar karakter tidak bisa terkena damage / mati.",
+        Default = false,
+        Callback = function(value)
+            if toggleGodMode(value) then
+                godModeToggle:Set(value)
+            else
+                godModeToggle:Set(false)
+            end
+        end
+    })
+    
+    local autoWalkSpeed = 100
+    TabAutoWalk:Slider({
+        Title = "Speed Auto Walk",
+        Description = "Berfungsi mengatur kecepatan auto walk.",
+        Default = 100,
+        Min = 1,
+        Max = 200,
+        Callback = function(value)
+            autoWalkSpeed = value
+            if _G.WalkSpeedEnabled then
+                setWalkSpeed(value)
+            end
+        end
+    })
+    
+    TabAutoWalk:Section({Title = "Auto Walk | Menu"})
+    
+    -- URL JSON File
+    local JSON_URL = "https://raw.githubusercontent.com/itwasabraham/All-Mount/refs/heads/main/datamarv/otherdatamap/MOUNT_VEGAS_X200.json"
+    
+    local currentSelectedMap = nil
+    local checkpointButtons = {}
+    
+    local function loadMapData(mapName)
+        notify("Loading", "⏳ Loading " .. mapName .. "...", 2)
+        
+        local success, result = pcall(function()
+            local response = game:HttpGet(JSON_URL)
+            local allMaps = game:GetService("HttpService"):JSONDecode(response)
+            return allMaps[mapName]
+        end)
+        
+        if success and result then
+            notify("Success", "✅ " .. mapName .. " loaded!", 2)
+            return result
+        else
+            notify("Error", "❌ Failed to load " .. mapName, 3)
+            return nil
+        end
+    end
+    
+    local function clearCheckpointButtons()
+        for _, btn in pairs(checkpointButtons) do
+            if btn and btn.Destroy then
+                pcall(function() btn:Destroy() end)
+            end
+        end
+        checkpointButtons = {}
+    end
+    
+    local function createCheckpointButtons(checkpoints)
+        clearCheckpointButtons()
+        
+        if not checkpoints or #checkpoints == 0 then
+            notify("Warning", "⚠️ No checkpoints found!", 2)
+            return
+        end
+        
+        for i, checkpoint in ipairs(checkpoints) do
+            local cpName = checkpoint.name or "CP" .. i
+            local cpPosition = checkpoint.position
+            
+            local btn = TabAutoWalk:Toggle({
+                Title = "[⚪] " .. cpName,
+                Description = "Teleport to " .. cpName,
+                Default = false,
+                Callback = function(value)
+                    if value and cpPosition then
+                        if character and character:FindFirstChild("HumanoidRootPart") then
+                            local x = cpPosition.x or cpPosition.X or 0
+                            local y = cpPosition.y or cpPosition.Y or 0
+                            local z = cpPosition.z or cpPosition.Z or 0
+                            
+                            character.HumanoidRootPart.CFrame = CFrame.new(x, y, z)
+                            notify("Teleport", "📍 Teleported to " .. cpName, 2)
+                        end
+                    end
+                    wait(0.5)
+                    btn:Set(false)
+                end
+            })
+            
+            table.insert(checkpointButtons, btn)
+        end
+        
+        notify("Checkpoints", "✅ Loaded " .. #checkpoints .. " checkpoints", 2)
+    end
+    
+    -- List maps yang tersedia
+    local mapsList = {
+        "Select Mount",
+        "Mount Vegas",
+    }
+    
+    local trackDropdown = TabAutoWalk:Dropdown({
+        Title = "[⚪] SELECT TRACK",
+        Description = "Pilih track untuk auto walk (akan load on-demand)",
+        List = mapsList,
+        Default = "Select Mount",
+        Callback = function(value)
+            currentSelectedMap = value
+            
+            if value ~= "Select Mount" then
+                notify("Track", "📍 Selected: " .. value, 2)
+                local mapData = loadMapData(value)
+                if mapData then
+                    createCheckpointButtons(mapData)
+                end
+            else
+                clearCheckpointButtons()
+            end
+        end
+    })
+    
+    TabAutoWalk:Toggle({
+        Title = "[⚪] Pause/Flip Menu",
+        Description = "Berfungsi untuk menampilkan gui pause auto walk.",
+        Default = false,
+        Callback = function(value)
+            notify("Pause Menu", value and "⏸️ Pause menu enabled" or "▶️ Pause menu disabled", 2)
+        end
+    })
+    
+    TabAutoWalk:Section({Title = "Control Panel"})
+    
+    TabAutoWalk:Button({
+        Title = "▶️ Start Auto Walk",
+        Description = "Mulai auto walk dengan pengaturan yang dipilih",
+        Callback = function()
+            if not currentSelectedMap or currentSelectedMap == "Select Mount" then
+                notify("Error", "❌ Pilih track terlebih dahulu!", 3)
+                return
+            end
+            
+            if not _G.WalkSpeedEnabled then
+                toggleWalkSpeed(true)
+                setWalkSpeed(autoWalkSpeed)
+            end
+            
+            if not autoWalkEnabled then
+                autoWalkEnabled = true
+                toggleAutoWalk(true)
+            end
+            
+            notify("Auto Walk", "🚶 Auto Walk Started on " .. currentSelectedMap, 3)
+        end
+    })
+    
+    TabAutoWalk:Button({
+        Title = "⏹️ Stop Auto Walk",
+        Description = "Hentikan auto walk",
+        Callback = function()
+            if autoWalkEnabled then
+                autoWalkEnabled = false
+                toggleAutoWalk(false)
+            end
+            
+            if _G.WalkSpeedEnabled then
+                toggleWalkSpeed(false)
+            end
+            
+            notify("Auto Walk", "⏹️ Auto Walk Stopped", 2)
+        end
+    })
+    
+    TabAutoWalk:Section({Title = "Information"})
+    
+    TabAutoWalk:Paragraph({
+        Title = "Cara Penggunaan (On-Demand Loading)",
+        Content = [[
+1. Pilih map di SELECT TRACK dropdown
+2. Script akan auto-load checkpoint map tersebut
+3. Checkpoint buttons akan muncul otomatis
+4. Klik checkbox checkpoint untuk teleport
+5. Aktifkan settings (Loop, God Mode, dll)
+6. Tekan Start Auto Walk untuk memulai
+
+⚡ PERBEDAAN:
+• Map hanya di-load saat dipilih
+• Lebih hemat resource & loading cepat
+• Tidak load semua map sekaligus
+
+Tips: 
+• Tekan F untuk toggle auto walk manual
+• Tekan R untuk toggle no clip  
+• Gunakan God Mode untuk keamanan
+]]
+    })
+    
+    -- Tab Player Menu
+    local TabPlayer = Window:Tab({
+        Title = "Player Menu",
+        Icon = "users"
+    })
+    table.insert(hiddenTabs, TabPlayer)
+    
+    TabPlayer:Section({Title = "[●] FPS Booster"})
+    
+    TabPlayer:Toggle({
+        Title = "Aktivate FPS Booster",
+        Description = "Optimalkan performa game dengan mengurangi kualitas grafis.",
+        Default = false,
+        Callback = function(value)
+            toggleFPSBooster(value)
+        end
+    })
+    
+    TabPlayer:Section({Title = "Nametag Menu"})
+    
+    TabPlayer:Toggle({
+        Title = "Hide Nametag",
+        Description = "Menyembunyikan nametag player di semua map.",
+        Default = false,
+        Callback = function(value)
+            toggleHideNametag(value)
+        end
+    })
+    
+    TabPlayer:Section({Title = "Walk Speed Menu"})
+    
+    local walkSpeedToggle = TabPlayer:Toggle({
+        Title = "Enable Walk Speed",
+        Description = "Aktifkan enable walk speed terlebih dahulu.",
+        Default = false,
+        Callback = function(value)
+            if toggleWalkSpeed(value) then
+                walkSpeedToggle:Set(value)
+            else
+                walkSpeedToggle:Set(false)
+            end
+        end
+    })
+    
+    TabPlayer:Slider({
+        Title = "Set Walk Speed",
+        Description = "Berfungsi mengatur kecepatan player.",
+        Default = 16,
+        Min = 16,
+        Max = 100,
+        Callback = function(value)
+            setWalkSpeed(value)
+        end
+    })
+    
+    TabPlayer:Section({Title = "No Clip Menu"})
+    
+    local noClipToggle = TabPlayer:Toggle({
+        Title = "Enable No Clip",
+        Description = "Walk through walls (Press R to toggle)",
+        Default = false,
+        Callback = function(value)
+            if toggleNoClip(value) then
+                noClipToggle:Set(value)
+            else
+                noClipToggle:Set(false)
+            end
+        end
+    })
+    
+    TabPlayer:Section({Title = "Fly Menu"})
+    
+    local flyToggle = TabPlayer:Toggle({
+        Title = "Enable Fly",
+        Description = "Fly around (WASD + Space/Shift)",
+        Default = false,
+        Callback = function(value)
+            if toggleFly(value) then
+                flyToggle:Set(value)
+            else
+                flyToggle:Set(false)
+            end
+        end
+    })
+    
+    TabPlayer:Slider({
+        Title = "Fly Speed",
+        Description = "Adjust flying speed",
+        Default = 50,
+        Min = 10,
+        Max = 200,
+        Callback = function(value)
+            _G.FlySpeed = value
+        end
+    })
+    
+    -- Tab Settings
+    local TabSettings = Window:Tab({
+        Title = "Settings",
+        Icon = "settings"
+    })
+    table.insert(hiddenTabs, TabSettings)
+    
+    TabSettings:Section({Title = "AlippHUB | Hide Menu"})
+    
+    TabSettings:Paragraph({
+        Title = "Open Menu (PC)",
+        Content = "Untuk open menu di pc secara default menggunakan: P.\nAnda juga dapat menggantinnya dengan keybinds lain."
+    })
+    
+    TabSettings:Keybind({
+        Title = "Toggle Menu",
+        Description = "Keybind untuk hide / show UI (PC Mode)",
+        Default = Enum.KeyCode.P,
+        Callback = function(key)
+            notify("Keybind", "Toggle menu set to: " .. key.Name, 2)
+        end
+    })
+    
+    TabSettings:Section({Title = "AlippHUB | Themes UI"})
+    
+    TabSettings:Paragraph({
+        Title = "Themes UI",
+        Content = "Berfungsi untuk menyesuaikan tema ui, pilih tema favorit Anda."
+    })
+    
+    local themesList = {"Dark", "Light", "Mocha", "Crimson"}
+    
+    TabSettings:Dropdown({
+        Title = "Preset Themes",
+        Description = "Select UI theme",
+        List = themesList,
+        Default = "Dark",
+        Callback = function(value)
+            Window:SetTheme(value)
+            notify("Theme", "Theme changed to: " .. value, 2)
+        end
+    })
+    
+    TabSettings:Section({Title = "Hub Actions"})
+    
+    TabSettings:Button({
+        Title = "Destroy GUI",
+        Description = "Close and remove the hub",
+        Callback = function()
+            Window:Destroy()
+            notify("Goodbye", "👋 Thanks for using " .. CONFIG.HubName, 2)
+        end
+    })
+    
+    TabSettings:Button({
+        Title = "Rejoin Server",
+        Description = "Rejoin current server",
+        Callback = function()
+            game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, game.JobId, player)
+        end
+    })
+    
+    if CONFIG.SaveKey then
+        TabSettings:Button({
+            Title = "Clear Saved Key",
+            Description = "Remove saved key",
+            Callback = function()
+                if delfile then
+                    delfile("AlippHUB_Key.txt")
+                    _G.Verified = false
+                    notify("Success", "🗑️ Key cleared! Restart script.", 2)
+                end
+            end
+        })
+    end
+    
+    -- Tab Logout
+    local TabLogout = Window:Tab({
+        Title = "Logout",
+        Icon = "log-out"
+    })
+    table.insert(hiddenTabs, TabLogout)
+    
+    TabLogout:Section({Title = "Logout"})
+    
+    TabLogout:Paragraph({
+        Title = "Logout Account",
+        Content = "Click button below to logout and clear your session."
+    })
+    
+    TabLogout:Button({
+        Title = "Logout",
+        Description = "Clear key and restart",
+        Callback = function()
+            if delfile then
+                delfile("AlippHUB_Key.txt")
+            end
+            _G.Verified = false
+            Window:Destroy()
+            notify("Logged Out", "👋 Logged out successfully!", 2)
+        end
+    })
+end
+
+-- Fungsi untuk hide/show tabs
+local function setTabsVisible(visible)
+    for _, tab in pairs(hiddenTabs) do
+        if tab and tab.SetVisible then
+            pcall(function()
+                tab:SetVisible(visible)
+            end)
+        end
+    end
+end
+
+-- Tab Authentication (selalu visible)
+local TabAuth = Window:Tab({
+    Title = "Authentication",
+    Icon = "shield-check"
+})
+
+-- Create semua tabs dulu (tapi dalam keadaan hidden)
+createAllTabs()
+
+if not _G.Verified then
+    -- Hide semua tabs
+    setTabsVisible(false)
+    
+    TabAuth:Section({Title = "Key System"})
+    
+    statusParagraph = TabAuth:Paragraph({
+        Title = "Status Verifikasi",
+        Content = "⚠️ Status: Not Verified\n❌ Please enter your key below"
+    })
+    
+    TabAuth:Paragraph({
+        Title = "Information",
+        Content = string.format([[
+Untuk mengakses menu utama, silakan masukkan key/token yang telah Anda beli melalui Discord.
+
+🔗 %s
+]], CONFIG.Discord)
+    })
+    
+    TabAuth:Section({Title = "Input Key"})
+    
+    local keyInputValue = ""
+    
+    TabAuth:Input({
+        Title = "Enter Key",
+        Description = "Input your key here",
+        Placeholder = "Enter key...",
+        Callback = function(value)
+            keyInputValue = value
+        end
+    })
+    
+    TabAuth:Button({
+        Title = "Verify Key",
+        Description = "Click to verify your key",
+        Callback = function()
+            if keyInputValue == "" then
+                notify("Error", "❌ Please enter a key first!", 2)
+                return
+            end
+            
+            if verifyKey(keyInputValue) then
+                _G.Verified = true
+                notify("Success", "✅ Key verified! Unlocking features...", 3)
+                
+                if CONFIG.SaveKey then
+                    saveKey(keyInputValue)
+                end
+                
+                -- Show all tabs
+                setTabsVisible(true)
+                
+                -- Update Authentication tab content
+                wait(0.5)
+                if statusParagraph and statusParagraph.Set then
+                    statusParagraph:Set({
+                        Title = "🌟 SELAMAT DATANG 🌟",
+                        Content = [[
+━━━━━━━━━━━━━━━━━━━━━━━━
+    ✨ ANDA TAMU VIP ✨
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎭 Status: VERIFIED ✅
+👤 User: ]] .. player.Name .. [[
+
+🔐 Access Level: PREMIUM
+💎 VIP Member: 01 Des 2025
+⏰ Expire: 20 Days
+🟢 Status: ACTIVE
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+Nikmati semua fitur premium!
+━━━━━━━━━━━━━━━━━━━━━━━━
+]]
+                    })
+                end
+                
+                notify("Unlocked", "🎉 All features unlocked!", 2)
+            else
+                notify("Error", "❌ Invalid key! Please try again.", 3)
+            end
+        end
+    })
+    
+    TabAuth:Section({Title = "Butuh Bantuan?"})
+    
+    TabAuth:Paragraph({
+        Title = "Troubleshooting",
+        Content = [[
+Jika mengalami masalah seperti:
+• Key tidak bisa dipakai
+• Script error atau lainnya
+• Silahkan hubungi admin @alipp_
+]]
+    })
+else
+    -- Jika sudah verified, show all tabs
+    setTabsVisible(true)
+    
+    -- TAMPILAN VERIFIED - TEXT BERWARNA DI TENGAH
+    TabAuth:Section({Title = ""})
+    
+    TabAuth:Paragraph({
+        Title = "🌟 SELAMAT DATANG 🌟",
+        Content = [[
+━━━━━━━━━━━━━━━━━━━━━━━━
+    ✨ ANDA TAMU VIP ✨
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎭 Status: VERIFIED ✅
+👤 User: ]] .. player.Name .. [[
+
+🔐 Access Level: PREMIUM
+💎 VIP Member: 01 Des 2025
+⏰ Expire: 20 Days
+🟢 Status: ACTIVE
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+Nikmati semua fitur premium!
+━━━━━━━━━━━━━━━━━━━━━━━━
+]]
+    })
+    
+    TabAuth:Button({
+        Title = "📋 Copy Discord Link",
+        Description = "Get support from Discord",
+        Callback = function()
+            setclipboard(CONFIG.Discord)
+            notify("Copied", "📋 Discord link copied!", 2)
+        end
+    })
+end
+
+-- Welcome message
+if _G.Verified then
+    notify("Welcome", "✅ Welcome to " .. CONFIG.HubName .. "!", 3)
+else
+    notify("Key Required", "🔑 Please enter your key to continue", 3)
+end
+
+print("AlippHUB loaded successfully!")
+print("Discord: " .. CONFIG.Discord)
+print("Verified: " .. tostring(_G.Verified))
