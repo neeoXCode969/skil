@@ -1,0 +1,128 @@
+--==================================================
+-- WindUI Open Source Script Manager
+-- Author  : Open Source
+-- UI      : WindUI
+-- Executor: Delta
+-- License : MIT
+--==================================================
+
+-- SERVICES
+local HttpService = game:GetService("HttpService")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+-- LOAD WINDUI
+local WindUI = loadstring(game:HttpGet(
+	"https://raw.githubusercontent.com/Footagesus/WindUI/main/source.lua"
+))()
+
+-- WINDOW
+local Window = WindUI:CreateWindow({
+	Title = "WindUI Open Source",
+	Icon = "code",
+	Author = "Open Source",
+	Folder = "WindUI_OpenSource",
+})
+
+-- TAB
+local LoaderTab = Window:Tab({
+	Title = "URL Loader",
+	Icon = "download",
+})
+
+local InfoTab = Window:Tab({
+	Title = "Info",
+	Icon = "info",
+})
+
+-- VARIABLES
+local ScriptURL = ""
+local FileName = "downloaded_script.lua"
+local SavePath = "Delta/Workspace/"
+
+-- UI INPUT URL
+LoaderTab:Input({
+	Title = "Script URL",
+	Placeholder = "https://pastefy.app/xxxx/raw",
+	Callback = function(v)
+		ScriptURL = v
+	end,
+})
+
+-- UI INPUT FILE NAME
+LoaderTab:Input({
+	Title = "Save As",
+	Placeholder = "my_script.lua",
+	Callback = function(v)
+		if v ~= "" then
+			FileName = v
+		end
+	end,
+})
+
+-- DOWNLOAD & SAVE
+LoaderTab:Button({
+	Title = "Download & Save",
+	Callback = function()
+		if ScriptURL == "" then
+			WindUI:Notify({
+				Title = "Error",
+				Content = "URL belum diisi",
+				Duration = 3,
+			})
+			return
+		end
+
+		local success, content = pcall(function()
+			return game:HttpGet(ScriptURL, true)
+		end)
+
+		if not success then
+			WindUI:Notify({
+				Title = "Error",
+				Content = "Gagal download script",
+				Duration = 3,
+			})
+			return
+		end
+
+		local fullPath = SavePath .. FileName
+		writefile(fullPath, content)
+
+		WindUI:Notify({
+			Title = "Success",
+			Content = "Script disimpan di: "..fullPath,
+			Duration = 4,
+		})
+	end,
+})
+
+-- EXECUTE FILE
+LoaderTab:Button({
+	Title = "Execute Saved Script",
+	Callback = function()
+		local path = SavePath .. FileName
+		if not isfile(path) then
+			WindUI:Notify({
+				Title = "Error",
+				Content = "File belum ada",
+				Duration = 3,
+			})
+			return
+		end
+
+		loadstring(readfile(path))()
+	end,
+})
+
+-- INFO TAB
+InfoTab:Paragraph({
+	Title = "Open Source Info",
+	Content = [[
+✔ Script ini OPEN SOURCE
+✔ Bisa dibaca & diedit
+✔ Hasil download TIDAK di-obfuscate
+✔ Aman untuk belajar & modifikasi
+✔ Compatible Delta Executor
+	]],
+})
