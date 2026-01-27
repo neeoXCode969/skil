@@ -1,0 +1,179 @@
+--==================================================
+-- WindUI Open Source - Code Analyzer
+-- Features:
+-- 1. Analyze Obfuscation
+-- 2. Download & Save Code
+-- 3. Pastebin / Pastefy / Generic URL support
+--==================================================
+
+-- SERVICES
+local HttpService = game:GetService("HttpService")
+
+-- LOAD WINDUI (contoh loader umum)
+local WindUI = loadstring(game:HttpGet(
+    "https://raw.githubusercontent.com/Footagesus/WindUI/main/source.lua"
+))()
+
+-- WINDOW
+local Window = WindUI:CreateWindow({
+    Title = "Open Source Code Analyzer",
+    Icon = "scan",
+    Author = "Open Source",
+    Folder = "WindUI_Analyzer",
+    Size = UDim2.fromOffset(520, 420),
+    Transparent = true,
+})
+
+-- TAB
+local AnalyzerTab = Window:Tab({
+    Title = "Analyzer",
+    Icon = "search",
+})
+
+local DownloadTab = Window:Tab({
+    Title = "Downloader",
+    Icon = "download",
+})
+
+-- STATE
+local sourceURL = ""
+local sourceCode = ""
+
+--==================================================
+-- HELPER
+--==================================================
+local function fetchSource(url)
+    local raw = url
+
+    -- Pastebin
+    if url:find("pastebin.com/") and not url:find("/raw/") then
+        raw = url:gsub("pastebin.com/", "pastebin.com/raw/")
+    end
+
+    -- Pastefy
+    if url:find("pastefy.app") and not url:find("/raw") then
+        raw = url .. "/raw"
+    end
+
+    local success, result = pcall(function()
+        return game:HttpGet(raw)
+    end)
+
+    if success then
+        return result
+    else
+        return nil
+    end
+end
+
+local function analyze(code)
+    local report = {}
+
+    if code:find("string.char") or code:find("\\x") then
+        table.insert(report, "• Encoded string (string.char / hex)")
+    end
+
+    if code:find("loadstring") then
+        table.insert(report, "• loadstring detected")
+    end
+
+    if code:find("getfenv") or code:find("setfenv") then
+        table.insert(report, "• Env manipulation detected")
+    end
+
+    if code:find("while true do") then
+        table.insert(report, "• Infinite loop pattern")
+    end
+
+    if #report == 0 then
+        return "No common obfuscation patterns found."
+    end
+
+    return table.concat(report, "\n")
+end
+
+--==================================================
+-- ANALYZER TAB
+--==================================================
+AnalyzerTab:Input({
+    Title = "Source URL",
+    Placeholder = "Pastebin / Pastefy / Panda / Any raw URL",
+    Callback = function(v)
+        sourceURL = v
+    end
+})
+
+AnalyzerTab:Button({
+    Title = "Analyze Obfuscation",
+    Callback = function()
+        sourceCode = fetchSource(sourceURL)
+
+        if not sourceCode then
+            WindUI:Notify({
+                Title = "Error",
+                Content = "Failed to fetch source",
+                Duration = 3
+            })
+            return
+        end
+
+        local result = analyze(sourceCode)
+
+        WindUI:Notify({
+            Title = "Analyze Result",
+            Content = result,
+            Duration = 8
+        })
+    end
+})
+
+--==================================================
+-- DOWNLOAD TAB
+--==================================================
+DownloadTab:Button({
+    Title = "Download & Save (Delta Workspace)",
+    Callback = function()
+        if not sourceCode or sourceCode == "" then
+            WindUI:Notify({
+                Title = "Error",
+                Content = "No source loaded",
+                Duration = 3
+            })
+            return
+        end
+
+        -- Folder Delta
+        local folder = "Delta/Workspace"
+        if not isfolder(folder) then
+            makefolder(folder)
+        end
+
+        local filename = "analyzed_" .. os.time() .. ".lua"
+        local path = folder .. "/" .. filename
+
+        writefile(path, sourceCode)
+
+        WindUI:Notify({
+            Title = "Saved Successfully",
+            Content = "Saved to:\n" .. path,
+            Duration = 5
+        })
+    end
+})
+
+DownloadTab:Button({
+    Title = "Copy Source to Clipboard",
+    Callback = function()
+        if sourceCode and sourceCode ~= "" then
+            setclipboard(sourceCode)
+            WindUI:Notify({
+                Title = "Copied",
+                Content = "Source copied to clipboard",
+                Duration = 3
+            })
+        end
+    end
+})
+
+-- AUTO SELECT
+AnalyzerTab:Select()
