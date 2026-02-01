@@ -1,0 +1,299 @@
+-- GUI KEY ACCESS SYSTEM
+-- Sistem verifikasi username untuk akses GUI
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+-- ===================================
+-- DAFTAR USERNAME YANG DIIZINKAN
+-- ===================================
+local KeyAccess = {
+    "ALELOLii",
+    "ayamm554", 
+    "olaaakeii",
+     "Kvplie",
+     "777hvdy",
+     "FandyyDN18",
+     "Melissa13468",
+     "YAHAYUKxfay",
+     "Vannz869",
+      "juvv800",
+     "keysfand",
+     "Zauzzii",
+     "Vell_Louire",
+      "tobtut23",
+      "x1xiix1x",
+      "raja145689",
+       "greatnanz",
+     "may2ss719033",
+       "suganyakbenniek",
+       "Adriano_3768",
+       "Erosaints",
+       "AGExNayy",
+        "Elannndd",
+        "egaa_431",
+        "JEJEALXXX",
+        "Wheskeryo",
+        "kingmikey98",
+        "caiinzz",
+        "Paiii12127",  
+        "zyyselaluada",
+        "Galls242",
+        "Ucinghideun00",
+        "xWendoyy",
+        "PppAdumullett",
+        "di00xp",
+        "VickieFrench63936",
+}
+
+-- ===================================
+-- FUNGSI CEK AKSES
+-- ===================================
+local function cekAkses(username)
+    for _, allowedUser in ipairs(KeyAccess) do
+        if allowedUser == username then
+            return true
+        end
+    end
+    return false
+end
+
+-- ===================================
+-- FUNGSI KICK PLAYER
+-- ===================================
+local function kickPlayer(alasan)
+    LocalPlayer:Kick(alasan)
+end
+
+-- ===================================
+-- FUNGSI CLEANUP GUI (PENTING!)
+-- ===================================
+local function CleanupAllGUIs()
+    local playerGui = LocalPlayer:FindFirstChild("PlayerGui")
+    if not playerGui then return end
+    
+    -- Hapus GUI lama yang mungkin conflict
+    local guiNames = {
+        "KeyAccessGUI",
+        "MainGUI",
+        "ByaruLRecorderElegant",
+        "LoadingGUI",
+        "ErrorGUI"  -- Tambahkan ini untuk cleanup error GUI juga
+    }
+    
+    for _, guiName in ipairs(guiNames) do
+        local oldGui = playerGui:FindFirstChild(guiName)
+        if oldGui then
+            oldGui:Destroy()
+        end
+    end
+    
+    wait(0.1) -- Pastikan destroy selesai
+end
+
+-- ===================================
+-- VERIFIKASI USERNAME
+-- ===================================
+local username = LocalPlayer.Name
+local adaAkses = cekAkses(username)
+
+if not adaAkses then
+    -- Kirim notifikasi bahwa user belum terverifikasi
+    warn("❌ AKSES DITOLAK!")
+    warn("Username: " .. username)
+    warn("Silahkan kirim username Anda untuk mendapatkan akses!")
+    
+    -- Kick player setelah 3 detik
+    wait(3)
+    kickPlayer("DIKASIH FREE MALAH DIJUAL😆\n\nUsername Anda tidak terdaftar!\nKirim username '" .. username .. "' untuk verifikasi akses.")
+    return
+end
+
+-- ===================================
+-- CLEANUP GUI LAMA DULU
+-- ===================================
+CleanupAllGUIs()
+
+-- ===================================
+-- JIKA TERVERIFIKASI, BUAT GUI
+-- ===================================
+print("✅ Akses diterima untuk: " .. username)
+
+-- Membuat ScreenGui dengan nama unik
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "KeyAccessGUI"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+
+-- Frame Utama (Ukuran Kecil: 160x100)
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 160, 0, 100)
+MainFrame.Position = UDim2.new(0.5, -80, 0.5, -50)
+MainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+MainFrame.BorderSizePixel = 0
+MainFrame.Parent = ScreenGui
+
+-- UICorner untuk frame
+local Corner = Instance.new("UICorner")
+Corner.CornerRadius = UDim.new(0, 10)
+Corner.Parent = MainFrame
+
+-- Title
+local Title = Instance.new("TextLabel")
+Title.Name = "Title"
+Title.Size = UDim2.new(1, -10, 0, 25)
+Title.Position = UDim2.new(0, 5, 0, 5)
+Title.BackgroundTransparency = 1
+Title.Text = "🔒 VERIFIED"
+Title.TextColor3 = Color3.fromRGB(100, 255, 100)
+Title.TextSize = 14
+Title.Font = Enum.Font.GothamBold
+Title.Parent = MainFrame
+
+-- Loading Text
+local LoadingText = Instance.new("TextLabel")
+LoadingText.Name = "LoadingText"
+LoadingText.Size = UDim2.new(1, -10, 0, 30)
+LoadingText.Position = UDim2.new(0, 5, 0, 35)
+LoadingText.BackgroundTransparency = 1
+LoadingText.Text = "Loading Script..."
+LoadingText.TextColor3 = Color3.fromRGB(200, 200, 200)
+LoadingText.TextSize = 12
+LoadingText.Font = Enum.Font.Gotham
+LoadingText.TextWrapped = true
+LoadingText.Parent = MainFrame
+
+-- Progress Bar Background
+local ProgressBG = Instance.new("Frame")
+ProgressBG.Name = "ProgressBG"
+ProgressBG.Size = UDim2.new(0.9, 0, 0, 8)
+ProgressBG.Position = UDim2.new(0.05, 0, 0, 72)
+ProgressBG.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+ProgressBG.BorderSizePixel = 0
+ProgressBG.Parent = MainFrame
+
+local ProgressCorner = Instance.new("UICorner")
+ProgressCorner.CornerRadius = UDim.new(0, 4)
+ProgressCorner.Parent = ProgressBG
+
+-- Progress Bar Fill
+local ProgressFill = Instance.new("Frame")
+ProgressFill.Name = "ProgressFill"
+ProgressFill.Size = UDim2.new(0, 0, 1, 0)
+ProgressFill.BackgroundColor3 = Color3.fromRGB(50, 150, 250)
+ProgressFill.BorderSizePixel = 0
+ProgressFill.Parent = ProgressBG
+
+local FillCorner = Instance.new("UICorner")
+FillCorner.CornerRadius = UDim.new(0, 4)
+FillCorner.Parent = ProgressFill
+
+-- Status Text
+local StatusText = Instance.new("TextLabel")
+StatusText.Name = "StatusText"
+StatusText.Size = UDim2.new(1, -10, 0, 15)
+StatusText.Position = UDim2.new(0, 5, 0, 82)
+StatusText.BackgroundTransparency = 1
+StatusText.Text = "Initializing..."
+StatusText.TextColor3 = Color3.fromRGB(150, 150, 150)
+StatusText.TextSize = 10
+StatusText.Font = Enum.Font.Gotham
+StatusText.Parent = MainFrame
+
+-- ===================================
+-- ANIMASI LOADING & EXECUTE SCRIPT
+-- ===================================
+spawn(function()
+    local steps = {
+        {progress = 0.2, text = "Connecting...", wait = 0.3},
+        {progress = 0.4, text = "Verifying...", wait = 0.3},
+        {progress = 0.6, text = "Loading data...", wait = 0.3},
+        {progress = 0.8, text = "Fetching script...", wait = 0.5},
+        {progress = 1.0, text = "Preparing...", wait = 0.4}
+    }
+    
+    for _, step in ipairs(steps) do
+        ProgressFill:TweenSize(
+            UDim2.new(step.progress, 0, 1, 0),
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Quad,
+            0.2,
+            true
+        )
+        StatusText.Text = step.text
+        wait(step.wait)
+    end
+    
+    -- Execute script dari link
+    LoadingText.Text = "✅ Success!"
+    LoadingText.TextColor3 = Color3.fromRGB(100, 255, 100)
+    StatusText.Text = "Starting loader..."
+    
+    wait(0.5)
+    
+    -- ✅ HAPUS GUI DULU SEBELUM EXECUTE!
+    print("🗑️ Cleaning up KeyAccess GUI...")
+    ScreenGui:Destroy()
+    
+    -- ✅ DELAY untuk pastikan GUI benar-benar hilang
+    wait(0.3)
+    
+    -- ✅ CLEANUP SEMUA GUI LAMA
+    CleanupAllGUIs()
+    
+    wait(0.2)
+    
+    print("🚀 Loading loader.lua...")
+    
+    -- ===================================
+    -- SILENT MODE: ABAIKAN SEMUA ERROR
+    -- ===================================
+    -- Load dan jalankan script dari GitHub tanpa error notification
+    pcall(function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/arullwah/Wkwkwkw/refs/heads/main/loader.lua"))()
+    end)
+    
+    -- Script akan tetap berjalan meskipun ada error
+    -- Tidak ada notifikasi error yang ditampilkan
+    print("✅ loader.lua execution completed for: " .. username)
+end)
+
+-- ===================================
+-- DRAGGABLE GUI (OPSIONAL)
+-- ===================================
+local dragging
+local dragInput
+local dragStart
+local startPos
+
+local function update(input)
+    local delta = input.Position - dragStart
+    MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+MainFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = MainFrame.Position
+        
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+MainFrame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        update(input)
+    end
+end)
