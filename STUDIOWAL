@@ -1,0 +1,177 @@
+--[[ 
+    STUDIOWALK VIP (ULTIMATE RGB - NO TELEPORT EDITION)
+    - JAMINAN: GUI 100% ASLI LU (URUTAN ELEMENT & ZINDEX)
+    - JAMINAN: REWIND 100% ASLI LU (180 FRAME & COUNTDOWN)
+    - JAMINAN: FILE SYSTEM & SAVING ASLI LU
+    - BONUS: SMOOTH START TRANSITION (ONLY ON PLAY)
+]]
+
+local lp = game.Players.LocalPlayer
+local HttpService = game:GetService("HttpService")
+local RunService = game:GetService("RunService")
+local UIS = game:GetService("UserInputService")
+local pathData = {}
+local recording, playback, looping = false, false, false
+local playSpeed = 1
+local startTime = 0
+
+if not isfolder("PrecisionRecs") then makefolder("PrecisionRecs") end
+
+-- SISTEM RAINBOW (MENYALA HIDUP)
+local rainbowElements = {}
+local function makeRainbow(obj) table.insert(rainbowElements, obj) end
+RunService.RenderStepped:Connect(function()
+    local hue = tick() % 5 / 5
+    local color = Color3.fromHSV(hue, 0.8, 1)
+    for _, obj in pairs(rainbowElements) do
+        if obj and obj.Parent then
+            if obj:IsA("UIStroke") then obj.Color = color
+            elseif obj:IsA("Frame") then obj.BackgroundColor3 = color end
+        end
+    end
+end)
+
+-- [[ SETUP GUI - JAMINAN SESUAI SCRIPT ASLI LU ]]
+local ScreenGui = Instance.new("ScreenGui", game:GetService("CoreGui"))
+local MainFrame = Instance.new("Frame", ScreenGui); MainFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10); MainFrame.Position = UDim2.new(0.5, -140, 0.5, -100); MainFrame.Size = UDim2.new(0, 280, 0, 210); MainFrame.Active, MainFrame.Draggable = true, true; MainFrame.ClipsDescendants = true; Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 12)
+
+local BackgroundImage = Instance.new("ImageLabel", MainFrame); BackgroundImage.Size = UDim2.new(1, 0, 1, 0); BackgroundImage.ZIndex = 0; BackgroundImage.Image = "rbxassetid://1316045217"; BackgroundImage.ImageTransparency = 0.5; BackgroundImage.ScaleType = Enum.ScaleType.Crop; Instance.new("UICorner", BackgroundImage).CornerRadius = UDim.new(0, 12)
+local MainStroke = Instance.new("UIStroke", MainFrame); MainStroke.Thickness = 3; makeRainbow(MainStroke)
+
+local Title = Instance.new("TextLabel", MainFrame); Title.Size = UDim2.new(1, 0, 0, 40); Title.Position = UDim2.new(0, 0, 0, 5); Title.Text = "STUDIOWALK VIP"; Title.TextColor3 = Color3.new(1,1,1); Title.Font = Enum.Font.GothamBlack; Title.TextSize = 18; Title.BackgroundTransparency = 1; Title.ZIndex = 2
+local TitleLine = Instance.new("Frame", MainFrame); TitleLine.Size = UDim2.new(0.6, 0, 0, 2); TitleLine.Position = UDim2.new(0.2, 0, 0, 38); TitleLine.BorderSizePixel = 0; TitleLine.ZIndex = 3; makeRainbow(TitleLine)
+
+local MinBtn = Instance.new("TextButton", MainFrame); MinBtn.Size = UDim2.new(0, 30, 0, 30); MinBtn.Position = UDim2.new(1, -35, 0, 5); MinBtn.BackgroundTransparency = 1; MinBtn.Text = "-"; MinBtn.TextColor3 = Color3.new(1,1,1); MinBtn.Font = Enum.Font.GothamBold; MinBtn.TextSize = 30; MinBtn.ZIndex = 5
+local OpenBtn = Instance.new("TextButton", ScreenGui); OpenBtn.Size = UDim2.new(0, 100, 0, 35); OpenBtn.Position = UDim2.new(0, 10, 0.5, 0); OpenBtn.BackgroundColor3 = Color3.fromRGB(15, 15, 15); OpenBtn.Text = "OPEN VIP"; OpenBtn.TextColor3 = Color3.new(1,1,1); OpenBtn.Font = Enum.Font.GothamBold; OpenBtn.Visible = false; Instance.new("UICorner", OpenBtn); local OpenStroke = Instance.new("UIStroke", OpenBtn); makeRainbow(OpenStroke)
+MinBtn.MouseButton1Click:Connect(function() MainFrame.Visible = false OpenBtn.Visible = true end)
+OpenBtn.MouseButton1Click:Connect(function() MainFrame.Visible = true OpenBtn.Visible = false end)
+
+local Status = Instance.new("TextLabel", MainFrame); Status.Size = UDim2.new(1, 0, 0, 20); Status.Position = UDim2.new(0,0,0,45); Status.TextColor3 = Color3.new(1,1,1); Status.Font = Enum.Font.GothamBold; Status.BackgroundTransparency = 1; Status.TextSize = 11; Status.Text = "READY"; Status.ZIndex = 2
+
+local function createBtn(parent, name, icon, color)
+    local b = Instance.new("TextButton", parent); b.Text = icon .. "  " .. name; b.BackgroundColor3 = color; b.TextColor3 = Color3.new(1, 1, 1); b.Font = Enum.Font.GothamBold; b.TextSize = 11; b.BorderSizePixel = 0; b.ZIndex = 3; Instance.new("UICorner", b).CornerRadius = UDim.new(0, 8)
+    return b
+end
+
+local Grid = Instance.new("Frame", MainFrame); Grid.BackgroundTransparency = 1; Grid.Position = UDim2.new(0.08, 0, 0.42, 0); Grid.Size = UDim2.new(0.84, 0, 0.5, 0); Grid.ZIndex = 2; Instance.new("UIGridLayout", Grid).CellSize = UDim2.new(0.5, -6, 0.5, -6)
+
+local RecBtn = createBtn(Grid, "REC", "🔴", Color3.fromRGB(150, 60, 60))
+local ClearBtn = createBtn(Grid, "CLEAR", "🗑️", Color3.fromRGB(80, 50, 150))
+local BackBtn = createBtn(Grid, "REWIND", "⏪", Color3.fromRGB(50, 80, 150))
+local FileBtn = createBtn(Grid, "FILES", "📂", Color3.fromRGB(50, 120, 60))
+
+local PlayControl = Instance.new("Frame", ScreenGui); PlayControl.Visible = false; PlayControl.Size = UDim2.new(0, 240, 0, 120); PlayControl.Position = UDim2.new(0.5, -120, 0.8, 0); PlayControl.BackgroundColor3 = Color3.fromRGB(20, 20, 20); PlayControl.Active, PlayControl.Draggable = true, true; Instance.new("UICorner", PlayControl); local PlayStroke = Instance.new("UIStroke", PlayControl); PlayStroke.Thickness = 2; makeRainbow(PlayStroke)
+local ControlTitle = Instance.new("TextLabel", PlayControl); ControlTitle.Size = UDim2.new(1, 0, 0, 30); ControlTitle.Position = UDim2.new(0, 0, 0, 5); ControlTitle.Text = "STUDIOWALK"; ControlTitle.TextColor3 = Color3.new(1,1,1); ControlTitle.Font = Enum.Font.GothamBlack; ControlTitle.TextSize = 14; ControlTitle.BackgroundTransparency = 1
+local PlayAction = createBtn(PlayControl, "PLAY", "🚀", Color3.fromRGB(50, 180, 80)); PlayAction.Size = UDim2.new(0.45, 0, 0, 30); PlayAction.Position = UDim2.new(0.03, 0, 0.3, 0)
+local LoopBtn = createBtn(PlayControl, "LOOP", "🔁", Color3.fromRGB(70, 70, 70)); LoopBtn.Size = UDim2.new(0.45, 0, 0, 30); LoopBtn.Position = UDim2.new(0.52, 0, 0.3, 0)
+local SpeedBtn = createBtn(PlayControl, "SPEED: 1x", "⚡", Color3.fromRGB(60, 60, 60)); SpeedBtn.Size = UDim2.new(0.94, 0, 0, 30); SpeedBtn.Position = UDim2.new(0.03, 0, 0.65, 0)
+
+local FileFrame = Instance.new("Frame", ScreenGui); FileFrame.Visible = false; FileFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15); FileFrame.Position = UDim2.new(0.5, 150, 0.5, -100); FileFrame.Size = UDim2.new(0, 200, 0, 210); FileFrame.Active, FileFrame.Draggable = true, true; Instance.new("UICorner", FileFrame); local FileStroke = Instance.new("UIStroke", FileFrame); FileStroke.Thickness = 2; makeRainbow(FileStroke)
+local SaveInput = Instance.new("TextBox", FileFrame); SaveInput.PlaceholderText = "Nama..."; SaveInput.Size = UDim2.new(0.9, 0, 0, 25); SaveInput.Position = UDim2.new(0.05, 0, 0.05, 0); SaveInput.BackgroundColor3 = Color3.fromRGB(30, 30, 30); SaveInput.TextColor3 = Color3.new(1,1,1)
+local SaveBtn = createBtn(FileFrame, "SAVE", "💾", Color3.fromRGB(50, 150, 50)); SaveBtn.Size = UDim2.new(0.9, 0, 0, 25); SaveBtn.Position = UDim2.new(0.05, 0, 0.2, 0)
+local FileList = Instance.new("ScrollingFrame", FileFrame); FileList.Size = UDim2.new(0.9, 0, 0.65, 0); FileList.Position = UDim2.new(0.05, 0, 0.35, 0); FileList.BackgroundTransparency = 1; FileList.CanvasSize = UDim2.new(0,0,10,0); Instance.new("UIListLayout", FileList).Padding = UDim.new(0, 5)
+
+local function tabToCf(tab) return CFrame.new(unpack(tab)) end
+local function cfToTab(cf) return {cf:GetComponents()} end
+
+-- [[ LOGIC REWIND - JAMINAN 100% ASLI LU ]]
+BackBtn.MouseButton1Click:Connect(function() 
+    if recording and #pathData > 100 then 
+        local root = lp.Character.HumanoidRootPart; root.Anchored = true; 
+        for i = 1, 180 do 
+            if #pathData > 1 then table.remove(pathData, #pathData) end 
+        end 
+        local last = pathData[#pathData]; 
+        root.CFrame = tabToCf(last.cf); 
+        task.spawn(function() 
+            for i = 3, 1, -1 do 
+                Status.Text = "READY IN: "..i; 
+                task.wait(1) 
+            end 
+            startTime = tick() - last.t; 
+            root.Anchored = false; 
+            root.AssemblyLinearVelocity = Vector3.new(unpack(last.vel)); 
+            Status.Text = "RECORDING..." 
+        end) 
+    end 
+end)
+
+-- [[ LOGIC PLAYBACK + SMOOTH TRANSITION ]]
+PlayAction.MouseButton1Click:Connect(function()
+    if playback then playback = false PlayAction.Text = "🚀 PLAY" return end
+    if #pathData < 2 then return end
+    playback = true; PlayAction.Text = "⏹ STOP"
+    
+    task.spawn(function()
+        local char = lp.Character; local root = char.HumanoidRootPart; local hum = char.Humanoid
+        
+        local closestIdx = 1; local minDistance = math.huge
+        for i = 1, #pathData, 5 do
+            local pPos = Vector3.new(pathData[i].cf[1], pathData[i].cf[2], pathData[i].cf[3])
+            local dist = (root.Position - pPos).Magnitude
+            if dist < minDistance then minDistance = dist; closestIdx = i end
+        end
+
+        -- Transisi Geser Halus (Hanya 0.5 detik)
+        Status.Text = "SYNCING..."
+        local targetStartCf = tabToCf(pathData[closestIdx].cf)
+        local snapStart = tick()
+        local originalCf = root.CFrame
+        while (tick() - snapStart) < 0.5 and playback do
+            local alpha = (tick() - snapStart) / 0.5
+            root.CFrame = originalCf:Lerp(targetStartCf, alpha)
+            RunService.Heartbeat:Wait()
+        end
+
+        local pStart = tick() - (pathData[closestIdx].t / playSpeed)
+        local duration = pathData[#pathData].t
+        Status.Text = "PLAYING..."
+
+        repeat
+            if looping and (tick() - pStart) * playSpeed >= duration then pStart = tick() end
+            while playback do
+                local elapsed = (tick() - pStart) * playSpeed
+                if elapsed >= duration then break end
+                local i = 1
+                while pathData[i+1] and pathData[i+1].t < elapsed do i = i + 1 end
+                local p1, p2 = pathData[i], pathData[i+1]
+                if p1 and p2 then
+                    local alpha = (elapsed - p1.t) / (p2.t - p1.t)
+                    local targetCf = tabToCf(p1.cf):Lerp(tabToCf(p2.cf), alpha)
+                    local targetVel = Vector3.new(unpack(p1.vel)):Lerp(Vector3.new(unpack(p2.vel)), alpha)
+                    
+                    if p1.state == 3 then
+                        hum:ChangeState(Enum.HumanoidStateType.Jumping)
+                        root.AssemblyLinearVelocity = Vector3.new(targetVel.X * playSpeed, targetVel.Y * 1.1, targetVel.Z * playSpeed)
+                    else
+                        root.AssemblyLinearVelocity = targetVel * playSpeed
+                    end
+                    root.CFrame = root.CFrame:Lerp(targetCf, 0.15) 
+                    hum:Move(Vector3.new(unpack(p1.moveDir)), false)
+                end
+                RunService.Heartbeat:Wait()
+            end
+        until not looping or not playback
+        playback = false; PlayAction.Text = "🚀 PLAY"; Status.Text = "READY"
+    end)
+end)
+
+-- [[ SISA SCRIPT ASLI LU ]]
+function RefreshFiles()
+    for _, v in pairs(FileList:GetChildren()) do if v:IsA("Frame") then v:Destroy() end end
+    for _, file in pairs(listfiles("PrecisionRecs")) do
+        local name = file:match("([^\\/]+)%.json$") or file
+        local Entry = Instance.new("Frame", FileList); Entry.Size = UDim2.new(1, 0, 0, 30); Entry.BackgroundTransparency = 1
+        local L = createBtn(Entry, name, "📄", Color3.fromRGB(50, 50, 50)); L.Size = UDim2.new(0.75, 0, 1, 0); L.TextSize = 9
+        local D = createBtn(Entry, "", "❌", Color3.fromRGB(120, 40, 40)); D.Size = UDim2.new(0.2, 0, 1, 0); D.Position = UDim2.new(0.8, 0, 0, 0)
+        L.MouseButton1Click:Connect(function() pathData = HttpService:JSONDecode(readfile(file)) Status.Text = "LOADED: "..name; PlayControl.Visible = true end)
+        D.MouseButton1Click:Connect(function() delfile(file); RefreshFiles() end)
+    end
+end
+
+RecBtn.MouseButton1Click:Connect(function() recording = not recording; RecBtn.Text = recording and "⏹ STOP" or "🔴 REC" if recording then pathData = {}; startTime = tick(); Status.Text = "RECORDING..." PlayControl.Visible = false end end)
+ClearBtn.MouseButton1Click:Connect(function() pathData = {}; PlayControl.Visible = false; Status.Text = "CLEARED" end)
+FileBtn.MouseButton1Click:Connect(function() FileFrame.Visible = not FileFrame.Visible; RefreshFiles() end)
+SaveBtn.MouseButton1Click:Connect(function() if #pathData < 10 or SaveInput.Text == "" then return end writefile("PrecisionRecs/"..SaveInput.Text..".json", HttpService:JSONEncode(pathData)); RefreshFiles(); Status.Text = "SAVED!" end)
+SpeedBtn.MouseButton1Click:Connect(function() playSpeed = (playSpeed % 5) + 1; SpeedBtn.Text = "⚡ SPEED: " .. playSpeed .. "x" end)
+RunService.Heartbeat:Connect(function() if recording and not playback then local char = lp.Character; local root = char and char:FindFirstChild("HumanoidRootPart"); local hum = char and char:FindFirstChild("Humanoid") if root and hum and not root.Anchored then table.insert(pathData, {t = tick()-startTime, cf = cfToTab(root.CFrame), vel = {root.AssemblyLinearVelocity.X, root.AssemblyLinearVelocity.Y, root.AssemblyLinearVelocity.Z}, moveDir = {hum.MoveDirection.X, hum.MoveDirection.Y, hum.MoveDirection.Z}, state = hum:GetState().Value}) end end end)
