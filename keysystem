@@ -1,0 +1,130 @@
+local Players = game:GetService("Players")
+local DataStoreService = game:GetService("DataStoreService")
+local VerifiedStore = DataStoreService:GetDataStore("ColdHubVerified")
+
+local player = Players.LocalPlayer
+
+-- ===== SETTINGS =====
+local CORRECT_KEY = "Mending di reyhub"
+local KEY_LINK = "Kosong"
+
+-- ===== GUI =====
+local gui = Instance.new("ScreenGui")
+gui.Parent = player:WaitForChild("PlayerGui")
+gui.ResetOnSpawn = false
+
+local frame = Instance.new("Frame")
+frame.AnchorPoint = Vector2.new(0.5,0.5)
+frame.Position = UDim2.new(0.5,0,0.5,0)
+frame.Size = UDim2.new(0.8,0,0.6,0)
+frame.BackgroundColor3 = Color3.fromRGB(28,28,28)
+frame.Parent = gui
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0,14)
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1,0,0.15,0)
+title.BackgroundTransparency = 1
+title.Text = "ReyXHub"
+title.Font = Enum.Font.GothamBold
+title.TextScaled = true
+title.TextColor3 = Color3.fromRGB(0,200,255)
+title.Parent = frame
+
+local textbox = Instance.new("TextBox")
+textbox.Size = UDim2.new(0.8,0,0.15,0)
+textbox.Position = UDim2.new(0.1,0,0.35,0)
+textbox.PlaceholderText = "Enter key here..."
+textbox.Text = ""
+textbox.Font = Enum.Font.Gotham
+textbox.TextScaled = true
+textbox.BackgroundColor3 = Color3.fromRGB(45,45,45)
+textbox.TextColor3 = Color3.new(1,1,1)
+textbox.Parent = frame
+Instance.new("UICorner", textbox).CornerRadius = UDim.new(0,10)
+
+local status = Instance.new("TextLabel")
+status.Size = UDim2.new(1,0,0.1,0)
+status.Position = UDim2.new(0,0,0.52,0)
+status.BackgroundTransparency = 1
+status.Text = ""
+status.Font = Enum.Font.GothamBold
+status.TextScaled = true
+status.Parent = frame
+
+local verify = Instance.new("TextButton")
+verify.Size = UDim2.new(0.42,0,0.15,0)
+verify.Position = UDim2.new(0.05,0,0.7,0)
+verify.Text = "Verify Key"
+verify.Font = Enum.Font.GothamBold
+verify.TextScaled = true
+verify.BackgroundColor3 = Color3.fromRGB(0,170,255)
+verify.TextColor3 = Color3.new(1,1,1)
+verify.Parent = frame
+Instance.new("UICorner", verify).CornerRadius = UDim.new(0,10)
+
+local getkey = Instance.new("TextButton")
+getkey.Size = UDim2.new(0.42,0,0.15,0)
+getkey.Position = UDim2.new(0.53,0,0.7,0)
+getkey.Text = "Get Key"
+getkey.Font = Enum.Font.GothamBold
+getkey.TextScaled = true
+getkey.BackgroundColor3 = Color3.fromRGB(60,60,60)
+getkey.TextColor3 = Color3.new(1,1,1)
+getkey.Parent = frame
+Instance.new("UICorner", getkey).CornerRadius = UDim.new(0,10)
+
+-- ===== FUNCTIONS =====
+
+local function openMainHub()
+	gui:Destroy()
+	-- AUTO LOAD YOUR SCRIPT
+	loadstring(game:HttpGet("https://pastefy.app/VPSYEV0n/raw"))()
+end
+
+local function checkVerified()
+	local success, value = pcall(function()
+		return VerifiedStore:GetAsync(player.UserId)
+	end)
+	if success and value == true then
+		openMainHub()
+	else
+		gui.Enabled = true
+	end
+end
+
+-- ===== LOGIC =====
+
+-- Load saved verification
+checkVerified()
+
+verify.MouseButton1Click:Connect(function()
+	if textbox.Text == CORRECT_KEY then
+		status.Text = "✅ Verified!"
+		status.TextColor3 = Color3.fromRGB(0,255,0)
+
+		-- Save verified
+		local success, err = pcall(function()
+			VerifiedStore:SetAsync(player.UserId,true)
+		end)
+		if not success then
+			warn("Failed to save verification: "..tostring(err))
+		end
+
+		task.wait(0.4)
+		openMainHub()
+	else
+		status.Text = "❌ Wrong key!"
+		status.TextColor3 = Color3.fromRGB(255,80,80)
+	end
+end)
+
+getkey.MouseButton1Click:Connect(function()
+	if setclipboard then
+		setclipboard(KEY_LINK)
+		status.Text = "🔗 Link copied to clipboard!"
+		status.TextColor3 = Color3.fromRGB(0,200,255)
+	else
+		status.Text = "Copy this link: "..KEY_LINK
+		status.TextColor3 = Color3.fromRGB(255,255,0)
+	end
+end)
